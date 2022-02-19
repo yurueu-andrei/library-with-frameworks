@@ -1,9 +1,9 @@
 INSERT INTO users (first_name, last_name, passport, email, address, birth_date)
-VALUES ('vlad', 'row', '1111', 'email1', 'address1', '2005-06-06'),
- ('sergey', 'line', '2222', 'email2', 'address2', '2001-06-06'),
-  ('vitaliy', 'look', '3333', 'email3', 'address3', '1998-06-06'),
-   ('petr', 'took', '4444', 'email4', 'address4', '1999-06-06'),
-    ( 'andrei', 'cook', '5555', 'email5', 'address5', '1996-06-06');
+VALUES ('vlad', 'kaliaha', '1111', 'email1', 'address1', '2005-06-06'),
+ ('andrei', 'yurueu', '2222', 'email2', 'address2', '2001-06-06'),
+  ('yaroslav', 'vasilevski', '3333', 'email3', 'address3', '1998-06-06'),
+   ('anastasiya', 'yurkova', '4444', 'email4', 'address4', '1999-06-06'),
+    ( 'alexander', 'kupriyanenko', '5555', 'email5', 'address5', '1996-06-06');
 
 INSERT INTO roles (role_name)
 VALUES ('admin'),
@@ -24,11 +24,11 @@ VALUES  ('NEW', '1998-06-06', '243', '1998-06-06','1'),
     ('NEW', '1998-06-06', '238', '1998-06-06', '4');
 
 INSERT INTO books (title, pages, image_path)
-VALUES  ('Война и мир', '1365', 'drfgfg'),
- ('Мастер и Маргарита', '638', 'rdgdrfg'),
-  ('Идиот', '496', 'rdgfdfg'),
-   ('Старик и море;', '153', 'rgdrfgdf'),
-    ('Евгений Онегин', '462', 'dfgdfg');
+VALUES  ('War and peace', '1365', 'image path'),
+ ('The Master and Margarita', '638', 'image path'),
+  ('Idiot', '496', 'image path'),
+   ('The old man and the sea', '153', 'image path'),
+    ('Eugene Onegin', '462', 'image path');
 
 INSERT INTO book_copies (book_copy_status, registration_date, price, price_per_day, book_id)
 VALUES  ('AVAILABLE', '2019-03-01', '1365', '150', 1),
@@ -45,10 +45,13 @@ VALUES  (1, 3),
             (5, 5);
 
 INSERT INTO genres (genre_name)
-VALUES ('Роман'),
-        ('Роман в стихах'),
-         ('Роман-эпопея'),
-          ('Повесть');
+VALUES ('NOVEL'),
+        ('ADVENTURE'),
+        ('COMEDY'),
+        ('CRIME'),
+        ('HORROR'),
+        ('SCIENCE FICTION'),
+        ('ROMANCE');
 
 INSERT INTO book_genre_links (book_id, genre_id)
 VALUES  (1, 3),
@@ -58,11 +61,11 @@ VALUES  (1, 3),
             (5, 2);
 
 INSERT INTO authors (first_name, last_name, birth_date, image_path)
-VALUES  ('Лев', 'Толстой', '1879-04-04', 'wregrrey'),
- ('Эрнест', 'Хемингуэй', '1903-07-07', 'rgdrfgdf'),
-  ('Михаил', 'Булгаков', '1885-10-10', 'rdgdrfg'),
-   ('Александр', 'Пушкин', '1852-02-02', 'dfgdfg'),
-    ('Фёдор', 'Достоевский', '1845-01-01', 'rdgfdfg');
+VALUES  ('Lev', 'Tolstoy', '1879-04-04', 'image path'),
+ ('Ernest', 'Hemingway', '1903-07-07', 'image path'),
+  ('Mikhail', 'Bulgakov', '1885-10-10', 'image path'),
+   ('Alexander', 'Pushkin', '1852-02-02', 'image path'),
+    ('Fedor', 'Dostoevsky', '1845-01-01', 'image path');
 
 INSERT INTO book_author_links (book_id, author_id)
 VALUES  (1, 1),
@@ -71,8 +74,8 @@ VALUES  (1, 1),
            (4, 2),
             (5, 4);
 
-INSERT INTO book_damage (image_path, user_id, order_id, book_copy_id)
-VALUES  ('weter', '1', '1', '3'),
- ('weter', '1', '1', '2'),
-  ('weatsg', '3', '4', '1'),
-   ('iyukjyugf', '4', '5', '5');
+INSERT INTO book_damage (image_path, damage_description, user_id, order_id, book_copy_id)
+VALUES  ('image path', 'damage1', '1', '1', '3'),
+ ('image path', 'damage2', '1', '1', '2'),
+  ('image path', 'damage3', '3', '4', '1'),
+   ('image path', 'damage4', '4', '5', '5');

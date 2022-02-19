@@ -1,8 +1,6 @@
 package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.Order;
-import by.library.yurueu.entity.OrderStatus;
-import by.library.yurueu.repository.AbstractRepository;
 import by.library.yurueu.repository.OrderRepository;
 
 import javax.sql.DataSource;
@@ -12,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
 
-public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implements AbstractRepository<Order>, OrderRepository {
+public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implements OrderRepository {
     private static final String ID_COLUMN = "id";
     private static final String ORDER_STATUS_COLUMN = "order_status";
     private static final String START_DATE_COLUMN = "start_date";
@@ -60,28 +58,35 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
         return DELETE_QUERY;
     }
 
+    @Override
     protected Order construct(ResultSet resultSet) throws SQLException {
-        Order order = new Order();
-        order.setId(resultSet.getLong(ID_COLUMN));
-        order.setOrderStatus(OrderStatus.valueOf(resultSet.getString(ORDER_STATUS_COLUMN)));
-        order.setStartDate(resultSet.getDate(START_DATE_COLUMN).toLocalDate());
-        order.setEndDate(resultSet.getDate(END_DATE_COLUMN).toLocalDate());
-        order.setPrice(resultSet.getInt(PRICE_COLUMN));
-        order.setUserId(resultSet.getLong(USER_ID_COLUMN));
-        return order;
+        return Order.builder()
+                .id(resultSet.getLong(ID_COLUMN))
+                .orderStatus(resultSet.getString(ORDER_STATUS_COLUMN))
+                .startDate(resultSet.getDate(START_DATE_COLUMN).toLocalDate())
+                .endDate(resultSet.getDate(END_DATE_COLUMN).toLocalDate())
+                .price(resultSet.getInt(PRICE_COLUMN))
+                .userId(resultSet.getLong(USER_ID_COLUMN))
+                .build();
     }
 
+    @Override
     protected void settingPreparedStatement(PreparedStatement preparedStatement, Order order) throws SQLException {
-        preparedStatement.setString(1, order.getOrderStatus().toString());
+        preparedStatement.setString(1, order.getOrderStatus());
         preparedStatement.setDate(2, Date.valueOf(order.getStartDate()));
         preparedStatement.setDate(3, Date.valueOf(order.getEndDate()));
         preparedStatement.setInt(4, order.getPrice());
         preparedStatement.setLong(5, order.getUserId());
     }
 
+    @Override
     protected void deleteLinks(Connection connection, Long id) throws SQLException{
         deleteOrderBookCopyLinks(connection, id);
         deleteBookDamage(connection, id);
+    }
+
+    private void deleteOrderBookCopyLinks(Connection connection, Long orderId) throws SQLException {
+        deleteOrderLinks(connection, orderId, DELETE_ORDER_BOOK_COPY_LINKS_QUERY);
     }
 
     private void deleteOrderLinks(Connection connection, Long id, String query) throws SQLException {
@@ -89,10 +94,6 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
         }
-    }
-
-    private void deleteOrderBookCopyLinks(Connection connection, Long orderId) throws SQLException {
-        deleteOrderLinks(connection, orderId, DELETE_ORDER_BOOK_COPY_LINKS_QUERY);
     }
 
     private void deleteBookDamage(Connection connection, Long orderId) throws SQLException {

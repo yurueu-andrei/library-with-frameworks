@@ -2,7 +2,7 @@ package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.BaseEntity;
 import by.library.yurueu.exception.RepositoryException;
-import by.library.yurueu.repository.AbstractRepository;
+import by.library.yurueu.repository.BaseRepository;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -12,9 +12,8 @@ import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
-public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements AbstractRepository<E> {
+public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements BaseRepository<E> {
     protected static final String ID_COLUMN = "id";
 
     private final DataSource dataSource;

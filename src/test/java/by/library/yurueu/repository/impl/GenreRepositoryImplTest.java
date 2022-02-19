@@ -8,9 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-
 class GenreRepositoryImplTest extends BaseRepositoryTest {
-
     private final GenreRepositoryImpl genreRepository;
 
     public GenreRepositoryImplTest() {
@@ -44,7 +42,7 @@ class GenreRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedGenre() throws RepositoryException {
         //given
-        Genre expected = Genre.builder().id(5L).genreName("tale").build();
+        Genre expected = Genre.builder().id(8L).genreName("tale").build();
         Genre actual = Genre.builder().genreName("tale").build();
 
         //when

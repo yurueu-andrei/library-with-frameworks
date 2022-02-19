@@ -1,7 +1,6 @@
 package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.Book;
-import by.library.yurueu.repository.AbstractRepository;
 import by.library.yurueu.repository.BookRepository;
 
 import javax.sql.DataSource;
@@ -12,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements AbstractRepository<Book>, BookRepository {
+public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements BookRepository {
     private static final String ID_COLUMN = "id";
     private static final String TITLE_COLUMN = "title";
     private static final String PAGES_COLUMN = "pages";
@@ -62,25 +61,32 @@ public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements 
         return DELETE_QUERY;
     }
 
+    @Override
     protected Book construct(ResultSet resultSet) throws SQLException {
-        Book book = new Book();
-        book.setId(resultSet.getLong(ID_COLUMN));
-        book.setTitle(resultSet.getString(TITLE_COLUMN));
-        book.setPagesNumber(resultSet.getInt(PAGES_COLUMN));
-        book.setImagePath(resultSet.getString(IMAGE_PATH_COLUMN));
-        return book;
+        return Book.builder()
+                .id(resultSet.getLong(ID_COLUMN))
+                .title(resultSet.getString(TITLE_COLUMN))
+                .pagesNumber(resultSet.getInt(PAGES_COLUMN))
+                .imagePath(resultSet.getString(IMAGE_PATH_COLUMN))
+                .build();
     }
 
+    @Override
     protected void settingPreparedStatement(PreparedStatement preparedStatement, Book book) throws SQLException {
         preparedStatement.setString(1, book.getTitle());
         preparedStatement.setInt(2, book.getPagesNumber());
         preparedStatement.setString(3, book.getImagePath());
     }
 
+    @Override
     protected void deleteLinks(Connection connection, Long id) throws SQLException {
         deleteBookGenreLinks(connection, id);
         deleteBookAuthorLinks(connection, id);
         deleteBooksBookCopies(connection, id);
+    }
+
+    private void deleteBookGenreLinks(Connection connection, Long bookId) throws SQLException {
+        deleteBookLinks(connection, bookId, DELETE_BOOK_GENRE_LINKS_QUERY);
     }
 
     private void deleteBookLinks(Connection connection, Long id, String query) throws SQLException {
@@ -92,10 +98,6 @@ public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements 
 
     private void deleteBookAuthorLinks(Connection connection, Long bookId) throws SQLException {
         deleteBookLinks(connection, bookId, DELETE_BOOK_AUTHOR_LINKS_QUERY);
-    }
-
-    private void deleteBookGenreLinks(Connection connection, Long bookId) throws SQLException {
-        deleteBookLinks(connection, bookId, DELETE_BOOK_GENRE_LINKS_QUERY);
     }
 
     private void deleteBooksBookCopies(Connection connection, Long bookId) throws SQLException {

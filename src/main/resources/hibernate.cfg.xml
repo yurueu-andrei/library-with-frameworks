@@ -17,6 +17,7 @@
         <property name="dialect">org.hibernate.dialect.H2Dialect</property>
         <property name="show_sql">true</property>
         <property name="format_sql">true</property>
+        <property name="hibernate.connection.characterEncoding">utf8</property>
 
         <mapping class="by.library.yurueu.entity.Author"/>
         <mapping class="by.library.yurueu.entity.Book"/>

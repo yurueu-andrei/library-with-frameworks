@@ -1,5 +1,7 @@
 package by.library.yurueu.repository;
 
-public interface RoleRepository {
+import by.library.yurueu.entity.Role;
+
+public interface RoleRepository extends BaseRepository<Role> {
 
 }

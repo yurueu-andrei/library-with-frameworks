@@ -89,11 +89,11 @@ public abstract class BaseRepositoryTest {
 
     private void fillOrders() {
         orders = new ArrayList<>() {{
-            add(Order.builder().id(1L).orderStatus(OrderStatus.NEW).startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).userId(1L).build());
-            add(Order.builder().id(2L).orderStatus(OrderStatus.NEW).startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(21).userId(1L).build());
-            add(Order.builder().id(3L).orderStatus(OrderStatus.NEW).startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(253).userId(1L).build());
-            add(Order.builder().id(4L).orderStatus(OrderStatus.NEW).startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(273).userId(3L).build());
-            add(Order.builder().id(5L).orderStatus(OrderStatus.NEW).startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(238).userId(4L).build());
+            add(Order.builder().id(1L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).userId(1L).build());
+            add(Order.builder().id(2L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(21).userId(1L).build());
+            add(Order.builder().id(3L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(253).userId(1L).build());
+            add(Order.builder().id(4L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(273).userId(3L).build());
+            add(Order.builder().id(5L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(238).userId(4L).build());
         }};
     }
 
@@ -107,10 +107,13 @@ public abstract class BaseRepositoryTest {
 
     private void fillGenres() {
         genres = new ArrayList<>() {{
-            add(Genre.builder().id(1L).genreName("novel").build());
-            add(Genre.builder().id(2L).genreName("novel in verse").build());
-            add(Genre.builder().id(3L).genreName("epic novel").build());
-            add(Genre.builder().id(4L).genreName("story").build());
+            add(Genre.builder().id(1L).genreName("NOVEL").build());
+            add(Genre.builder().id(2L).genreName("ADVENTURE").build());
+            add(Genre.builder().id(3L).genreName("COMEDY").build());
+            add(Genre.builder().id(4L).genreName("CRIME").build());
+            add(Genre.builder().id(5L).genreName("HORROR").build());
+            add(Genre.builder().id(6L).genreName("SCIENCE FICTION").build());
+            add(Genre.builder().id(7L).genreName("ROMANCE").build());
         }};
     }
 
@@ -142,10 +145,10 @@ public abstract class BaseRepositoryTest {
 
     private void fillBookDamage() {
         bookDamage = new ArrayList<>() {{
-            add(BookDamage.builder().id(1L).imagePath("image path").userId(1L).orderId(1L).bookCopyId(3L).build());
-            add(BookDamage.builder().id(2L).imagePath("image path").userId(1L).orderId(1L).bookCopyId(2L).build());
-            add(BookDamage.builder().id(3L).imagePath("image path").userId(3L).orderId(4L).bookCopyId(1L).build());
-            add(BookDamage.builder().id(4L).imagePath("image path").userId(4L).orderId(5L).bookCopyId(5L).build());
+            add(BookDamage.builder().id(1L).imagePath("image path").damageDescription("damage1").userId(1L).orderId(1L).bookCopyId(3L).build());
+            add(BookDamage.builder().id(2L).imagePath("image path").damageDescription("damage2").userId(1L).orderId(1L).bookCopyId(2L).build());
+            add(BookDamage.builder().id(3L).imagePath("image path").damageDescription("damage3").userId(3L).orderId(4L).bookCopyId(1L).build());
+            add(BookDamage.builder().id(4L).imagePath("image path").damageDescription("damage4").userId(4L).orderId(5L).bookCopyId(5L).build());
         }};
     }
 
@@ -159,11 +162,11 @@ public abstract class BaseRepositoryTest {
 
     private void fillBookCopies() {
         bookCopies = new ArrayList<>() {{
-            add(BookCopy.builder().id(1L).status(BookCopyStatus.AVAILABLE).registrationDate(LocalDate.of(2019, 3, 1)).price(1365).pricePerDay(150).bookId(1L).build());
-            add(BookCopy.builder().id(2L).status(BookCopyStatus.AVAILABLE).registrationDate(LocalDate.of(2020, 6, 1)).price(1638).pricePerDay(210).bookId(2L).build());
-            add(BookCopy.builder().id(3L).status(BookCopyStatus.AVAILABLE).registrationDate(LocalDate.of(2021, 8, 4)).price(2496).pricePerDay(225).bookId(2L).build());
-            add(BookCopy.builder().id(4L).status(BookCopyStatus.AVAILABLE).registrationDate(LocalDate.of(2017, 10, 10)).price(937).pricePerDay(128).bookId(5L).build());
-            add(BookCopy.builder().id(5L).status(BookCopyStatus.AVAILABLE).registrationDate(LocalDate.of(2020, 6, 2)).price(1007).pricePerDay(311).bookId(3L).build());
+            add(BookCopy.builder().id(1L).status("AVAILABLE").registrationDate(LocalDate.of(2019, 3, 1)).price(1365).pricePerDay(150).bookId(1L).build());
+            add(BookCopy.builder().id(2L).status("AVAILABLE").registrationDate(LocalDate.of(2020, 6, 1)).price(1638).pricePerDay(210).bookId(2L).build());
+            add(BookCopy.builder().id(3L).status("AVAILABLE").registrationDate(LocalDate.of(2021, 8, 4)).price(2496).pricePerDay(225).bookId(2L).build());
+            add(BookCopy.builder().id(4L).status("AVAILABLE").registrationDate(LocalDate.of(2017, 10, 10)).price(937).pricePerDay(128).bookId(5L).build());
+            add(BookCopy.builder().id(5L).status("AVAILABLE").registrationDate(LocalDate.of(2020, 6, 2)).price(1007).pricePerDay(311).bookId(3L).build());
         }};
     }
 

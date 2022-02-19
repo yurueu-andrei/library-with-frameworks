@@ -1,8 +1,6 @@
 package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.BookCopy;
-import by.library.yurueu.entity.BookCopyStatus;
-import by.library.yurueu.repository.AbstractRepository;
 import by.library.yurueu.repository.BookCopyRepository;
 
 import javax.sql.DataSource;
@@ -12,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
 
-public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> implements AbstractRepository<BookCopy>, BookCopyRepository {
+public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> implements BookCopyRepository {
     private static final String ID_COLUMN = "id";
     private static final String BOOK_COPY_STATUS_COLUMN = "book_copy_status";
     private static final String REGISTRATION_DATE_COLUMN = "registration_date";
@@ -60,28 +58,35 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
         return DELETE_QUERY;
     }
 
+    @Override
     protected BookCopy construct(ResultSet resultSet) throws SQLException {
-        BookCopy bookCopy = new BookCopy();
-        bookCopy.setId(resultSet.getLong(ID_COLUMN));
-        bookCopy.setStatus(BookCopyStatus.valueOf(resultSet.getString(BOOK_COPY_STATUS_COLUMN)));
-        bookCopy.setRegistrationDate(resultSet.getDate(REGISTRATION_DATE_COLUMN).toLocalDate());
-        bookCopy.setPrice(resultSet.getInt(PRICE_COLUMN));
-        bookCopy.setPricePerDay(resultSet.getInt(PRICE_PER_DAY_COLUMN));
-        bookCopy.setBookId(resultSet.getLong(BOOK_ID_COLUMN));
-        return bookCopy;
+        return BookCopy.builder()
+                .id(resultSet.getLong(ID_COLUMN))
+                .status(resultSet.getString(BOOK_COPY_STATUS_COLUMN))
+                .registrationDate(resultSet.getDate(REGISTRATION_DATE_COLUMN).toLocalDate())
+                .price(resultSet.getInt(PRICE_COLUMN))
+                .pricePerDay(resultSet.getInt(PRICE_PER_DAY_COLUMN))
+                .bookId(resultSet.getLong(BOOK_ID_COLUMN))
+                .build();
     }
 
+    @Override
     protected void settingPreparedStatement(PreparedStatement preparedStatement, BookCopy bookCopy) throws SQLException {
-        preparedStatement.setString(1, bookCopy.getStatus().toString());
+        preparedStatement.setString(1, bookCopy.getStatus());
         preparedStatement.setDate(2, Date.valueOf(bookCopy.getRegistrationDate()));
         preparedStatement.setInt(3, bookCopy.getPrice());
         preparedStatement.setInt(4, bookCopy.getPricePerDay());
         preparedStatement.setLong(5, bookCopy.getBookId());
     }
 
+    @Override
     protected void deleteLinks(Connection connection, Long id) throws SQLException {
         deleteOrderBookCopyLinks(connection, id);
         deleteBookDamage(connection, id);
+    }
+
+    private void deleteOrderBookCopyLinks(Connection connection, Long bookCopyId) throws SQLException {
+        deleteBookCopyLinks(connection, bookCopyId, DELETE_ORDER_BOOK_COPY_LINKS_QUERY);
     }
 
     private void deleteBookCopyLinks(Connection connection, Long id, String query) throws SQLException {
@@ -89,10 +94,6 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
         }
-    }
-
-    private void deleteOrderBookCopyLinks(Connection connection, Long bookCopyId) throws SQLException {
-        deleteBookCopyLinks(connection, bookCopyId, DELETE_ORDER_BOOK_COPY_LINKS_QUERY);
     }
 
     private void deleteBookDamage(Connection connection, Long bookCopyId) throws SQLException {

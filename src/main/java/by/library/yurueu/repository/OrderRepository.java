@@ -1,5 +1,7 @@
 package by.library.yurueu.repository;
 
-public interface OrderRepository {
+import by.library.yurueu.entity.Order;
+
+public interface OrderRepository extends BaseRepository<Order> {
 
 }

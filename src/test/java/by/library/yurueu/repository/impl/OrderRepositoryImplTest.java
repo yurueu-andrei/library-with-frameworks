@@ -1,7 +1,6 @@
 package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.Order;
-import by.library.yurueu.entity.OrderStatus;
 import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
@@ -10,9 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.List;
 
-
 class OrderRepositoryImplTest extends BaseRepositoryTest {
-
     private final OrderRepositoryImpl orderRepository;
 
     public OrderRepositoryImplTest() {
@@ -46,8 +43,8 @@ class OrderRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedOrder() throws RepositoryException {
         //given
-        Order expected = Order.builder().id(6L).orderStatus(OrderStatus.NEW).startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).userId(4L).build();
-        Order actual = Order.builder().orderStatus(OrderStatus.NEW).startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).userId(4L).build();
+        Order expected = Order.builder().id(6L).orderStatus("NEW").startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).userId(4L).build();
+        Order actual = Order.builder().orderStatus("NEW").startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).userId(4L).build();
 
         //when
         actual = orderRepository.add(actual);
@@ -60,7 +57,7 @@ class OrderRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void updateTest_shouldUpdateOrder() throws RepositoryException {
         //given
-        Order order = Order.builder().id(2L).orderStatus(OrderStatus.NEW).startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).userId(1L).build();
+        Order order = Order.builder().id(2L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).userId(1L).build();
 
         // when
         boolean isUpdated = orderRepository.update(order);

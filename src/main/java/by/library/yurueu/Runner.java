@@ -1,9 +1,7 @@
 package by.library.yurueu;
 
-import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Genre;
-import by.library.yurueu.entity.User;
-import by.library.yurueu.repository.impl.*;
+import by.library.yurueu.repository.impl.GenreRepositoryImpl;
 import by.library.yurueu.service.FlywayService;
 import org.h2.jdbcx.JdbcConnectionPool;
 

@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 class AuthorRepositoryImplTest extends BaseRepositoryTest {
-
     private final AuthorRepositoryImpl authorRepository;
 
     public AuthorRepositoryImplTest() {

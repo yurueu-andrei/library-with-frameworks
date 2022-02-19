@@ -115,6 +115,7 @@ CREATE TABLE IF NOT EXISTS book_genre_links (
 CREATE TABLE IF NOT EXISTS book_damage (
   id BIGINT NOT NULL AUTO_INCREMENT,
   image_path VARCHAR(512) NOT NULL,
+  damage_description VARCHAR(5000) NOT NULL,
   user_id BIGINT NOT NULL,
   order_id BIGINT NOT NULL,
   book_copy_id BIGINT NOT NULL,

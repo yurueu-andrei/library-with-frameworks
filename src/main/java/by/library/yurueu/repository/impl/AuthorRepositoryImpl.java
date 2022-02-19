@@ -1,7 +1,6 @@
 package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.Author;
-import by.library.yurueu.repository.AbstractRepository;
 import by.library.yurueu.repository.AuthorRepository;
 
 import javax.sql.DataSource;
@@ -11,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
 
-public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> implements AuthorRepository, AbstractRepository<Author> {
+public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> implements AuthorRepository {
     private static final String FIRST_NAME_COLUMN = "first_name";
     private static final String LAST_NAME_COLUMN = "last_name";
     private static final String BIRTH_DATE_COLUMN = "birth_date";
@@ -56,21 +55,28 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
         return DELETE_QUERY;
     }
 
+    @Override
     protected Author construct(ResultSet resultSet) throws SQLException {
-        Author author = new Author();
-        author.setId(resultSet.getLong(ID_COLUMN));
-        author.setFirstName(resultSet.getString(FIRST_NAME_COLUMN));
-        author.setLastName(resultSet.getString(LAST_NAME_COLUMN));
-        author.setBirthDate(resultSet.getDate(BIRTH_DATE_COLUMN).toLocalDate());
-        author.setImagePath(resultSet.getString(IMAGE_PATH_COLUMN));
-        return author;
+        return Author.builder()
+                .id(resultSet.getLong(ID_COLUMN))
+                .firstName(resultSet.getString(FIRST_NAME_COLUMN))
+                .lastName(resultSet.getString(LAST_NAME_COLUMN))
+                .birthDate(resultSet.getDate(BIRTH_DATE_COLUMN).toLocalDate())
+                .imagePath(resultSet.getString(IMAGE_PATH_COLUMN))
+                .build();
     }
 
+    @Override
     protected void settingPreparedStatement(PreparedStatement preparedStatement, Author author) throws SQLException {
         preparedStatement.setString(1, author.getFirstName());
         preparedStatement.setString(2, author.getLastName());
         preparedStatement.setDate(3, Date.valueOf(author.getBirthDate()));
         preparedStatement.setString(4, author.getImagePath());
+    }
+
+    @Override
+    protected void deleteLinks(Connection connection, Long authorId) throws SQLException {
+        deleteAuthorLinks(connection, authorId);
     }
 
     private void deleteAuthorLinks(Connection connection, Long id) throws SQLException {
@@ -79,9 +85,4 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
             preparedStatement.executeUpdate();
         }
     }
-
-    protected void deleteLinks(Connection connection, Long authorId) throws SQLException {
-        deleteAuthorLinks(connection, authorId);
-    }
-
 }

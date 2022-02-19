@@ -1,5 +1,7 @@
 package by.library.yurueu.repository;
 
-public interface BookDamageRepository {
+import by.library.yurueu.entity.BookDamage;
+
+public interface BookDamageRepository extends BaseRepository<BookDamage> {
 
 }

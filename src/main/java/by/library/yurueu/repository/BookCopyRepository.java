@@ -1,4 +1,7 @@
 package by.library.yurueu.repository;
 
-public interface BookCopyRepository {
+import by.library.yurueu.entity.BookCopy;
+
+public interface BookCopyRepository extends BaseRepository<BookCopy> {
+
 }
