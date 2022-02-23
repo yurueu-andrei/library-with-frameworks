@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.List;
 
-class UserRepositoryImplTest extends BaseRepositoryTest {
+public class UserRepositoryImplTest extends BaseRepositoryTest {
     private final UserRepositoryImpl userRepository;
 
     public UserRepositoryImplTest() {

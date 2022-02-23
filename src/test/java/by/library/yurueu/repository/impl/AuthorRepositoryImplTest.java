@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.List;
 
-class AuthorRepositoryImplTest extends BaseRepositoryTest {
+public class AuthorRepositoryImplTest extends BaseRepositoryTest {
     private final AuthorRepositoryImpl authorRepository;
 
     public AuthorRepositoryImplTest() {
@@ -29,7 +29,7 @@ class AuthorRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllAuthor() {
+    public void findAllTest_shouldReturnListOfAllAuthor() {
         //given
         List<Author> expected = findAuthorsForFindAll();
 
@@ -41,7 +41,7 @@ class AuthorRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedAuthor() {
+    public void addTest_shouldReturnAddedAuthor() {
         //given
         Author expected = Author.builder().id(6L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
         Author actual = Author.builder().firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
@@ -55,7 +55,7 @@ class AuthorRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void updateTest_shouldUpdateAuthor() throws RepositoryException {
+    public void updateTest_shouldUpdateAuthor() throws RepositoryException {
         //given
         Author author = Author.builder().id(2L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1998, 8, 8)).imagePath("image path").build();
 
