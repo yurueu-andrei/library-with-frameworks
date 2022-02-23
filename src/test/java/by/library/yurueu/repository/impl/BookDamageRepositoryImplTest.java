@@ -6,20 +6,21 @@ import by.library.yurueu.entity.Order;
 import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BaseRepositoryTest;
+import by.library.yurueu.repository.BookDamageRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 public class BookDamageRepositoryImplTest extends BaseRepositoryTest {
-    private final BookDamageRepositoryImpl bookDamageRepository;
+    private final BookDamageRepository bookDamageRepository;
 
     public BookDamageRepositoryImplTest() {
         bookDamageRepository = new BookDamageRepositoryImpl();
     }
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstBookDamageInDB() {
+    public void findByIdTest_shouldReturnTheFirstBookDamageInDB() throws RepositoryException {
         //given
         BookDamage expected = findBookDamageForFindById();
 
@@ -31,7 +32,7 @@ public class BookDamageRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllBookDamage() {
+    void findAllTest_shouldReturnAllBookDamagesList() throws RepositoryException {
         //given
         List<BookDamage> expected = findBookDamageForFindAll();
 
@@ -43,7 +44,7 @@ public class BookDamageRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedBookDamage() {
+    void addTest_shouldReturnAddedBookDamage() throws RepositoryException {
         //given
         BookDamage expected = BookDamage.builder().id(5L).imagePath("image path").damageDescription("damage5").bookCopy(BookCopy.builder().id(3L).build()).order(Order.builder().id(3L).build()).user(User.builder().id(3L).build()).build();
         BookDamage actual = BookDamage.builder().imagePath("image path").damageDescription("damage5").bookCopy(BookCopy.builder().id(3L).build()).order(Order.builder().id(3L).build()).user(User.builder().id(3L).build()).build();
@@ -79,5 +80,6 @@ public class BookDamageRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNull(bookDamageRepository.findById(bookDamageId));
     }
 }

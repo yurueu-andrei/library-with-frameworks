@@ -3,6 +3,7 @@ package by.library.yurueu.repository.impl;
 import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BaseRepositoryTest;
+import by.library.yurueu.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,14 +11,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class UserRepositoryImplTest extends BaseRepositoryTest {
-    private final UserRepositoryImpl userRepository;
+    private final UserRepository userRepository;
 
     public UserRepositoryImplTest() {
         userRepository = new UserRepositoryImpl();
     }
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstUserInDB() {
+    public void findByIdTest_shouldReturnTheFirstUserInDB() throws RepositoryException {
         //given
         User expected = findUserForFindById();
 
@@ -29,7 +30,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllUsers() {
+    void findAllTest_shouldReturnAllUsersList() throws RepositoryException {
         //given
         List<User> expected = findUsersForFindAll();
 
@@ -41,7 +42,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedUser() {
+    void addTest_shouldReturnAddedUser() throws RepositoryException {
         //given
         User expected = User.builder().id(6L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
         User actual = User.builder().firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
@@ -77,5 +78,6 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNull(userRepository.findById(userId));
     }
 }

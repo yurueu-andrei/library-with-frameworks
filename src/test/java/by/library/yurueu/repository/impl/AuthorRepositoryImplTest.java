@@ -2,6 +2,7 @@ package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.exception.RepositoryException;
+import by.library.yurueu.repository.AuthorRepository;
 import by.library.yurueu.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,14 +11,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class AuthorRepositoryImplTest extends BaseRepositoryTest {
-    private final AuthorRepositoryImpl authorRepository;
+    private final AuthorRepository authorRepository;
 
     public AuthorRepositoryImplTest() {
         authorRepository = new AuthorRepositoryImpl();
     }
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstAuthorInDB() {
+    public void findByIdTest_shouldReturnTheFirstAuthorInDB() throws RepositoryException {
         //given
         Author expected = findAuthorForFindById();
 
@@ -29,7 +30,7 @@ public class AuthorRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findAllTest_shouldReturnListOfAllAuthor() {
+    public void findAllTest_shouldReturnAllAuthorsList() throws RepositoryException {
         //given
         List<Author> expected = findAuthorsForFindAll();
 
@@ -41,7 +42,7 @@ public class AuthorRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void addTest_shouldReturnAddedAuthor() {
+    public void addTest_shouldReturnAddedAuthor() throws RepositoryException {
         //given
         Author expected = Author.builder().id(6L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
         Author actual = Author.builder().firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
@@ -77,5 +78,6 @@ public class AuthorRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNull(authorRepository.findById(authorId));
     }
 }

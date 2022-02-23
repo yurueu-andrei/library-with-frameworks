@@ -3,20 +3,21 @@ package by.library.yurueu.repository.impl;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BaseRepositoryTest;
+import by.library.yurueu.repository.BookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 public class BookRepositoryImplTest extends BaseRepositoryTest {
-    private final BookRepositoryImpl bookRepository;
+    private final BookRepository bookRepository;
 
     public BookRepositoryImplTest() {
         bookRepository = new BookRepositoryImpl();
     }
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstBookInDB() {
+    public void findByIdTest_shouldReturnTheFirstBookInDB() throws RepositoryException {
         //given
         Book expected = findBookForFindById();
 
@@ -28,7 +29,7 @@ public class BookRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllBooks() {
+    void findAllTest_shouldReturnAllBooksList() throws RepositoryException {
         //given
         List<Book> expected = findBooksForFindAll();
 
@@ -40,7 +41,7 @@ public class BookRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedBook() {
+    void addTest_shouldReturnAddedBook() throws RepositoryException {
         //given
         Book expected = Book.builder().id(6L).title("asd").pagesNumber(12).imagePath("image path").build();
         Book actual = Book.builder().title("asd").pagesNumber(12).imagePath("image path").build();
@@ -76,5 +77,6 @@ public class BookRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNull(bookRepository.findById(bookId));
     }
 }

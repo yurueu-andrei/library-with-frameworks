@@ -3,20 +3,21 @@ package by.library.yurueu.repository.impl;
 import by.library.yurueu.entity.Role;
 import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BaseRepositoryTest;
+import by.library.yurueu.repository.RoleRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 public class RoleRepositoryImplTest extends BaseRepositoryTest {
-    private final RoleRepositoryImpl roleRepository;
+    private final RoleRepository roleRepository;
 
     public RoleRepositoryImplTest() {
         roleRepository = new RoleRepositoryImpl();
     }
 
     @Test
-    void findByIdTest_shouldReturnTheFirstRoleInDB() {
+    void findByIdTest_shouldReturnTheFirstRoleInDB() throws RepositoryException {
         //given
         Role expected = findRoleForFindById();
 
@@ -28,7 +29,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllRoles() {
+    void findAllTest_shouldReturnAllRolesList() throws RepositoryException {
         //given
         List<Role> expected = findRolesForFindAll();
 
@@ -40,7 +41,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedRole() {
+    void addTest_shouldReturnAddedRole() throws RepositoryException {
         //given
         Role expected = Role.builder().id(3L).roleName("superUser").build();
         Role actual = Role.builder().roleName("superUser").build();
@@ -76,5 +77,6 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNull(roleRepository.findById(roleId));
     }
 }
