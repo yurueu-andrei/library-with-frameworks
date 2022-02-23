@@ -7,6 +7,15 @@ import lombok.experimental.SuperBuilder;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "roles")
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -14,6 +23,11 @@ import lombok.ToString;
 @SuperBuilder
 @AllArgsConstructor
 public class Role extends BaseEntity {
-    private Long id;
+    @Column(name = "role_name")
     private String roleName;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users = new HashSet<>();
 }

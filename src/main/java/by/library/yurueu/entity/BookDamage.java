@@ -7,6 +7,14 @@ import lombok.experimental.SuperBuilder;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 
+import javax.persistence.JoinColumn;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "book_damage")
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -14,10 +22,27 @@ import lombok.ToString;
 @SuperBuilder
 @AllArgsConstructor
 public class BookDamage extends BaseEntity {
-    private Long id;
+    @Column(name = "image_path")
     private String imagePath;
+
+    @Column(name = "damage_description")
     private String damageDescription;
-    private Long userId;
-    private Long orderId;
-    private Long bookCopyId;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne
+    @JoinColumn(name = "book_copy_id")
+    private BookCopy bookCopy;
 }
