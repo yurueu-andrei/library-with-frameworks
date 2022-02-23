@@ -3,20 +3,21 @@ package by.library.yurueu.repository.impl;
 import by.library.yurueu.entity.Genre;
 import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BaseRepositoryTest;
+import by.library.yurueu.repository.GenreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 public class GenreRepositoryImplTest extends BaseRepositoryTest {
-    private final GenreRepositoryImpl genreRepository;
+    private final GenreRepository genreRepository;
 
     public GenreRepositoryImplTest() {
         genreRepository = new GenreRepositoryImpl();
     }
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstGenreInDB() {
+    public void findByIdTest_shouldReturnTheFirstGenreInDB() throws RepositoryException {
         //given
         Genre expected = findGenreForFindById();
 
@@ -28,7 +29,7 @@ public class GenreRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllGenres() {
+    void findAllTest_shouldReturnAllGenresList() throws RepositoryException {
         //given
         List<Genre> expected = findGenresForFindAll();
 
@@ -40,7 +41,7 @@ public class GenreRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedGenre() {
+    void addTest_shouldReturnAddedGenre() throws RepositoryException {
         //given
         Genre expected = Genre.builder().id(8L).genreName("tale").build();
         Genre actual = Genre.builder().genreName("tale").build();
@@ -76,5 +77,6 @@ public class GenreRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNull(genreRepository.findById(genreId));
     }
 }

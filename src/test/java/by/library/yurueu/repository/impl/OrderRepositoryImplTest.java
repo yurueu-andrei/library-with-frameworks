@@ -4,6 +4,7 @@ import by.library.yurueu.entity.Order;
 import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BaseRepositoryTest;
+import by.library.yurueu.repository.OrderRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,14 +12,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class OrderRepositoryImplTest extends BaseRepositoryTest {
-    private final OrderRepositoryImpl orderRepository;
+    private final OrderRepository orderRepository;
 
     public OrderRepositoryImplTest() {
         orderRepository = new OrderRepositoryImpl();
     }
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstOrderInDB() {
+    public void findByIdTest_shouldReturnTheFirstOrderInDB() throws RepositoryException {
         //given
         Order expected = findOrderForFindById();
 
@@ -30,7 +31,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllOrders() {
+    void findAllTest_shouldReturnAllOrdersList() throws RepositoryException {
         //given
         List<Order> expected = findOrdersForFindAll();
 
@@ -42,7 +43,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedOrder() {
+    void addTest_shouldReturnAddedOrder() throws RepositoryException {
         //given
         Order expected = Order.builder().id(6L).orderStatus("NEW").startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).user(User.builder().id(1L).build()).build();
         Order actual = Order.builder().orderStatus("NEW").startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).user(User.builder().id(1L).build()).build();
@@ -78,5 +79,6 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNull(orderRepository.findById(orderId));
     }
 }

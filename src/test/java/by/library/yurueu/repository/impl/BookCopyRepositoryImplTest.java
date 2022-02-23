@@ -4,6 +4,7 @@ import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BaseRepositoryTest;
+import by.library.yurueu.repository.BookCopyRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,14 +12,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class BookCopyRepositoryImplTest extends BaseRepositoryTest {
-    private final BookCopyRepositoryImpl bookCopyRepository;
+    private final BookCopyRepository bookCopyRepository;
 
     public BookCopyRepositoryImplTest() {
         bookCopyRepository = new BookCopyRepositoryImpl();
     }
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstBookCopyInDB() {
+    public void findByIdTest_shouldReturnTheFirstBookCopyInDB() throws RepositoryException {
         //given
         BookCopy expected = findBookCopyForFindById();
 
@@ -30,7 +31,7 @@ public class BookCopyRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllBookCopy() {
+    void findAllTest_shouldReturnAllBookCopiesList() throws RepositoryException {
         //given
         List<BookCopy> expected = findBookCopiesForFindAll();
 
@@ -42,7 +43,7 @@ public class BookCopyRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedBookCopy() {
+    void addTest_shouldReturnAddedBookCopy() throws RepositoryException {
         //given
         BookCopy expected = BookCopy.builder().id(6L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).price(70).pricePerDay(13).book(Book.builder().id(1L).build()).build();
         BookCopy actual = BookCopy.builder().status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).price(70).pricePerDay(13).book(Book.builder().id(1L).build()).build();
@@ -78,5 +79,6 @@ public class BookCopyRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNull(bookCopyRepository.findById(bookCopyId));
     }
 }
