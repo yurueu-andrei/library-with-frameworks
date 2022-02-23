@@ -43,7 +43,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
                 return resultSet.next() ? construct(resultSet) : null;
             }
         } catch (Exception ex) {
-            throw new RepositoryException(" User was not found[" + ex.getMessage() + "]");
+            throw new RepositoryException("User was not found[" + ex.getMessage() + "]");
         }
     }
 
