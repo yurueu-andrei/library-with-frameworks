@@ -12,11 +12,11 @@ class GenreRepositoryImplTest extends BaseRepositoryTest {
     private final GenreRepositoryImpl genreRepository;
 
     public GenreRepositoryImplTest() {
-        genreRepository = new GenreRepositoryImpl(getDataSource());
+        genreRepository = new GenreRepositoryImpl();
     }
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstGenreInDB() throws RepositoryException {
+    public void findByIdTest_shouldReturnTheFirstGenreInDB() {
         //given
         Genre expected = findGenreForFindById();
 
@@ -28,7 +28,7 @@ class GenreRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllGenres() throws RepositoryException {
+    void findAllTest_shouldReturnListOfAllGenres() {
         //given
         List<Genre> expected = findGenresForFindAll();
 
@@ -40,7 +40,7 @@ class GenreRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedGenre() throws RepositoryException {
+    void addTest_shouldReturnAddedGenre() {
         //given
         Genre expected = Genre.builder().id(8L).genreName("tale").build();
         Genre actual = Genre.builder().genreName("tale").build();
