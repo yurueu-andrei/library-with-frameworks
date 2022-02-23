@@ -2,102 +2,65 @@ package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
-import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BookRepository;
-import by.library.yurueu.util.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
-import java.util.List;
 import java.util.Set;
 
-public class BookRepositoryImpl implements BookRepository {
-    private static final String ID_COLUMN = "id";
+public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements BookRepository {
     private static final String TITLE_COLUMN = "title";
     private static final String PAGES_COLUMN = "pages";
-    private static final String IMAGE_PATH_COLUMN = "image_path";
+    private static final String IMAGE_PATH_COLUMN = "imagePath";
+    private static final String BOOK_ID_COLUMN = "bookId";
+    private static final String BOOK_COPY_ID_COLUMN = "bookCopyId";
 
     private static final String SELECT_ALL_QUERY = "from Book";
     private static final String UPDATE_QUERY =
-            "UPDATE Book SET title=:title, pages=:pages, image_path=:image_path WHERE id=:id";
+            "UPDATE Book SET title=:title, pages=:pages, imagePath=:imagePath WHERE id=:id";
 
-    private static final String DELETE_BOOK_COPIES_QUERY = "DELETE BookCopy WHERE book_id=:book_id";
-    private static final String DELETE_BOOK_DAMAGE_QUERY = "DELETE BookDamage WHERE book_copy_id=:book_copy_id";
+    private static final String DELETE_BOOK_COPIES_QUERY = "DELETE BookCopy bc WHERE bc.book.id=:bookId";
+    private static final String DELETE_BOOK_DAMAGE_QUERY = "DELETE BookDamage bd WHERE bd.bookCopy.id=:bookCopyId";
 
-    @Override
-    public Book findById(Long id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(Book.class, id);
-        }
+    public BookRepositoryImpl() {
+        super(Book.class);
     }
 
     @Override
-    public List<Book> findAll() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery(SELECT_ALL_QUERY, Book.class).list();
-        }
+    protected String getSelectAllQuery() {
+        return SELECT_ALL_QUERY;
     }
 
     @Override
-    public Book add(Book book) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.save(book);
-            return book;
-        }
+    protected String getUpdateQuery() {
+        return UPDATE_QUERY;
     }
 
     @Override
-    public boolean update(Book book) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.getTransaction().begin();
-            try {
-                session.createQuery(UPDATE_QUERY)
-                        .setParameter(TITLE_COLUMN, book.getTitle())
-                        .setParameter(PAGES_COLUMN, book.getPagesNumber())
-                        .setParameter(IMAGE_PATH_COLUMN, book.getImagePath())
-                        .setParameter(ID_COLUMN, book.getId())
-                        .executeUpdate();
-                session.getTransaction().commit();
-                return true;
-            } catch (Exception ex) {
-                session.getTransaction().rollback();
-                throw new RepositoryException(getClass().getSimpleName() + " was not updated[" + ex.getMessage() + "]");
-            }
-        }
+    protected void constructQuery(Query query, Book book){
+        query.setParameter(TITLE_COLUMN, book.getTitle())
+                .setParameter(PAGES_COLUMN, book.getPagesNumber())
+                .setParameter(IMAGE_PATH_COLUMN, book.getImagePath())
+                .setParameter(ID_COLUMN, book.getId());
     }
 
     @Override
-    public boolean delete(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.getTransaction().begin();
-            try {
-                Book book = session.get(Book.class, id);
-                deleteLinks(session, book);
-                session.delete(book);
-                session.getTransaction().commit();
-                return true;
-            } catch (Exception ex) {
-                session.getTransaction().rollback();
-                throw new RepositoryException(getClass().getSimpleName() + " was not deleted[" + ex.getMessage() + "]");
-            }
-        }
-    }
-
-    private void deleteLinks(Session session, Book book) {
+    protected void deleteLinks(Session session, Book book) {
         deleteBookCopyDamage(session, book.getBookCopies());
         deleteBookCopies(session, book);
     }
 
     private void deleteBookCopyDamage(Session session, Set<BookCopy> bookCopies) {
-        for (BookCopy bookCopy : bookCopies) {
-            session.createQuery(DELETE_BOOK_DAMAGE_QUERY)
-                    .setParameter("book_copy_id", bookCopy.getId())
-                    .executeUpdate();
-        }
+        bookCopies.forEach(bookCopy ->
+                session.createQuery(DELETE_BOOK_DAMAGE_QUERY)
+                        .setParameter(BOOK_COPY_ID_COLUMN, bookCopy.getId())
+                        .executeUpdate()
+        );
     }
 
     private void deleteBookCopies(Session session, Book book) {
         session.createQuery(DELETE_BOOK_COPIES_QUERY)
-                .setParameter("book_id", book.getId())
+                .setParameter(BOOK_ID_COLUMN, book.getId())
                 .executeUpdate();
     }
 }
