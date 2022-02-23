@@ -2,11 +2,8 @@ package by.library.yurueu.repository;
 
 import by.library.yurueu.entity.*;
 import by.library.yurueu.service.FlywayService;
-import org.h2.jdbcx.JdbcConnectionPool;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-
-import javax.sql.DataSource;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,7 +12,6 @@ import java.util.List;
 import static by.library.yurueu.property.Property.*;
 
 public abstract class BaseRepositoryTest {
-    private final DataSource dataSource;
     private final FlywayService flywayService;
 
     private List<User> users;
@@ -28,7 +24,6 @@ public abstract class BaseRepositoryTest {
     private List<Author> authors;
 
     public BaseRepositoryTest() {
-        dataSource = JdbcConnectionPool.create(H2_URL, H2_USER, H2_PASSWORD);
         flywayService = new FlywayService(H2_URL, H2_USER, H2_PASSWORD, MIGRATION_LOCATION);
         fillUsers();
         fillRoles();
@@ -38,10 +33,6 @@ public abstract class BaseRepositoryTest {
         fillBookDamage();
         fillBookCopies();
         fillAuthors();
-    }
-
-    public DataSource getDataSource() {
-        return dataSource;
     }
 
     @BeforeEach
@@ -89,11 +80,11 @@ public abstract class BaseRepositoryTest {
 
     private void fillOrders() {
         orders = new ArrayList<>() {{
-            add(Order.builder().id(1L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).userId(1L).build());
-            add(Order.builder().id(2L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(21).userId(1L).build());
-            add(Order.builder().id(3L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(253).userId(1L).build());
-            add(Order.builder().id(4L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(273).userId(3L).build());
-            add(Order.builder().id(5L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(238).userId(4L).build());
+            add(Order.builder().id(1L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).user(User.builder().id(1L).build()).build());
+            add(Order.builder().id(2L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(21).user(User.builder().id(1L).build()).build());
+            add(Order.builder().id(3L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(253).user(User.builder().id(1L).build()).build());
+            add(Order.builder().id(4L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(273).user(User.builder().id(3L).build()).build());
+            add(Order.builder().id(5L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(238).user(User.builder().id(4L).build()).build());
         }};
     }
 
@@ -145,10 +136,10 @@ public abstract class BaseRepositoryTest {
 
     private void fillBookDamage() {
         bookDamage = new ArrayList<>() {{
-            add(BookDamage.builder().id(1L).imagePath("image path").damageDescription("damage1").userId(1L).orderId(1L).bookCopyId(3L).build());
-            add(BookDamage.builder().id(2L).imagePath("image path").damageDescription("damage2").userId(1L).orderId(1L).bookCopyId(2L).build());
-            add(BookDamage.builder().id(3L).imagePath("image path").damageDescription("damage3").userId(3L).orderId(4L).bookCopyId(1L).build());
-            add(BookDamage.builder().id(4L).imagePath("image path").damageDescription("damage4").userId(4L).orderId(5L).bookCopyId(5L).build());
+            add(BookDamage.builder().id(1L).imagePath("image path").damageDescription("damage1").build());
+            add(BookDamage.builder().id(2L).imagePath("image path").damageDescription("damage2").build());
+            add(BookDamage.builder().id(3L).imagePath("image path").damageDescription("damage3").build());
+            add(BookDamage.builder().id(4L).imagePath("image path").damageDescription("damage4").build());
         }};
     }
 
@@ -162,11 +153,11 @@ public abstract class BaseRepositoryTest {
 
     private void fillBookCopies() {
         bookCopies = new ArrayList<>() {{
-            add(BookCopy.builder().id(1L).status("AVAILABLE").registrationDate(LocalDate.of(2019, 3, 1)).price(1365).pricePerDay(150).bookId(1L).build());
-            add(BookCopy.builder().id(2L).status("AVAILABLE").registrationDate(LocalDate.of(2020, 6, 1)).price(1638).pricePerDay(210).bookId(2L).build());
-            add(BookCopy.builder().id(3L).status("AVAILABLE").registrationDate(LocalDate.of(2021, 8, 4)).price(2496).pricePerDay(225).bookId(2L).build());
-            add(BookCopy.builder().id(4L).status("AVAILABLE").registrationDate(LocalDate.of(2017, 10, 10)).price(937).pricePerDay(128).bookId(5L).build());
-            add(BookCopy.builder().id(5L).status("AVAILABLE").registrationDate(LocalDate.of(2020, 6, 2)).price(1007).pricePerDay(311).bookId(3L).build());
+            add(BookCopy.builder().id(1L).status("AVAILABLE").registrationDate(LocalDate.of(2019, 3, 1)).price(1365).pricePerDay(150).build());
+            add(BookCopy.builder().id(2L).status("AVAILABLE").registrationDate(LocalDate.of(2020, 6, 1)).price(1638).pricePerDay(210).build());
+            add(BookCopy.builder().id(3L).status("AVAILABLE").registrationDate(LocalDate.of(2021, 8, 4)).price(2496).pricePerDay(225).build());
+            add(BookCopy.builder().id(4L).status("AVAILABLE").registrationDate(LocalDate.of(2017, 10, 10)).price(937).pricePerDay(128).build());
+            add(BookCopy.builder().id(5L).status("AVAILABLE").registrationDate(LocalDate.of(2020, 6, 2)).price(1007).pricePerDay(311).build());
         }};
     }
 

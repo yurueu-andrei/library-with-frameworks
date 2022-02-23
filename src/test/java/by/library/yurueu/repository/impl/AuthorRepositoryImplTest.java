@@ -13,11 +13,11 @@ class AuthorRepositoryImplTest extends BaseRepositoryTest {
     private final AuthorRepositoryImpl authorRepository;
 
     public AuthorRepositoryImplTest() {
-        authorRepository = new AuthorRepositoryImpl(getDataSource());
+        authorRepository = new AuthorRepositoryImpl();
     }
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstAuthorInDB() throws RepositoryException {
+    public void findByIdTest_shouldReturnTheFirstAuthorInDB() {
         //given
         Author expected = findAuthorForFindById();
 
@@ -29,7 +29,7 @@ class AuthorRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllAuthor() throws RepositoryException {
+    void findAllTest_shouldReturnListOfAllAuthor() {
         //given
         List<Author> expected = findAuthorsForFindAll();
 
@@ -41,7 +41,7 @@ class AuthorRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedAuthor() throws RepositoryException {
+    void addTest_shouldReturnAddedAuthor() {
         //given
         Author expected = Author.builder().id(6L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
         Author actual = Author.builder().firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
