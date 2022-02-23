@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class RoleRepositoryImplTest extends BaseRepositoryTest {
+public class RoleRepositoryImplTest extends BaseRepositoryTest {
     private final RoleRepositoryImpl roleRepository;
 
     public RoleRepositoryImplTest() {

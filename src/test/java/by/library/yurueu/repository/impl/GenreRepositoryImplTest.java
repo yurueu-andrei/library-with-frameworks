@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class GenreRepositoryImplTest extends BaseRepositoryTest {
+public class GenreRepositoryImplTest extends BaseRepositoryTest {
     private final GenreRepositoryImpl genreRepository;
 
     public GenreRepositoryImplTest() {

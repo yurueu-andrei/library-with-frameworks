@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class BookDamageRepositoryImplTest extends BaseRepositoryTest {
+public class BookDamageRepositoryImplTest extends BaseRepositoryTest {
     private final BookDamageRepositoryImpl bookDamageRepository;
 
     public BookDamageRepositoryImplTest() {

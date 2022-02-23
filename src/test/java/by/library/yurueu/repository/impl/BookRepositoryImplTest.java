@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class BookRepositoryImplTest extends BaseRepositoryTest {
+public class BookRepositoryImplTest extends BaseRepositoryTest {
     private final BookRepositoryImpl bookRepository;
 
     public BookRepositoryImplTest() {
