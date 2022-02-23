@@ -1,6 +1,9 @@
 package by.library.yurueu.repository.impl;
 
+import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.entity.BookDamage;
+import by.library.yurueu.entity.Order;
+import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
@@ -12,11 +15,11 @@ class BookDamageRepositoryImplTest extends BaseRepositoryTest {
     private final BookDamageRepositoryImpl bookDamageRepository;
 
     public BookDamageRepositoryImplTest() {
-        bookDamageRepository = new BookDamageRepositoryImpl(getDataSource());
+        bookDamageRepository = new BookDamageRepositoryImpl();
     }
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstBookDamageInDB() throws RepositoryException {
+    public void findByIdTest_shouldReturnTheFirstBookDamageInDB() {
         //given
         BookDamage expected = findBookDamageForFindById();
 
@@ -28,7 +31,7 @@ class BookDamageRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllBookDamage() throws RepositoryException {
+    void findAllTest_shouldReturnListOfAllBookDamage() {
         //given
         List<BookDamage> expected = findBookDamageForFindAll();
 
@@ -40,10 +43,10 @@ class BookDamageRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedBookDamage() throws RepositoryException {
+    void addTest_shouldReturnAddedBookDamage() {
         //given
-        BookDamage expected = BookDamage.builder().id(5L).imagePath("image path").damageDescription("damage5").userId(1L).orderId(2L).bookCopyId(3L).build();
-        BookDamage actual = BookDamage.builder().imagePath("image path").damageDescription("damage5").userId(1L).orderId(2L).bookCopyId(3L).build();
+        BookDamage expected = BookDamage.builder().id(5L).imagePath("image path").damageDescription("damage5").bookCopy(BookCopy.builder().id(3L).build()).order(Order.builder().id(3L).build()).user(User.builder().id(3L).build()).build();
+        BookDamage actual = BookDamage.builder().imagePath("image path").damageDescription("damage5").bookCopy(BookCopy.builder().id(3L).build()).order(Order.builder().id(3L).build()).user(User.builder().id(3L).build()).build();
 
         //when
         actual = bookDamageRepository.add(actual);
@@ -56,7 +59,7 @@ class BookDamageRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void updateTest_shouldUpdateBookDamage() throws RepositoryException {
         //given
-        BookDamage bookDamage = BookDamage.builder().id(2L).imagePath("image path").damageDescription("damage3").userId(1L).orderId(2L).bookCopyId(3L).build();
+        BookDamage bookDamage = BookDamage.builder().id(2L).imagePath("image path").damageDescription("damage3").build();
 
         // when
         boolean isUpdated = bookDamageRepository.update(bookDamage);

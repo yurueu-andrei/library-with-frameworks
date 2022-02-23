@@ -12,11 +12,11 @@ class BookRepositoryImplTest extends BaseRepositoryTest {
     private final BookRepositoryImpl bookRepository;
 
     public BookRepositoryImplTest() {
-        bookRepository = new BookRepositoryImpl(getDataSource());
+        bookRepository = new BookRepositoryImpl();
     }
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstBookInDB() throws RepositoryException {
+    public void findByIdTest_shouldReturnTheFirstBookInDB() {
         //given
         Book expected = findBookForFindById();
 
@@ -28,7 +28,7 @@ class BookRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllBooks() throws RepositoryException {
+    void findAllTest_shouldReturnListOfAllBooks() {
         //given
         List<Book> expected = findBooksForFindAll();
 
@@ -40,7 +40,7 @@ class BookRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedBook() throws RepositoryException {
+    void addTest_shouldReturnAddedBook() {
         //given
         Book expected = Book.builder().id(6L).title("asd").pagesNumber(12).imagePath("image path").build();
         Book actual = Book.builder().title("asd").pagesNumber(12).imagePath("image path").build();

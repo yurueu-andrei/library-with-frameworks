@@ -12,11 +12,11 @@ class RoleRepositoryImplTest extends BaseRepositoryTest {
     private final RoleRepositoryImpl roleRepository;
 
     public RoleRepositoryImplTest() {
-        roleRepository = new RoleRepositoryImpl(getDataSource());
+        roleRepository = new RoleRepositoryImpl();
     }
 
     @Test
-    void findByIdTest_shouldReturnTheFirstRoleInDB() throws RepositoryException {
+    void findByIdTest_shouldReturnTheFirstRoleInDB() {
         //given
         Role expected = findRoleForFindById();
 
@@ -28,7 +28,7 @@ class RoleRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllRoles() throws RepositoryException {
+    void findAllTest_shouldReturnListOfAllRoles() {
         //given
         List<Role> expected = findRolesForFindAll();
 
@@ -40,7 +40,7 @@ class RoleRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedRole() throws RepositoryException {
+    void addTest_shouldReturnAddedRole() {
         //given
         Role expected = Role.builder().id(3L).roleName("superUser").build();
         Role actual = Role.builder().roleName("superUser").build();

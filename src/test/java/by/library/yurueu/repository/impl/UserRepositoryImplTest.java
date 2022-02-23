@@ -13,11 +13,11 @@ class UserRepositoryImplTest extends BaseRepositoryTest {
     private final UserRepositoryImpl userRepository;
 
     public UserRepositoryImplTest() {
-        userRepository = new UserRepositoryImpl(getDataSource());
+        userRepository = new UserRepositoryImpl();
     }
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstUserInDB() throws RepositoryException {
+    public void findByIdTest_shouldReturnTheFirstUserInDB() {
         //given
         User expected = findUserForFindById();
 
@@ -29,7 +29,7 @@ class UserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllUsers() throws RepositoryException {
+    void findAllTest_shouldReturnListOfAllUsers() {
         //given
         List<User> expected = findUsersForFindAll();
 
@@ -41,7 +41,7 @@ class UserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedUser() throws RepositoryException {
+    void addTest_shouldReturnAddedUser() {
         //given
         User expected = User.builder().id(6L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
         User actual = User.builder().firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
