@@ -1,73 +1,86 @@
 package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.Role;
+import by.library.yurueu.entity.User;
+import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.RoleRepository;
+import by.library.yurueu.util.HibernateUtil;
+import org.hibernate.Session;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
+import java.util.Set;
 
-public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements RoleRepository {
+public class RoleRepositoryImpl implements RoleRepository {
     private static final String ID_COLUMN = "id";
     private static final String ROLE_NAME_COLUMN = "role_name";
 
-    private static final String SELECT_BY_ID_QUERY = "SELECT * FROM roles WHERE id=?";
-    private static final String SELECT_ALL_QUERY = "SELECT * FROM roles";
-    private static final String INSERT_QUERY = "INSERT INTO roles (role_name) VALUES (?)";
-    private static final String UPDATE_QUERY = "UPDATE roles SET role_name=? WHERE id=?";
-    private static final String DELETE_QUERY = "DELETE FROM roles WHERE id=?";
+    private static final String SELECT_ALL_QUERY = "from Role";
+    private static final String UPDATE_QUERY = "UPDATE Role SET role_name=:role_name WHERE id=:id";
 
-    private static final String DELETE_ROLE_LINKS_QUERY = "DELETE FROM user_role_links WHERE role_id=?";
-
-    public RoleRepositoryImpl(DataSource dataSource) {
-        super(dataSource);
+    @Override
+    public Role findById(Long id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.get(Role.class, id);
+        }
     }
 
     @Override
-    protected String getSelectByIdQuery() {
-        return SELECT_BY_ID_QUERY;
+    public List<Role> findAll() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(SELECT_ALL_QUERY, Role.class).list();
+        }
     }
 
     @Override
-    protected String getSelectAllQuery() {
-        return SELECT_ALL_QUERY;
+    public Role add(Role role) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.save(role);
+            return role;
+        }
     }
 
     @Override
-    protected String getInsertQuery() {
-        return INSERT_QUERY;
+    public boolean update(Role role) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.getTransaction().begin();
+            try {
+                session.createQuery(UPDATE_QUERY)
+                        .setParameter(ROLE_NAME_COLUMN, role.getRoleName())
+                        .setParameter(ID_COLUMN, role.getId())
+                        .executeUpdate();
+                session.getTransaction().commit();
+                return true;
+            } catch (Exception ex) {
+                session.getTransaction().rollback();
+                throw new RepositoryException(getClass().getSimpleName() + " was not updated[" + ex.getMessage() + "]");
+            }
+        }
     }
 
     @Override
-    protected String getUpdateQuery() {
-        return UPDATE_QUERY;
+    public boolean delete(Long id) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.getTransaction().begin();
+            try {
+                Role role = session.get(Role.class, id);
+                deleteLinks(role);
+                session.delete(role);
+                session.getTransaction().commit();
+                return true;
+            } catch (Exception ex) {
+                session.getTransaction().rollback();
+                throw new RepositoryException(getClass().getSimpleName() + " was not deleted[" + ex.getMessage() + "]");
+            }
+        }
     }
 
-    @Override
-    protected String getDeleteQuery() {
-        return DELETE_QUERY;
+    private void deleteLinks(Role role) {
+        deleteUserRoleLinks(role, role.getUsers());
     }
 
-    @Override
-    protected Role construct(ResultSet resultSet) throws SQLException {
-        return Role.builder()
-                .id(resultSet.getLong(ID_COLUMN))
-                .roleName(resultSet.getString(ROLE_NAME_COLUMN))
-                .build();
-    }
-
-    @Override
-    protected void settingPreparedStatement(PreparedStatement preparedStatement, Role role) throws SQLException {
-        preparedStatement.setString(1, role.getRoleName());
-    }
-
-    @Override
-    protected void deleteLinks(Connection connection, Long id) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ROLE_LINKS_QUERY)) {
-            preparedStatement.setLong(1, id);
-            preparedStatement.executeUpdate();
+    private void deleteUserRoleLinks(Role role, Set<User> users) {
+        for (User user : users) {
+            user.getRoles().remove(role);
         }
     }
 }

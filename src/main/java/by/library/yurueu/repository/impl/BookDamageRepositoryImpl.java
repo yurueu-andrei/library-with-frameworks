@@ -1,76 +1,76 @@
 package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.BookDamage;
+import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BookDamageRepository;
+import by.library.yurueu.util.HibernateUtil;
+import org.hibernate.Session;
 
-import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
 
-public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage> implements BookDamageRepository {
+public class BookDamageRepositoryImpl implements BookDamageRepository {
     private static final String ID_COLUMN = "id";
     private static final String IMAGE_PATH_COLUMN = "image_path";
     private static final String DAMAGE_DESCRIPTION_COLUMN = "damage_description";
-    private static final String USER_ID_COLUMN = "user_id";
-    private static final String ORDER_ID_COLUMN = "order_id";
-    private static final String BOOK_COPY_ID_COLUMN = "book_copy_id";
 
-    private static final String SELECT_BY_ID_QUERY = "SELECT * FROM book_damage WHERE id=?";
-    private static final String SELECT_ALL_QUERY = "SELECT * FROM book_damage";
-    private static final String INSERT_QUERY =
-            "INSERT INTO book_damage (image_path, damage_description, user_id, order_id, book_copy_id) VALUES (?,?,?,?,?)";
+    private static final String SELECT_ALL_QUERY = "from BookDamage";
     private static final String UPDATE_QUERY =
-            "UPDATE book_damage SET image_path=?, damage_description=?, user_id=?, order_id=?, book_copy_id=? WHERE id=?";
-    private static final String DELETE_QUERY = "DELETE FROM book_damage WHERE id=?";
+            "UPDATE BookDamage SET image_path=:image_path, damage_description=:damage_description WHERE id=:id";
 
-    public BookDamageRepositoryImpl(DataSource dataSource) {
-        super(dataSource);
+    @Override
+    public BookDamage findById(Long id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.get(BookDamage.class, id);
+        }
     }
 
     @Override
-    protected String getSelectByIdQuery() {
-        return SELECT_BY_ID_QUERY;
+    public List<BookDamage> findAll() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(SELECT_ALL_QUERY, BookDamage.class).list();
+        }
     }
 
     @Override
-    protected String getSelectAllQuery() {
-        return SELECT_ALL_QUERY;
+    public BookDamage add(BookDamage bookDamage) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.save(bookDamage);
+            return bookDamage;
+        }
     }
 
     @Override
-    protected String getInsertQuery() {
-        return INSERT_QUERY;
+    public boolean update(BookDamage bookDamage) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.getTransaction().begin();
+            try {
+                session.createQuery(UPDATE_QUERY)
+                        .setParameter(IMAGE_PATH_COLUMN, bookDamage.getImagePath())
+                        .setParameter(DAMAGE_DESCRIPTION_COLUMN, bookDamage.getDamageDescription())
+                        .setParameter(ID_COLUMN, bookDamage.getId())
+                        .executeUpdate();
+                session.getTransaction().commit();
+                return true;
+            } catch (Exception ex) {
+                session.getTransaction().rollback();
+                throw new RepositoryException(getClass().getSimpleName() + " was not updated[" + ex.getMessage() + "]");
+            }
+        }
     }
 
     @Override
-    protected String getUpdateQuery() {
-        return UPDATE_QUERY;
-    }
-
-    @Override
-    protected String getDeleteQuery() {
-        return DELETE_QUERY;
-    }
-
-    @Override
-    protected BookDamage construct(ResultSet resultSet) throws SQLException {
-        return BookDamage.builder()
-                .id(resultSet.getLong(ID_COLUMN))
-                .imagePath(resultSet.getString(IMAGE_PATH_COLUMN))
-                .damageDescription(resultSet.getString(DAMAGE_DESCRIPTION_COLUMN))
-                .userId(resultSet.getLong(USER_ID_COLUMN))
-                .orderId(resultSet.getLong(ORDER_ID_COLUMN))
-                .bookCopyId(resultSet.getLong(BOOK_COPY_ID_COLUMN))
-                .build();
-    }
-
-    @Override
-    protected void settingPreparedStatement(PreparedStatement preparedStatement, BookDamage bookDamage) throws SQLException {
-        preparedStatement.setString(1, bookDamage.getImagePath());
-        preparedStatement.setString(2, bookDamage.getDamageDescription());
-        preparedStatement.setLong(3, bookDamage.getUserId());
-        preparedStatement.setLong(4, bookDamage.getOrderId());
-        preparedStatement.setLong(5, bookDamage.getBookCopyId());
+    public boolean delete(Long id) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.getTransaction().begin();
+            try {
+                BookDamage bookDamage = session.get(BookDamage.class, id);
+                session.delete(bookDamage);
+                session.getTransaction().commit();
+                return true;
+            } catch (Exception ex) {
+                session.getTransaction().rollback();
+                throw new RepositoryException(getClass().getSimpleName() + " was not deleted[" + ex.getMessage() + "]");
+            }
+        }
     }
 }

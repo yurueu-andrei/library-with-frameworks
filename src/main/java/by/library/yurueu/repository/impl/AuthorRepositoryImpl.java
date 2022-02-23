@@ -1,88 +1,93 @@
 package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.Author;
+import by.library.yurueu.entity.Book;
+import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.AuthorRepository;
+import by.library.yurueu.util.HibernateUtil;
+import org.hibernate.Session;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Date;
+import java.util.List;
+import java.util.Set;
 
-public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> implements AuthorRepository {
-    private static final String FIRST_NAME_COLUMN = "first_name";
-    private static final String LAST_NAME_COLUMN = "last_name";
-    private static final String BIRTH_DATE_COLUMN = "birth_date";
-    private static final String IMAGE_PATH_COLUMN = "image_path";
+public class AuthorRepositoryImpl implements AuthorRepository {
+    private static final String ID_COLUMN = "id";
+    private static final String FIRST_NAME_COLUMN = "firstName";
+    private static final String LAST_NAME_COLUMN = "lastName";
+    private static final String BIRTH_DATE_COLUMN = "birthDate";
+    private static final String IMAGE_PATH_COLUMN = "imagePath";
 
-    private static final String SELECT_BY_ID_QUERY = "SELECT * FROM authors WHERE id=?";
-    private static final String SELECT_ALL_QUERY = "SELECT * FROM authors";
-    private static final String INSERT_QUERY =
-            "INSERT INTO authors (first_name, last_name, birth_date, image_path) VALUES (?,?,?,?)";
+    private static final String SELECT_ALL_QUERY = "from Author";
     private static final String UPDATE_QUERY =
-            "UPDATE authors SET first_name = ?, last_name = ?, birth_date = ?, image_path = ? WHERE id = ?";
-    private static final String DELETE_QUERY = "DELETE FROM authors WHERE id = ?";
+            "UPDATE Author SET firstName=:firstName, lastName=:lastName, birthDate=:birthDate, imagePath=:imagePath WHERE id=:id";
 
-    private static final String DELETE_BOOK_AUTHOR_LINKS_QUERY = "DELETE FROM book_author_links WHERE author_id=?";
-
-    public AuthorRepositoryImpl(DataSource dataSource) {
-        super(dataSource);
+    @Override
+    public Author findById(Long id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.get(Author.class, id);
+        }
     }
 
     @Override
-    protected String getSelectByIdQuery() {
-        return SELECT_BY_ID_QUERY;
+    public List<Author> findAll() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(SELECT_ALL_QUERY, Author.class).list();
+        }
     }
 
     @Override
-    protected String getSelectAllQuery() {
-        return SELECT_ALL_QUERY;
+    public Author add(Author author) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.save(author);
+            return author;
+        }
     }
 
     @Override
-    protected String getInsertQuery() {
-        return INSERT_QUERY;
+    public boolean update(Author author) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.getTransaction().begin();
+            try {
+                session.createQuery(UPDATE_QUERY)
+                        .setParameter(FIRST_NAME_COLUMN, author.getFirstName())
+                        .setParameter(LAST_NAME_COLUMN, author.getLastName())
+                        .setParameter(BIRTH_DATE_COLUMN, author.getBirthDate())
+                        .setParameter(IMAGE_PATH_COLUMN, author.getImagePath())
+                        .setParameter(ID_COLUMN, author.getId())
+                        .executeUpdate();
+                session.getTransaction().commit();
+                return true;
+            } catch (Exception ex) {
+                session.getTransaction().rollback();
+                throw new RepositoryException(getClass().getSimpleName() + " was not updated[" + ex.getMessage() + "]");
+            }
+        }
     }
 
     @Override
-    protected String getUpdateQuery() {
-        return UPDATE_QUERY;
+    public boolean delete(Long id) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.getTransaction().begin();
+            try {
+                Author author = session.get(Author.class, id);
+                deleteLinks(author);
+                session.delete(author);
+                session.getTransaction().commit();
+                return true;
+            } catch (Exception ex) {
+                session.getTransaction().rollback();
+                throw new RepositoryException(getClass().getSimpleName() + " was not deleted[" + ex.getMessage() + "]");
+            }
+        }
     }
 
-    @Override
-    protected String getDeleteQuery() {
-        return DELETE_QUERY;
+    private void deleteLinks(Author author) {
+        deleteBookGenreLinks(author, author.getBooks());
     }
 
-    @Override
-    protected Author construct(ResultSet resultSet) throws SQLException {
-        return Author.builder()
-                .id(resultSet.getLong(ID_COLUMN))
-                .firstName(resultSet.getString(FIRST_NAME_COLUMN))
-                .lastName(resultSet.getString(LAST_NAME_COLUMN))
-                .birthDate(resultSet.getDate(BIRTH_DATE_COLUMN).toLocalDate())
-                .imagePath(resultSet.getString(IMAGE_PATH_COLUMN))
-                .build();
-    }
-
-    @Override
-    protected void settingPreparedStatement(PreparedStatement preparedStatement, Author author) throws SQLException {
-        preparedStatement.setString(1, author.getFirstName());
-        preparedStatement.setString(2, author.getLastName());
-        preparedStatement.setDate(3, Date.valueOf(author.getBirthDate()));
-        preparedStatement.setString(4, author.getImagePath());
-    }
-
-    @Override
-    protected void deleteLinks(Connection connection, Long authorId) throws SQLException {
-        deleteAuthorLinks(connection, authorId);
-    }
-
-    private void deleteAuthorLinks(Connection connection, Long id) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(AuthorRepositoryImpl.DELETE_BOOK_AUTHOR_LINKS_QUERY)) {
-            preparedStatement.setLong(1, id);
-            preparedStatement.executeUpdate();
+    private void deleteBookGenreLinks(Author author, Set<Book> books) {
+        for (Book book : books) {
+            book.getAuthors().remove(author);
         }
     }
 }
