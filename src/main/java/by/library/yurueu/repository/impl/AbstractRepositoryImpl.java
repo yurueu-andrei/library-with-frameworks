@@ -19,11 +19,9 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
 
     protected abstract void constructQuery(Query query, E element);
 
-    public E findById(Long id) throws RepositoryException {
+    public E findById(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(clazz, id);
-        } catch (Exception ex) {
-            throw new RepositoryException(clazz.getSimpleName() + " was not found[" + ex.getMessage() + "]");
         }
     }
 
