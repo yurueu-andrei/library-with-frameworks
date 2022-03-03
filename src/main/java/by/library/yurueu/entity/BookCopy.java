@@ -35,11 +35,11 @@ public class BookCopy extends BaseEntity {
     @Column(name = "registration_date")
     private LocalDate registrationDate;
 
-    @Column(name = "price")
-    private int price;
-
     @Column(name = "price_per_day")
     private int pricePerDay;
+
+    @Column(name = "image_path")
+    private String imagePath;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

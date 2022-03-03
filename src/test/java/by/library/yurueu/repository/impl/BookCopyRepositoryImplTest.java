@@ -45,8 +45,8 @@ public class BookCopyRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedBookCopy() throws RepositoryException {
         //given
-        BookCopy expected = BookCopy.builder().id(6L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).price(70).pricePerDay(13).book(Book.builder().id(1L).build()).build();
-        BookCopy actual = BookCopy.builder().status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).price(70).pricePerDay(13).book(Book.builder().id(1L).build()).build();
+        BookCopy expected = BookCopy.builder().id(6L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).book(Book.builder().id(1L).build()).build();
+        BookCopy actual = BookCopy.builder().status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).book(Book.builder().id(1L).build()).build();
 
         //when
         actual = bookCopyRepository.add(actual);
@@ -59,7 +59,7 @@ public class BookCopyRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void updateTest_shouldUpdateBookCopy() throws RepositoryException {
         //given
-        BookCopy bookCopy = BookCopy.builder().id(2L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).price(70).pricePerDay(13).build();
+        BookCopy bookCopy = BookCopy.builder().id(2L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).build();
 
         // when
         boolean isUpdated = bookCopyRepository.update(bookCopy);
