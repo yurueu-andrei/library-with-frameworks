@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BookDamageConverter {
-
     public static BookDamageSaveDto toSaveDTO(BookDamage bookDamage) {
         return BookDamageSaveDtoImpl.builder()
                 .id(bookDamage.getId())
