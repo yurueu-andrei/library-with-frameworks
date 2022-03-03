@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS authors
     last_name  VARCHAR(64)  NOT NULL,
     birth_date DATETIME     NOT NULL,
     image_path VARCHAR(512) NOT NULL,
-    PRIMARY KEY (id),
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS book_author_links
