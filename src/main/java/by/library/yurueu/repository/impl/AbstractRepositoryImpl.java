@@ -8,7 +8,6 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
