@@ -77,6 +77,6 @@ public class GenreRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNull(genreRepository.findById(genreId));
+        Assertions.assertThrows(RepositoryException.class, () -> genreRepository.findById(genreId));
     }
 }

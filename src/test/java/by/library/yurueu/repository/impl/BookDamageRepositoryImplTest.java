@@ -80,6 +80,6 @@ public class BookDamageRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNull(bookDamageRepository.findById(bookDamageId));
+        Assertions.assertThrows(RepositoryException.class, () -> bookDamageRepository.findById(bookDamageId));
     }
 }
