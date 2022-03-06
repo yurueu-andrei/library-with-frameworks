@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
@@ -19,17 +20,23 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
 
     protected abstract void constructQuery(Query query, E element);
 
-    public E findById(Long id) {
+    public E findById(Long id) throws RepositoryException {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(clazz, id);
+            E element = session.get(clazz, id);
+            if(element == null) {
+                throw new RepositoryException(String.format("%s was not found", clazz.getSimpleName()));
+            }
+            return element;
         }
     }
 
     public List<E> findAll() throws RepositoryException {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery(getSelectAllQuery(), clazz).list();
-        } catch (Exception ex) {
-            throw new RepositoryException(clazz.getSimpleName() + "s were not found[" + ex.getMessage() + "]");
+            List<E> elements = session.createQuery(getSelectAllQuery(), clazz).list();
+            if(elements.isEmpty()) {
+                throw new RepositoryException(String.format("%ss were not found", clazz.getSimpleName()));
+            }
+            return elements;
         }
     }
 
