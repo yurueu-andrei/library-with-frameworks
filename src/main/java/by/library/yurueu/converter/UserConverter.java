@@ -3,6 +3,7 @@ package by.library.yurueu.converter;
 import by.library.yurueu.dto.UserDto;
 import by.library.yurueu.dto.UserListDto;
 import by.library.yurueu.dto.UserSaveDto;
+import by.library.yurueu.dto.UserUpdateDto;
 import by.library.yurueu.dto.impl.UserDtoImpl;
 import by.library.yurueu.dto.impl.UserListDtoImpl;
 import by.library.yurueu.dto.impl.UserSaveDtoImpl;
@@ -14,7 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserConverter {
-    public static UserDto toDTO(User user) {
+    public static UserDto toDto(User user) {
         return UserDtoImpl.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
@@ -34,7 +35,7 @@ public class UserConverter {
                 .collect(Collectors.toSet());
     }
 
-    public static UserSaveDto toSaveDTO(User user) {
+    public static UserSaveDto toSaveDto(User user) {
         return UserSaveDtoImpl.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
@@ -47,7 +48,7 @@ public class UserConverter {
                 .build();
     }
 
-    public static User fromSaveDTO(UserSaveDto userSaveDto) {
+    public static User fromSaveDto(UserSaveDto userSaveDto) {
         return User.builder()
                 .id(userSaveDto.getId())
                 .firstName(userSaveDto.getFirstName())
@@ -56,21 +57,33 @@ public class UserConverter {
                 .email(userSaveDto.getEmail())
                 .address(userSaveDto.getAddress())
                 .birthDate(userSaveDto.getBirthDate())
-                .roles(constructBookCopies(userSaveDto.getRolesId()))
+                .roles(constructRoles(userSaveDto.getRolesId()))
                 .build();
     }
 
-    private static Set<Role> constructBookCopies(Set<Long> rolesId) {
+    private static Set<Role> constructRoles(Set<Long> rolesId) {
         return rolesId.stream()
                 .map(roleId -> Role.builder().id(roleId).build())
                 .collect(Collectors.toSet());
     }
 
-    public static UserListDto toListDTO(User user) {
+    public static UserListDto toListDto(User user) {
         return UserListDtoImpl.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .address(user.getAddress())
+                .build();
+    }
+
+    public static User fromUpdateDto(UserUpdateDto userUpdateDto) {
+        return User.builder()
+                .id(userUpdateDto.getId())
+                .firstName(userUpdateDto.getFirstName())
+                .lastName(userUpdateDto.getLastName())
+                .passportNumber(userUpdateDto.getPassportNumber())
+                .email(userUpdateDto.getEmail())
+                .address(userUpdateDto.getAddress())
+                .birthDate(userUpdateDto.getBirthDate())
                 .build();
     }
 }
