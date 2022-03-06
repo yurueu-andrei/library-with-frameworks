@@ -2,12 +2,12 @@ package by.library.yurueu.dto.impl;
 
 import by.library.yurueu.dto.BookCopyListDto;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-
-import java.time.LocalDate;
 
 @Getter
 @Builder
+@EqualsAndHashCode
 public class BookCopyListDtoImpl implements BookCopyListDto {
     private Long id;
     private String title;

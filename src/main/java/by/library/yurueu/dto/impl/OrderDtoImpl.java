@@ -4,6 +4,7 @@ import by.library.yurueu.dto.BookCopyListDto;
 import by.library.yurueu.dto.BookDamageListDto;
 import by.library.yurueu.dto.OrderDto;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 @Getter
 @Builder
+@EqualsAndHashCode
 public class OrderDtoImpl implements OrderDto {
     private Long id;
     private String orderStatus;

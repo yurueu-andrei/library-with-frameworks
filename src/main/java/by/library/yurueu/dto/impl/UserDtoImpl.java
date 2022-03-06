@@ -3,14 +3,15 @@ package by.library.yurueu.dto.impl;
 import by.library.yurueu.dto.OrderListDto;
 import by.library.yurueu.dto.UserDto;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
 @Builder
+@EqualsAndHashCode
 public class UserDtoImpl implements UserDto {
     private Long id;
     private String firstName;
