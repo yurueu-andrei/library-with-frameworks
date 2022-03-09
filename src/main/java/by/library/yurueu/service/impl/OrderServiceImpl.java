@@ -16,8 +16,6 @@ import by.library.yurueu.service.OrderService;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
@@ -42,12 +40,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Set<OrderListDto> findAll() throws ServiceException {
+    public List<OrderListDto> findAll() throws ServiceException {
         try {
             List<Order> orders = orderRepository.findAll();
-            return orders.stream()
-                    .map(OrderConverter::toListDTO)
-                    .collect(Collectors.toSet());
+            return OrderConverter.toListDTO(new HashSet<>(orders));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
         }

@@ -9,9 +9,8 @@ import by.library.yurueu.repository.GenreRepository;
 import by.library.yurueu.repository.impl.GenreRepositoryImpl;
 import by.library.yurueu.service.GenreService;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
@@ -31,12 +30,10 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public Set<GenreListDto> findAll() throws ServiceException {
+    public List<GenreListDto> findAll() throws ServiceException {
         try {
             List<Genre> genres = genreRepository.findAll();
-            return genres.stream()
-                    .map(GenreConverter::toListDTO)
-                    .collect(Collectors.toSet());
+            return GenreConverter.toListDTO(new HashSet<>(genres));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
         }

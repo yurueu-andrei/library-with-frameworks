@@ -6,11 +6,11 @@ import by.library.yurueu.dto.AuthorSaveDto;
 import by.library.yurueu.dto.AuthorUpdateDto;
 import by.library.yurueu.exception.ServiceException;
 
-import java.util.Set;
+import java.util.List;
 
 public interface AuthorService {
     AuthorDto findById(Long id) throws ServiceException;
-    Set<AuthorListDto> findAll() throws ServiceException;
+    List<AuthorListDto> findAll() throws ServiceException;
     AuthorSaveDto add(AuthorSaveDto authorSaveDto) throws ServiceException;
     boolean update(AuthorUpdateDto authorUpdateDto) throws ServiceException;
     boolean delete(Long id) throws ServiceException;

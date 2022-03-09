@@ -11,9 +11,8 @@ import by.library.yurueu.repository.AuthorRepository;
 import by.library.yurueu.repository.impl.AuthorRepositoryImpl;
 import by.library.yurueu.service.AuthorService;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
@@ -34,12 +33,10 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Set<AuthorListDto> findAll() throws ServiceException {
+    public List<AuthorListDto> findAll() throws ServiceException {
         try {
             List<Author> authors = authorRepository.findAll();
-            return authors.stream()
-                    .map(AuthorConverter::toListDTO)
-                    .collect(Collectors.toSet());
+            return AuthorConverter.toListDTO(new HashSet<>(authors));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
         }

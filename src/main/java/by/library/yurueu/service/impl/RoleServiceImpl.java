@@ -8,9 +8,8 @@ import by.library.yurueu.repository.RoleRepository;
 import by.library.yurueu.repository.impl.RoleRepositoryImpl;
 import by.library.yurueu.service.RoleService;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
@@ -20,12 +19,10 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Set<RoleListDto> findAll() throws ServiceException {
+    public List<RoleListDto> findAll() throws ServiceException {
         try {
             List<Role> roles = roleRepository.findAll();
-            return roles.stream()
-                    .map(RoleConverter::toListDTO)
-                    .collect(Collectors.toSet());
+            return RoleConverter.toListDTO(new HashSet<>(roles));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
         }

@@ -14,9 +14,8 @@ import by.library.yurueu.repository.impl.BookCopyRepositoryImpl;
 import by.library.yurueu.repository.impl.BookRepositoryImpl;
 import by.library.yurueu.service.BookCopyService;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class BookCopyServiceImpl implements BookCopyService {
     private final BookCopyRepository bookCopyRepository;
@@ -41,12 +40,10 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
-    public Set<BookCopyListDto> findAll() throws ServiceException {
+    public List<BookCopyListDto> findAll() throws ServiceException {
         try {
             List<BookCopy> bookCopies = bookCopyRepository.findAll();
-            return bookCopies.stream()
-                    .map(BookCopyConverter::toListDTO)
-                    .collect(Collectors.toSet());
+            return BookCopyConverter.toListDTO(new HashSet<>(bookCopies));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
         }

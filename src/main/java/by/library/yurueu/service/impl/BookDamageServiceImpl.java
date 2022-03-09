@@ -12,9 +12,8 @@ import by.library.yurueu.repository.BookDamageRepository;
 import by.library.yurueu.repository.impl.BookDamageRepositoryImpl;
 import by.library.yurueu.service.BookDamageService;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class BookDamageServiceImpl implements BookDamageService {
     private final BookDamageRepository bookDamageRepository;
@@ -24,12 +23,10 @@ public class BookDamageServiceImpl implements BookDamageService {
     }
 
     @Override
-    public Set<BookDamageListDto> findAll() throws ServiceException {
+    public List<BookDamageListDto> findAll() throws ServiceException {
         try {
             List<BookDamage> bookDamages = bookDamageRepository.findAll();
-            return bookDamages.stream()
-                    .map(BookDamageConverter::toListDTO)
-                    .collect(Collectors.toSet());
+            return BookDamageConverter.toListDTO(new HashSet<>(bookDamages));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
         }
