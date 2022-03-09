@@ -1,8 +1,12 @@
 package by.library.yurueu.repository.impl;
 
+import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
+import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.entity.Order;
 import by.library.yurueu.repository.BookCopyRepository;
+import by.library.yurueu.util.HibernateUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -18,8 +22,8 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
     private static final String SELECT_ALL_QUERY = "from BookCopy";
     private static final String UPDATE_QUERY =
             " UPDATE BookCopy " +
-            " SET status=:status, registrationDate=:registrationDate, imagePath=:imagePath, pricePerDay=:pricePerDay " +
-            " WHERE id=:id";
+                    " SET status=:status, registrationDate=:registrationDate, imagePath=:imagePath, pricePerDay=:pricePerDay " +
+                    " WHERE id=:id";
 
     private static final String DELETE_BOOK_DAMAGE_QUERY = "DELETE BookDamage bd WHERE bd.bookCopy.id=:bookCopyId";
 
@@ -60,5 +64,32 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
         session.createQuery(DELETE_BOOK_DAMAGE_QUERY)
                 .setParameter(BOOK_COPY_ID_COLUMN, bookCopy.getId())
                 .executeUpdate();
+    }
+
+    @Override
+    public Book findBookByBookCopyId(Long bookCopyId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            BookCopy bookCopy = session.get(BookCopy.class, bookCopyId);
+            Hibernate.initialize(bookCopy.getBook());
+            return bookCopy.getBook();
+        }
+    }
+
+    @Override
+    public Set<BookDamage> findBookDamagesByBookCopyId(Long bookCopyId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            BookCopy bookCopy = session.get(BookCopy.class, bookCopyId);
+            Hibernate.initialize(bookCopy.getBookDamages());
+            return bookCopy.getBookDamages();
+        }
+    }
+
+    @Override
+    public Set<Order> findOrdersByBookCopyId(Long bookCopyId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            BookCopy bookCopy = session.get(BookCopy.class, bookCopyId);
+            Hibernate.initialize(bookCopy.getOrders());
+            return bookCopy.getOrders();
+        }
     }
 }

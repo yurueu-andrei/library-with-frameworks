@@ -3,6 +3,8 @@ package by.library.yurueu.repository.impl;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.repository.AuthorRepository;
+import by.library.yurueu.util.HibernateUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -50,5 +52,14 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
 
     private void deleteBookGenreLinks(Author author, Set<Book> books) {
         books.forEach(book -> book.getAuthors().remove(author));
+    }
+
+    @Override
+    public Set<Book> findBooksByAuthorId(Long authorId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Author author = session.get(Author.class, authorId);
+            Hibernate.initialize(author.getBooks());
+            return author.getBooks();
+        }
     }
 }

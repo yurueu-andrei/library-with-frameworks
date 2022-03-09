@@ -1,9 +1,17 @@
 package by.library.yurueu.repository.impl;
 
+import by.library.yurueu.entity.BookCopy;
+import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.entity.Order;
+import by.library.yurueu.entity.User;
 import by.library.yurueu.repository.OrderRepository;
+import by.library.yurueu.util.HibernateUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implements OrderRepository {
     private static final String ORDER_STATUS_COLUMN = "orderStatus";
@@ -52,5 +60,39 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
         session.createQuery(DELETE_BOOK_DAMAGE_QUERY)
                 .setParameter(ORDER_ID_COLUMN, id)
                 .executeUpdate();
+    }
+
+    @Override
+    public User findUserByOrderId(Long orderId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Order order = session.get(Order.class, orderId);
+            Hibernate.initialize(order.getUser());
+            return order.getUser();
+        }
+    }
+
+    @Override
+    public Set<BookCopy> findBookCopiesByOrderId(Long orderId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Order order = session.get(Order.class, orderId);
+            Hibernate.initialize(order.getBookCopies());
+            return order.getBookCopies();
+        }
+    }
+
+    @Override
+    public Set<BookDamage> findBookDamagesByOrderId(Long orderId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Order order = session.get(Order.class, orderId);
+            Hibernate.initialize(order.getBookDamages());
+            return order.getBookDamages();
+        }
+    }
+
+    @Override
+    public Set<BookCopy> findBookCopiesByBookCopiesId(Set<Long> bookCopiesId) {
+        return bookCopiesId.stream()
+                .map(bookCopyId -> BookCopy.builder().id(bookCopyId).build())
+                .collect(Collectors.toSet());
     }
 }

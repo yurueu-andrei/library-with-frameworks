@@ -1,12 +1,15 @@
 package by.library.yurueu.repository.impl;
 
+import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
+import by.library.yurueu.entity.Genre;
 import by.library.yurueu.repository.BookRepository;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements BookRepository {
     private static final String TITLE_COLUMN = "title";
@@ -37,7 +40,7 @@ public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements 
     }
 
     @Override
-    protected void constructQuery(Query query, Book book){
+    protected void constructQuery(Query query, Book book) {
         query.setParameter(TITLE_COLUMN, book.getTitle())
                 .setParameter(PAGES_COLUMN, book.getPagesNumber())
                 .setParameter(IMAGE_PATH_COLUMN, book.getImagePath())
@@ -62,5 +65,19 @@ public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements 
         session.createQuery(DELETE_BOOK_COPIES_QUERY)
                 .setParameter(BOOK_ID_COLUMN, book.getId())
                 .executeUpdate();
+    }
+
+    @Override
+    public Set<Author> findAuthorsByAuthorsId(Set<Long> authorsId) {
+        return authorsId.stream()
+                .map(authorId -> Author.builder().id(authorId).build())
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Genre> findGenresByGenresId(Set<Long> genresId) {
+        return genresId.stream()
+                .map(genreId -> Genre.builder().id(genreId).build())
+                .collect(Collectors.toSet());
     }
 }

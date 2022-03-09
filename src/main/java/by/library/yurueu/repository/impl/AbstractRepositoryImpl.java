@@ -15,6 +15,7 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
     private final Class<E> clazz;
 
     protected abstract String getSelectAllQuery();
+
     protected abstract String getUpdateQuery();
 
     protected abstract void constructQuery(Query query, E element);
@@ -22,7 +23,7 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
     public E findById(Long id) throws RepositoryException {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             E element = session.get(clazz, id);
-            if(element == null) {
+            if (element == null) {
                 throw new RepositoryException(String.format("%s was not found", clazz.getSimpleName()));
             }
             return element;
@@ -32,7 +33,7 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
     public List<E> findAll() throws RepositoryException {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<E> elements = session.createQuery(getSelectAllQuery(), clazz).list();
-            if(elements.isEmpty()) {
+            if (elements.isEmpty()) {
                 throw new RepositoryException(String.format("%ss were not found", clazz.getSimpleName()));
             }
             return elements;
@@ -80,5 +81,6 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
         }
     }
 
-    protected void deleteLinks(Session session, E element) {}
+    protected void deleteLinks(Session session, E element) {
+    }
 }
