@@ -3,6 +3,7 @@ package by.library.yurueu.converter;
 import by.library.yurueu.dto.AuthorDto;
 import by.library.yurueu.dto.AuthorListDto;
 import by.library.yurueu.dto.AuthorSaveDto;
+import by.library.yurueu.dto.AuthorUpdateDto;
 import by.library.yurueu.dto.BookCopyListDto;
 import by.library.yurueu.dto.impl.AuthorDtoImpl;
 import by.library.yurueu.dto.impl.AuthorListDtoImpl;
@@ -11,7 +12,8 @@ import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,12 +29,11 @@ public class AuthorConverter {
                 .build();
     }
 
-    private static Set<BookCopyListDto> constructBookCopiesListDto(Set<Book> books) {
-        Set<BookCopyListDto> bookCopiesListDto = new HashSet<>();
+    private static List<BookCopyListDto> constructBookCopiesListDto(Set<Book> books) {
+        List<BookCopyListDto> bookCopiesListDto = new ArrayList<>();
         books.forEach(book -> {
             Set<BookCopy> bookCopies = book.getBookCopies();
             bookCopiesListDto.addAll(BookCopyConverter.toListDTO(bookCopies));
-
         });
         return bookCopiesListDto;
     }
@@ -65,9 +66,19 @@ public class AuthorConverter {
                 .build();
     }
 
-    public static Set<AuthorListDto> toListDTO(Set<Author> authors) {
+    public static List<AuthorListDto> toListDTO(Set<Author> authors) {
         return authors.stream()
                 .map(AuthorConverter::toListDTO)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
+    }
+
+    public static Author fromUpdateDTO(AuthorUpdateDto authorUpdateDto) {
+        return Author.builder()
+                .id(authorUpdateDto.getId())
+                .firstName(authorUpdateDto.getFirstName())
+                .lastName(authorUpdateDto.getLastName())
+                .birthDate(authorUpdateDto.getBirthDate())
+                .imagePath(authorUpdateDto.getImagePath())
+                .build();
     }
 }

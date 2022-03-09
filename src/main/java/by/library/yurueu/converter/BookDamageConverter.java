@@ -9,6 +9,7 @@ import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.entity.Order;
 import by.library.yurueu.entity.User;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,9 +42,9 @@ public class BookDamageConverter {
                 .build();
     }
 
-    public static Set<BookDamageListDto> toListDTO(Set<BookDamage> bookDamages) {
+    public static List<BookDamageListDto> toListDTO(Set<BookDamage> bookDamages) {
         return bookDamages.stream()
                 .map(BookDamageConverter::toListDTO)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 }

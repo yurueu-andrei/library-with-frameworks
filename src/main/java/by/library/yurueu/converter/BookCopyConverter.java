@@ -3,12 +3,14 @@ package by.library.yurueu.converter;
 import by.library.yurueu.dto.BookCopyDto;
 import by.library.yurueu.dto.BookCopyListDto;
 import by.library.yurueu.dto.BookCopySaveDto;
+import by.library.yurueu.dto.BookCopyUpdateDto;
 import by.library.yurueu.dto.impl.BookCopyDtoImpl;
 import by.library.yurueu.dto.impl.BookCopyListDtoImpl;
 import by.library.yurueu.dto.impl.BookCopySaveDtoImpl;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,9 +61,19 @@ public class BookCopyConverter {
                 .build();
     }
 
-    public static Set<BookCopyListDto> toListDTO(Set<BookCopy> bookCopies) {
+    public static List<BookCopyListDto> toListDTO(Set<BookCopy> bookCopies) {
         return bookCopies.stream()
                 .map(BookCopyConverter::toListDTO)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
+    }
+
+    public static BookCopy fromUpdateDTO(BookCopyUpdateDto bookCopyUpdateDto) {
+        return BookCopy.builder()
+                .id(bookCopyUpdateDto.getId())
+                .status(bookCopyUpdateDto.getStatus())
+                .registrationDate(bookCopyUpdateDto.getRegistrationDate())
+                .pricePerDay(bookCopyUpdateDto.getPricePerDay())
+                .imagePath(bookCopyUpdateDto.getImagePath())
+                .build();
     }
 }

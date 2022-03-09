@@ -11,11 +11,12 @@ import by.library.yurueu.entity.BaseEntity;
 import by.library.yurueu.entity.Role;
 import by.library.yurueu.entity.User;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserConverter {
-    public static UserDto toDto(User user) {
+    public static UserDto toDTO(User user) {
         return UserDtoImpl.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
@@ -29,13 +30,13 @@ public class UserConverter {
                 .build();
     }
 
-    private static Set<Long> constructRolesId(Set<Role> roles) {
+    private static List<Long> constructRolesId(Set<Role> roles) {
         return roles.stream()
                 .map(BaseEntity::getId)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
-    public static UserSaveDto toSaveDto(User user) {
+    public static UserSaveDto toSaveDTO(User user) {
         return UserSaveDtoImpl.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
@@ -48,7 +49,7 @@ public class UserConverter {
                 .build();
     }
 
-    public static User fromSaveDto(UserSaveDto userSaveDto) {
+    public static User fromSaveDTO(UserSaveDto userSaveDto) {
         return User.builder()
                 .id(userSaveDto.getId())
                 .firstName(userSaveDto.getFirstName())
@@ -61,13 +62,13 @@ public class UserConverter {
                 .build();
     }
 
-    private static Set<Role> constructRoles(Set<Long> rolesId) {
+    private static Set<Role> constructRoles(List<Long> rolesId) {
         return rolesId.stream()
                 .map(roleId -> Role.builder().id(roleId).build())
                 .collect(Collectors.toSet());
     }
 
-    public static UserListDto toListDto(User user) {
+    public static UserListDto toListDTO(User user) {
         return UserListDtoImpl.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -75,7 +76,13 @@ public class UserConverter {
                 .build();
     }
 
-    public static User fromUpdateDto(UserUpdateDto userUpdateDto) {
+    public static List<UserListDto> toListDTO(Set<User> users) {
+        return users.stream()
+                .map(UserConverter::toListDTO)
+                .collect(Collectors.toList());
+    }
+
+    public static User fromUpdateDTO(UserUpdateDto userUpdateDto) {
         return User.builder()
                 .id(userUpdateDto.getId())
                 .firstName(userUpdateDto.getFirstName())
