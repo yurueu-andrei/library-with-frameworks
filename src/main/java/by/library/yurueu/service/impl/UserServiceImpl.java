@@ -11,12 +11,11 @@ import by.library.yurueu.repository.UserRepository;
 import by.library.yurueu.repository.impl.UserRepositoryImpl;
 import by.library.yurueu.service.UserService;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserServiceImpl() {
         userRepository = new UserRepositoryImpl();
@@ -28,19 +27,17 @@ public class UserServiceImpl implements UserService {
             User user = userRepository.findById(id);
             user.setRoles(userRepository.findRolesByUserId(id));
             user.setOrders(userRepository.findOrdersByUserId(id));
-            return UserConverter.toDto(user);
+            return UserConverter.toDTO(user);
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
         }
     }
 
     @Override
-    public Set<UserListDto> findAll() throws ServiceException {
+    public List<UserListDto> findAll() throws ServiceException {
         try {
             List<User> users = userRepository.findAll();
-            return users.stream()
-                    .map(UserConverter::toListDto)
-                    .collect(Collectors.toSet());
+            return UserConverter.toListDTO(new HashSet<>(users));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
         }
@@ -49,9 +46,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserSaveDto add(UserSaveDto userSaveDto) throws ServiceException {
         try {
-            User user = UserConverter.fromSaveDto(userSaveDto);
-            user.setRoles(userRepository.findRolesByRolesId(userSaveDto.getRolesId()));
-            return UserConverter.toSaveDto(userRepository.add(user));
+            User user = UserConverter.fromSaveDTO(userSaveDto);
+            user.setRoles(userRepository.findRolesByRolesId(new HashSet<>(userSaveDto.getRolesId())));
+            return UserConverter.toSaveDTO(userRepository.add(user));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
         }
@@ -60,7 +57,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean update(UserUpdateDto userUpdateDto) throws ServiceException {
         try {
-            User user = UserConverter.fromUpdateDto(userUpdateDto);
+            User user = UserConverter.fromUpdateDTO(userUpdateDto);
             return userRepository.update(user);
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
