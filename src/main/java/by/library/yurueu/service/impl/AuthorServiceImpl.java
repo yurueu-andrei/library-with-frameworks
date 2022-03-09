@@ -8,18 +8,14 @@ import by.library.yurueu.dto.AuthorUpdateDto;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.AuthorRepository;
-import by.library.yurueu.repository.impl.AuthorRepositoryImpl;
 import by.library.yurueu.service.AuthorService;
+import lombok.RequiredArgsConstructor;
 
-import java.util.HashSet;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
-
-    public AuthorServiceImpl() {
-        authorRepository = new AuthorRepositoryImpl();
-    }
 
     @Override
     public AuthorDto findById(Long id) throws ServiceException {
@@ -36,7 +32,7 @@ public class AuthorServiceImpl implements AuthorService {
     public List<AuthorListDto> findAll() throws ServiceException {
         try {
             List<Author> authors = authorRepository.findAll();
-            return AuthorConverter.toListDTO(new HashSet<>(authors));
+            return AuthorConverter.toListDTO(authors);
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
         }

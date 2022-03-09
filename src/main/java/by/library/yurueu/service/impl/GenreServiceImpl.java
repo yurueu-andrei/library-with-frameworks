@@ -6,18 +6,14 @@ import by.library.yurueu.dto.GenreUpdateDto;
 import by.library.yurueu.entity.Genre;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.GenreRepository;
-import by.library.yurueu.repository.impl.GenreRepositoryImpl;
 import by.library.yurueu.service.GenreService;
+import lombok.RequiredArgsConstructor;
 
-import java.util.HashSet;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
-
-    public GenreServiceImpl() {
-        genreRepository = new GenreRepositoryImpl();
-    }
 
     @Override
     public GenreListDto findById(Long id) throws ServiceException {
@@ -33,7 +29,7 @@ public class GenreServiceImpl implements GenreService {
     public List<GenreListDto> findAll() throws ServiceException {
         try {
             List<Genre> genres = genreRepository.findAll();
-            return GenreConverter.toListDTO(new HashSet<>(genres));
+            return GenreConverter.toListDTO(genres);
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
         }

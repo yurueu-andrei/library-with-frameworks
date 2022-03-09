@@ -10,27 +10,22 @@ import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.OrderRepository;
 import by.library.yurueu.repository.UserRepository;
-import by.library.yurueu.repository.impl.OrderRepositoryImpl;
-import by.library.yurueu.repository.impl.UserRepositoryImpl;
 import by.library.yurueu.service.OrderService;
+import lombok.RequiredArgsConstructor;
 
 import java.util.HashSet;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
-
-    public OrderServiceImpl() {
-        orderRepository = new OrderRepositoryImpl();
-        userRepository = new UserRepositoryImpl();
-    }
 
     @Override
     public OrderDto findById(Long id) throws ServiceException {
         try {
             Order order = orderRepository.findById(id);
-            order.setUser(userRepository.findById(order.getUser().getId()));
+            order.setUser(User.builder().id(order.getUser().getId()).build());
             order.setBookCopies(orderRepository.findBookCopiesByOrderId(id));
             order.setBookDamages(orderRepository.findBookDamagesByOrderId(id));
             return OrderConverter.toDTO(order);
@@ -43,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderListDto> findAll() throws ServiceException {
         try {
             List<Order> orders = orderRepository.findAll();
-            return OrderConverter.toListDTO(new HashSet<>(orders));
+            return OrderConverter.toListDTO(orders);
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
         }

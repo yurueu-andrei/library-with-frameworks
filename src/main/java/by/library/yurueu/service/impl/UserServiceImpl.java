@@ -8,18 +8,15 @@ import by.library.yurueu.dto.UserUpdateDto;
 import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.UserRepository;
-import by.library.yurueu.repository.impl.UserRepositoryImpl;
 import by.library.yurueu.service.UserService;
+import lombok.RequiredArgsConstructor;
 
 import java.util.HashSet;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-
-    public UserServiceImpl() {
-        userRepository = new UserRepositoryImpl();
-    }
 
     @Override
     public UserDto findById(Long id) throws ServiceException {
@@ -37,7 +34,7 @@ public class UserServiceImpl implements UserService {
     public List<UserListDto> findAll() throws ServiceException {
         try {
             List<User> users = userRepository.findAll();
-            return UserConverter.toListDTO(new HashSet<>(users));
+            return UserConverter.toListDTO(users);
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
         }
