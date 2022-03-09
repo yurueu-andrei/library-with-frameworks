@@ -4,20 +4,18 @@ import by.library.yurueu.dto.UserDto;
 import by.library.yurueu.dto.UserListDto;
 import by.library.yurueu.dto.UserSaveDto;
 import by.library.yurueu.dto.UserUpdateDto;
-import by.library.yurueu.dto.impl.UserDtoImpl;
-import by.library.yurueu.dto.impl.UserListDtoImpl;
-import by.library.yurueu.dto.impl.UserSaveDtoImpl;
 import by.library.yurueu.entity.BaseEntity;
 import by.library.yurueu.entity.Role;
 import by.library.yurueu.entity.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserConverter {
     public static UserDto toDTO(User user) {
-        return UserDtoImpl.builder()
+        return UserDto.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
@@ -26,7 +24,7 @@ public class UserConverter {
                 .address(user.getAddress())
                 .birthDate(user.getBirthDate())
                 .rolesId(constructRolesId(user.getRoles()))
-                .orders(OrderConverter.toListDTO(user.getOrders()))
+                .orders(OrderConverter.toListDTO(new ArrayList<>(user.getOrders())))
                 .build();
     }
 
@@ -37,7 +35,7 @@ public class UserConverter {
     }
 
     public static UserSaveDto toSaveDTO(User user) {
-        return UserSaveDtoImpl.builder()
+        return UserSaveDto.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
@@ -69,14 +67,14 @@ public class UserConverter {
     }
 
     public static UserListDto toListDTO(User user) {
-        return UserListDtoImpl.builder()
+        return UserListDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .address(user.getAddress())
                 .build();
     }
 
-    public static List<UserListDto> toListDTO(Set<User> users) {
+    public static List<UserListDto> toListDTO(List<User> users) {
         return users.stream()
                 .map(UserConverter::toListDTO)
                 .collect(Collectors.toList());

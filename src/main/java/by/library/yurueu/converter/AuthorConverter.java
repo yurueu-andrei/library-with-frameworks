@@ -5,9 +5,6 @@ import by.library.yurueu.dto.AuthorListDto;
 import by.library.yurueu.dto.AuthorSaveDto;
 import by.library.yurueu.dto.AuthorUpdateDto;
 import by.library.yurueu.dto.BookCopyListDto;
-import by.library.yurueu.dto.impl.AuthorDtoImpl;
-import by.library.yurueu.dto.impl.AuthorListDtoImpl;
-import by.library.yurueu.dto.impl.AuthorSaveDtoImpl;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
@@ -19,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class AuthorConverter {
     public static AuthorDto toDTO(Author author) {
-        return AuthorDtoImpl.builder()
+        return AuthorDto.builder()
                 .id(author.getId())
                 .firstName(author.getFirstName())
                 .lastName(author.getLastName())
@@ -32,14 +29,14 @@ public class AuthorConverter {
     private static List<BookCopyListDto> constructBookCopiesListDto(Set<Book> books) {
         List<BookCopyListDto> bookCopiesListDto = new ArrayList<>();
         books.forEach(book -> {
-            Set<BookCopy> bookCopies = book.getBookCopies();
+            List<BookCopy> bookCopies = new ArrayList<>(book.getBookCopies());
             bookCopiesListDto.addAll(BookCopyConverter.toListDTO(bookCopies));
         });
         return bookCopiesListDto;
     }
 
     public static AuthorSaveDto toSaveDTO(Author author) {
-        return AuthorSaveDtoImpl.builder()
+        return AuthorSaveDto.builder()
                 .id(author.getId())
                 .firstName(author.getFirstName())
                 .lastName(author.getLastName())
@@ -59,14 +56,14 @@ public class AuthorConverter {
     }
 
     public static AuthorListDto toListDTO(Author author) {
-        return AuthorListDtoImpl.builder()
+        return AuthorListDto.builder()
                 .id(author.getId())
                 .firstName(author.getFirstName())
                 .lastName(author.getLastName())
                 .build();
     }
 
-    public static List<AuthorListDto> toListDTO(Set<Author> authors) {
+    public static List<AuthorListDto> toListDTO(List<Author> authors) {
         return authors.stream()
                 .map(AuthorConverter::toListDTO)
                 .collect(Collectors.toList());

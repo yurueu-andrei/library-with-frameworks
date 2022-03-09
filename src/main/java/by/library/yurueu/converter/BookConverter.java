@@ -1,7 +1,6 @@
 package by.library.yurueu.converter;
 
 import by.library.yurueu.dto.BookSaveDto;
-import by.library.yurueu.dto.impl.BookSaveDtoImpl;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.BaseEntity;
 import by.library.yurueu.entity.Book;
@@ -13,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class BookConverter {
     public static BookSaveDto toSaveDTO(Book book) {
-        return BookSaveDtoImpl.builder()
+        return BookSaveDto.builder()
                 .id(book.getId())
                 .title(book.getTitle())
                 .pagesNumber(book.getPagesNumber())

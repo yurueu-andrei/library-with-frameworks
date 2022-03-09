@@ -4,34 +4,32 @@ import by.library.yurueu.dto.OrderDto;
 import by.library.yurueu.dto.OrderListDto;
 import by.library.yurueu.dto.OrderSaveDto;
 import by.library.yurueu.dto.OrderUpdateDto;
-import by.library.yurueu.dto.impl.OrderDtoImpl;
-import by.library.yurueu.dto.impl.OrderListDtoImpl;
-import by.library.yurueu.dto.impl.OrderSaveDtoImpl;
 import by.library.yurueu.entity.BaseEntity;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.entity.Order;
 import by.library.yurueu.entity.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class OrderConverter {
     public static OrderDto toDTO(Order order) {
-        return OrderDtoImpl.builder()
+        return OrderDto.builder()
                 .id(order.getId())
                 .orderStatus(order.getOrderStatus())
                 .startDate(order.getStartDate())
                 .endDate(order.getEndDate())
                 .price(order.getPrice())
                 .userId(order.getUser().getId())
-                .bookCopies(BookCopyConverter.toListDTO(order.getBookCopies()))
-                .bookDamages(BookDamageConverter.toListDTO(order.getBookDamages()))
+                .bookCopies(BookCopyConverter.toListDTO(new ArrayList<>(order.getBookCopies())))
+                .bookDamages(BookDamageConverter.toListDTO(new ArrayList<>(order.getBookDamages())))
                 .build();
     }
 
     public static OrderSaveDto toSaveDTO(Order order) {
-        return OrderSaveDtoImpl.builder()
+        return OrderSaveDto.builder()
                 .id(order.getId())
                 .orderStatus(order.getOrderStatus())
                 .startDate(order.getStartDate())
@@ -67,7 +65,7 @@ public class OrderConverter {
     }
 
     public static OrderListDto toListDTO(Order order) {
-        return OrderListDtoImpl.builder()
+        return OrderListDto.builder()
                 .id(order.getId())
                 .orderStatus(order.getOrderStatus())
                 .startDate(order.getStartDate())
@@ -76,7 +74,7 @@ public class OrderConverter {
                 .build();
     }
 
-    public static List<OrderListDto> toListDTO(Set<Order> orders) {
+    public static List<OrderListDto> toListDTO(List<Order> orders) {
         return orders.stream()
                 .map(OrderConverter::toListDTO)
                 .collect(Collectors.toList());
