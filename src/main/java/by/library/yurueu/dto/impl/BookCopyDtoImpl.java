@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Builder
 @Getter
@@ -23,7 +23,7 @@ public class BookCopyDtoImpl implements BookCopyDto {
     private int pricePerDay;
     private String imagePath;
 
-    private Set<BookDamageListDto> bookDamages;
-    private Set<GenreListDto> genres;
-    private Set<AuthorListDto> authors;
+    private List<BookDamageListDto> bookDamages;
+    private List<GenreListDto> genres;
+    private List<AuthorListDto> authors;
 }

@@ -1,13 +1,11 @@
 package by.library.yurueu.dto;
 
 import java.time.LocalDate;
-import java.util.List;
 
-public interface AuthorDto {
+public interface AuthorUpdateDto {
     Long getId();
     String getFirstName();
     String getLastName();
     LocalDate getBirthDate();
     String getImagePath();
-    List<BookCopyListDto> getBooks();
 }

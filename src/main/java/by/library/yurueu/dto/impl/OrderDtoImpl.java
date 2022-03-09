@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Builder
@@ -21,6 +21,6 @@ public class OrderDtoImpl implements OrderDto {
     private int price;
     private Long userId;
 
-    private Set<BookDamageListDto> bookDamages;
-    private Set<BookCopyListDto> bookCopies;
+    private List<BookDamageListDto> bookDamages;
+    private List<BookCopyListDto> bookCopies;
 }

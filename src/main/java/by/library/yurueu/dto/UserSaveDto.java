@@ -1,7 +1,7 @@
 package by.library.yurueu.dto;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 public interface UserSaveDto {
     Long getId();
@@ -11,7 +11,7 @@ public interface UserSaveDto {
     String getEmail();
     String getAddress();
     LocalDate getBirthDate();
-    Set<Long> getRolesId();
+    List<Long> getRolesId();
 
     void setId(Long id);
     void setFirstName(String firstName);
@@ -20,5 +20,5 @@ public interface UserSaveDto {
     void setEmail(String email);
     void setAddress(String address);
     void setBirthDate(LocalDate birthDate);
-    void setRolesId(Set<Long> rolesId);
+    void setRolesId(List<Long> rolesId);
 }

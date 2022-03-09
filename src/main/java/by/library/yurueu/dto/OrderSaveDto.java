@@ -1,7 +1,7 @@
 package by.library.yurueu.dto;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 public interface OrderSaveDto {
     Long getId();
@@ -10,7 +10,7 @@ public interface OrderSaveDto {
     LocalDate getEndDate();
     int getPrice();
     Long getUserId();
-    Set<Long> getBookCopiesId();
+    List<Long> getBookCopiesId();
 
     void setId(Long id);
     void setOrderStatus(String orderStatus);
@@ -18,5 +18,5 @@ public interface OrderSaveDto {
     void setEndDate(LocalDate endDate);
     void setPrice(int price);
     void setUserId(Long userId);
-    void setBookCopiesId(Set<Long> bookCopiesId);
+    void setBookCopiesId(List<Long> bookCopiesId);
 }

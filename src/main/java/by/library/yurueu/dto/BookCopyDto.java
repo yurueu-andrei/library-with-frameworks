@@ -1,7 +1,7 @@
 package by.library.yurueu.dto;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 public interface BookCopyDto {
     Long getId();
@@ -11,7 +11,7 @@ public interface BookCopyDto {
     LocalDate getRegistrationDate();
     String getImagePath();
     String getStatus();
-    Set<BookDamageListDto> getBookDamages();
-    Set<GenreListDto> getGenres() ;
-    Set<AuthorListDto> getAuthors();
+    List<BookDamageListDto> getBookDamages();
+    List<GenreListDto> getGenres() ;
+    List<AuthorListDto> getAuthors();
 }

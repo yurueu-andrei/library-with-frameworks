@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Setter
 @Getter
@@ -22,5 +22,5 @@ public class UserSaveDtoImpl implements UserSaveDto {
     private String address;
     private LocalDate birthDate;
 
-    private Set<Long> rolesId;
+    private List<Long> rolesId;
 }

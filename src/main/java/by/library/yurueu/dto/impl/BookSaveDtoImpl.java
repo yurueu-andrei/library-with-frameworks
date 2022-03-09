@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,6 +17,6 @@ public class BookSaveDtoImpl implements BookSaveDto {
     private String title;
     private int pagesNumber;
     private String imagePath;
-    private Set<Long> genresId;
-    private Set<Long> authorsId;
+    private List<Long> genresId;
+    private List<Long> authorsId;
 }

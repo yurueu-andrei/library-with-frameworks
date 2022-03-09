@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Builder
@@ -21,6 +21,6 @@ public class UserDtoImpl implements UserDto {
     private String address;
     private LocalDate birthDate;
 
-    private Set<Long> rolesId;
-    private Set<OrderListDto> orders;
+    private List<Long> rolesId;
+    private List<OrderListDto> orders;
 }
