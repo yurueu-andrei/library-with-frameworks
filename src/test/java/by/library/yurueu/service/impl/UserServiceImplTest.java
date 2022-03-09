@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +34,7 @@ class UserServiceImplTest {
     void findByIdTest() throws RepositoryException, ServiceException {
         //given
         Long id = 1L;
-        UserDto expected = UserDtoImpl.builder().id(1L).rolesId(new HashSet<>()).orders(new HashSet<>()).build();
+        UserDto expected = UserDtoImpl.builder().id(1L).rolesId(new ArrayList<>()).orders(new ArrayList<>()).build();
 
         //when
         Mockito.when(userRepository.findById(id)).thenReturn(User.builder().id(1L).build());
