@@ -1,16 +1,15 @@
-package by.library.yurueu.dto.impl;
+package by.library.yurueu.dto;
 
-import by.library.yurueu.dto.BookDamageSaveDto;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.ToString;
 
 @Getter
-@Setter
 @Builder
 @EqualsAndHashCode
-public class BookDamageSaveDtoImpl implements BookDamageSaveDto {
+@ToString
+public class BookDamageDto {
     private Long id;
     private String imagePath;
     private String damageDescription;

@@ -1,5 +1,14 @@
 package by.library.yurueu.dto;
 
-public interface BookDamageListDto {
-    Long getId();
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@Builder
+@EqualsAndHashCode
+@ToString
+public class BookDamageListDto {
+    private Long id;
 }

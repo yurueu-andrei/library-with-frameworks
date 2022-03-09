@@ -1,14 +1,15 @@
-package by.library.yurueu.dto.impl;
+package by.library.yurueu.dto;
 
-import by.library.yurueu.dto.RoleListDto;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @Builder
 @EqualsAndHashCode
-public class RoleListDtoImpl implements RoleListDto {
+@ToString
+public class RoleDto {
     private Long id;
     private String roleName;
 }

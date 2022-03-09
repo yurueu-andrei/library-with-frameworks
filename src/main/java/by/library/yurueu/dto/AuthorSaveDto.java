@@ -1,17 +1,22 @@
 package by.library.yurueu.dto;
 
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.time.LocalDate;
 
-public interface AuthorSaveDto {
-    Long getId();
-    String getFirstName();
-    String getLastName();
-    LocalDate getBirthDate();
-    String getImagePath();
-
-    void setId(Long id);
-    void setFirstName(String firstName);
-    void setLastName(String lastName);
-    void setBirthDate(LocalDate birthDate);
-    void setImagePath(String imagePath);
+@Getter
+@Setter
+@Builder
+@EqualsAndHashCode
+@ToString
+public class AuthorSaveDto {
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private LocalDate birthDate;
+    private String imagePath;
 }

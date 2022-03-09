@@ -1,6 +1,15 @@
 package by.library.yurueu.dto;
 
-public interface GenreListDto {
-    Long getId();
-    String getGenreName();
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@Builder
+@EqualsAndHashCode
+@ToString
+public class GenreListDto {
+    private Long id;
+    private String genreName;
 }

@@ -1,7 +1,16 @@
 package by.library.yurueu.dto;
 
-public interface AuthorListDto {
-    Long getId();
-    String getFirstName();
-    String getLastName();
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@Builder
+@EqualsAndHashCode
+@ToString
+public class AuthorListDto {
+    private Long id;
+    private String firstName;
+    private String lastName;
 }
