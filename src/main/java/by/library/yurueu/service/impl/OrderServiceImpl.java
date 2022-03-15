@@ -9,7 +9,6 @@ import by.library.yurueu.entity.Order;
 import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.OrderRepository;
-import by.library.yurueu.repository.UserRepository;
 import by.library.yurueu.service.OrderService;
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
 
     @Override
     public OrderDto findById(Long id) throws ServiceException {

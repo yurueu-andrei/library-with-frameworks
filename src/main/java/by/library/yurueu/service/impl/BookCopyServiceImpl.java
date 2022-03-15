@@ -9,7 +9,6 @@ import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.BookCopyRepository;
-import by.library.yurueu.repository.BookRepository;
 import by.library.yurueu.service.BookCopyService;
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookCopyServiceImpl implements BookCopyService {
     private final BookCopyRepository bookCopyRepository;
-    private final BookRepository bookRepository;
 
     @Override
     public BookCopyDto findById(Long id) throws ServiceException {

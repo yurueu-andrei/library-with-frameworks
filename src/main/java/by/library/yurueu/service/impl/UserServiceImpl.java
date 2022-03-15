@@ -11,7 +11,6 @@ import by.library.yurueu.repository.UserRepository;
 import by.library.yurueu.service.UserService;
 import lombok.RequiredArgsConstructor;
 
-import java.util.HashSet;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -44,7 +43,6 @@ public class UserServiceImpl implements UserService {
     public UserSaveDto add(UserSaveDto userSaveDto) throws ServiceException {
         try {
             User user = UserConverter.fromSaveDTO(userSaveDto);
-            user.setRoles(userRepository.findRolesByRolesId(new HashSet<>(userSaveDto.getRolesId())));
             return UserConverter.toSaveDTO(userRepository.add(user));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
