@@ -45,7 +45,7 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
             session.save(element);
             return element;
         } catch (Exception ex) {
-            throw new RepositoryException(clazz.getSimpleName() + " was not added[" + ex.getMessage() + "]");
+            throw new RepositoryException(String.format("%s was not added", clazz.getSimpleName()));
         }
     }
 
@@ -60,7 +60,7 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
                 return true;
             } catch (Exception ex) {
                 session.getTransaction().rollback();
-                throw new RepositoryException(clazz.getSimpleName() + " was not updated[" + ex.getMessage() + "]");
+                throw new RepositoryException(String.format("%s was not updated", clazz.getSimpleName()));
             }
         }
     }
@@ -76,7 +76,7 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
                 return true;
             } catch (Exception ex) {
                 session.getTransaction().rollback();
-                throw new RepositoryException(clazz.getSimpleName() + " was not deleted[" + ex.getMessage() + "]");
+                throw new RepositoryException(String.format("%s was not deleted", clazz.getSimpleName()));
             }
         }
     }
