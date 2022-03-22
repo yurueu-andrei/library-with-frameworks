@@ -1,16 +1,19 @@
-package by.library.yurueu.dto.impl;
+package by.library.yurueu.dto;
 
-import by.library.yurueu.dto.OrderListDto;
-import by.library.yurueu.dto.UserDto;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Getter
+@Setter
 @Builder
-public class UserDtoImpl implements UserDto {
+@EqualsAndHashCode
+@ToString
+public class UserUpdateDto {
     private Long id;
     private String firstName;
     private String lastName;
@@ -18,7 +21,4 @@ public class UserDtoImpl implements UserDto {
     private String email;
     private String address;
     private LocalDate birthDate;
-
-    private Set<Long> rolesId;
-    private Set<OrderListDto> orders;
 }

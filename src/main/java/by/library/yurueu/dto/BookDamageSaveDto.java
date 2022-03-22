@@ -1,17 +1,21 @@
 package by.library.yurueu.dto;
 
-public interface BookDamageSaveDto {
-    Long getId();
-    String getImagePath();
-    String getDamageDescription();
-    Long getUserId();
-    Long getOrderId();
-    Long getBookCopyId();
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-    void setId(Long id);
-    void setImagePath(String imagePath);
-    void setDamageDescription(String damageDescription);
-    void setUserId(Long userId);
-    void setOrderId(Long orderId);
-    void setBookCopyId(Long bookCopyId);
+@Getter
+@Setter
+@Builder
+@EqualsAndHashCode
+@ToString
+public class BookDamageSaveDto {
+    private Long id;
+    private String imagePath;
+    private String damageDescription;
+    private Long userId;
+    private Long orderId;
+    private Long bookCopyId;
 }

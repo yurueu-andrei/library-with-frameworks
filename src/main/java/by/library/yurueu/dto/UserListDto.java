@@ -1,7 +1,16 @@
 package by.library.yurueu.dto;
 
-public interface UserListDto {
-    Long getId();
-    String getEmail();
-    String getAddress();
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@Builder
+@EqualsAndHashCode
+@ToString
+public class UserListDto {
+    private Long id;
+    private String email;
+    private String address;
 }

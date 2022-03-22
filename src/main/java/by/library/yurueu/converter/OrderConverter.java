@@ -3,33 +3,33 @@ package by.library.yurueu.converter;
 import by.library.yurueu.dto.OrderDto;
 import by.library.yurueu.dto.OrderListDto;
 import by.library.yurueu.dto.OrderSaveDto;
-import by.library.yurueu.dto.impl.OrderDtoImpl;
-import by.library.yurueu.dto.impl.OrderListDtoImpl;
-import by.library.yurueu.dto.impl.OrderSaveDtoImpl;
+import by.library.yurueu.dto.OrderUpdateDto;
 import by.library.yurueu.entity.BaseEntity;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.entity.Order;
 import by.library.yurueu.entity.User;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class OrderConverter {
     public static OrderDto toDTO(Order order) {
-        return OrderDtoImpl.builder()
+        return OrderDto.builder()
                 .id(order.getId())
                 .orderStatus(order.getOrderStatus())
                 .startDate(order.getStartDate())
                 .endDate(order.getEndDate())
                 .price(order.getPrice())
                 .userId(order.getUser().getId())
-                .bookCopies(BookCopyConverter.toListDTO(order.getBookCopies()))
-                .bookDamages(BookDamageConverter.toListDTO(order.getBookDamages()))
+                .bookCopies(BookCopyConverter.toListDTO(new ArrayList<>(order.getBookCopies())))
+                .bookDamages(BookDamageConverter.toListDTO(new ArrayList<>(order.getBookDamages())))
                 .build();
     }
 
     public static OrderSaveDto toSaveDTO(Order order) {
-        return OrderSaveDtoImpl.builder()
+        return OrderSaveDto.builder()
                 .id(order.getId())
                 .orderStatus(order.getOrderStatus())
                 .startDate(order.getStartDate())
@@ -40,10 +40,10 @@ public class OrderConverter {
                 .build();
     }
 
-    private static Set<Long> constructBookCopiesId(Set<BookCopy> bookCopies) {
+    private static List<Long> constructBookCopiesId(Set<BookCopy> bookCopies) {
         return bookCopies.stream()
                 .map(BaseEntity::getId)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     public static Order fromSaveDTO(OrderSaveDto orderSaveDto) {
@@ -58,14 +58,14 @@ public class OrderConverter {
                 .build();
     }
 
-    private static Set<BookCopy> constructBookCopies(Set<Long> bookCopiesId) {
+    private static Set<BookCopy> constructBookCopies(List<Long> bookCopiesId) {
         return bookCopiesId.stream()
                 .map(bookCopyId -> BookCopy.builder().id(bookCopyId).build())
                 .collect(Collectors.toSet());
     }
 
     public static OrderListDto toListDTO(Order order) {
-        return OrderListDtoImpl.builder()
+        return OrderListDto.builder()
                 .id(order.getId())
                 .orderStatus(order.getOrderStatus())
                 .startDate(order.getStartDate())
@@ -74,9 +74,19 @@ public class OrderConverter {
                 .build();
     }
 
-    public static Set<OrderListDto> toListDTO(Set<Order> orders) {
+    public static List<OrderListDto> toListDTO(List<Order> orders) {
         return orders.stream()
                 .map(OrderConverter::toListDTO)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
+    }
+
+    public static Order fromUpdateDto(OrderUpdateDto orderUpdateDto) {
+        return Order.builder()
+                .id(orderUpdateDto.getId())
+                .orderStatus(orderUpdateDto.getOrderStatus())
+                .startDate(orderUpdateDto.getStartDate())
+                .endDate(orderUpdateDto.getEndDate())
+                .price(orderUpdateDto.getPrice())
+                .build();
     }
 }

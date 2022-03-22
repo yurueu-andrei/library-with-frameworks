@@ -1,24 +1,27 @@
 package by.library.yurueu.dto;
 
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
-public interface UserSaveDto {
-    Long getId();
-    String getFirstName();
-    String getLastName();
-    String getPassportNumber();
-    String getEmail();
-    String getAddress();
-    LocalDate getBirthDate();
-    Set<Long> getRolesId();
+@Setter
+@Getter
+@Builder
+@EqualsAndHashCode
+@ToString
+public class UserSaveDto {
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private String passportNumber;
+    private String email;
+    private String address;
+    private LocalDate birthDate;
 
-    void setId(Long id);
-    void setFirstName(String firstName);
-    void setLastName(String lastName);
-    void setPassportNumber(String passportNumber);
-    void setEmail(String email);
-    void setAddress(String address);
-    void setBirthDate(LocalDate birthDate);
-    void setRolesId(Set<Long> rolesId);
+    private List<Long> rolesId;
 }

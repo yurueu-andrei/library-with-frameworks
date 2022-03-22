@@ -78,6 +78,6 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNull(userRepository.findById(userId));
+        Assertions.assertThrows(RepositoryException.class, () -> userRepository.findById(userId));
     }
 }

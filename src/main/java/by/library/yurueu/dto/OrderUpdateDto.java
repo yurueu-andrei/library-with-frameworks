@@ -1,14 +1,17 @@
-package by.library.yurueu.dto.impl;
+package by.library.yurueu.dto;
 
-import by.library.yurueu.dto.OrderListDto;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Getter
 @Builder
-public class OrderListDtoImpl implements OrderListDto {
+@EqualsAndHashCode
+@ToString
+public class OrderUpdateDto {
     private Long id;
     private String orderStatus;
     private LocalDate startDate;

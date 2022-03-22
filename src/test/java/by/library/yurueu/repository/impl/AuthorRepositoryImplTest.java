@@ -78,6 +78,6 @@ public class AuthorRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNull(authorRepository.findById(authorId));
+        Assertions.assertThrows(RepositoryException.class, () -> authorRepository.findById(authorId));
     }
 }

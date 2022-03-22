@@ -1,18 +1,18 @@
 package by.library.yurueu.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import lombok.AllArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.FetchType;
 
 @Data
 @NoArgsConstructor

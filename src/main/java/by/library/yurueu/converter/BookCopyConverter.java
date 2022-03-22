@@ -3,18 +3,17 @@ package by.library.yurueu.converter;
 import by.library.yurueu.dto.BookCopyDto;
 import by.library.yurueu.dto.BookCopyListDto;
 import by.library.yurueu.dto.BookCopySaveDto;
-import by.library.yurueu.dto.impl.BookCopyDtoImpl;
-import by.library.yurueu.dto.impl.BookCopyListDtoImpl;
-import by.library.yurueu.dto.impl.BookCopySaveDtoImpl;
+import by.library.yurueu.dto.BookCopyUpdateDto;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class BookCopyConverter {
     public static BookCopyDto toDTO(BookCopy bookCopy) {
-        return BookCopyDtoImpl.builder()
+        return BookCopyDto.builder()
                 .id(bookCopy.getId())
                 .title(bookCopy.getBook().getTitle())
                 .pagesNumber(bookCopy.getBook().getPagesNumber())
@@ -22,14 +21,14 @@ public class BookCopyConverter {
                 .registrationDate(bookCopy.getRegistrationDate())
                 .pricePerDay(bookCopy.getPricePerDay())
                 .imagePath(bookCopy.getImagePath())
-                .bookDamages(BookDamageConverter.toListDTO(bookCopy.getBookDamages()))
-                .authors(AuthorConverter.toListDTO(bookCopy.getBook().getAuthors()))
-                .genres(GenreConverter.toListDTO(bookCopy.getBook().getGenres()))
+                .bookDamages(BookDamageConverter.toListDTO(new ArrayList<>(bookCopy.getBookDamages())))
+                .authors(AuthorConverter.toListDTO(new ArrayList<>(bookCopy.getBook().getAuthors())))
+                .genres(GenreConverter.toListDTO(new ArrayList<>(bookCopy.getBook().getGenres())))
                 .build();
     }
 
     public static BookCopySaveDto toSaveDTO(BookCopy bookCopy) {
-        return BookCopySaveDtoImpl.builder()
+        return BookCopySaveDto.builder()
                 .id(bookCopy.getId())
                 .status(bookCopy.getStatus())
                 .registrationDate(bookCopy.getRegistrationDate())
@@ -51,7 +50,7 @@ public class BookCopyConverter {
     }
 
     public static BookCopyListDto toListDTO(BookCopy bookCopy) {
-        return BookCopyListDtoImpl.builder()
+        return BookCopyListDto.builder()
                 .id(bookCopy.getId())
                 .title(bookCopy.getBook().getTitle())
                 .imagePath(bookCopy.getImagePath())
@@ -59,9 +58,19 @@ public class BookCopyConverter {
                 .build();
     }
 
-    public static Set<BookCopyListDto> toListDTO(Set<BookCopy> bookCopies) {
+    public static List<BookCopyListDto> toListDTO(List<BookCopy> bookCopies) {
         return bookCopies.stream()
                 .map(BookCopyConverter::toListDTO)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
+    }
+
+    public static BookCopy fromUpdateDTO(BookCopyUpdateDto bookCopyUpdateDto) {
+        return BookCopy.builder()
+                .id(bookCopyUpdateDto.getId())
+                .status(bookCopyUpdateDto.getStatus())
+                .registrationDate(bookCopyUpdateDto.getRegistrationDate())
+                .pricePerDay(bookCopyUpdateDto.getPricePerDay())
+                .imagePath(bookCopyUpdateDto.getImagePath())
+                .build();
     }
 }

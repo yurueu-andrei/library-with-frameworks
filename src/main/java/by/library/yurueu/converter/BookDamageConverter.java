@@ -1,20 +1,30 @@
 package by.library.yurueu.converter;
 
+import by.library.yurueu.dto.BookDamageDto;
 import by.library.yurueu.dto.BookDamageListDto;
 import by.library.yurueu.dto.BookDamageSaveDto;
-import by.library.yurueu.dto.impl.BookDamageListDtoImpl;
-import by.library.yurueu.dto.impl.BookDamageSaveDtoImpl;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.entity.Order;
 import by.library.yurueu.entity.User;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class BookDamageConverter {
+    public static BookDamageDto toDTO(BookDamage bookDamage) {
+        return BookDamageDto.builder()
+                .id(bookDamage.getId())
+                .damageDescription(bookDamage.getDamageDescription())
+                .imagePath(bookDamage.getImagePath())
+                .bookCopyId(bookDamage.getBookCopy().getId())
+                .orderId(bookDamage.getOrder().getId())
+                .userId(bookDamage.getUser().getId())
+                .build();
+    }
+
     public static BookDamageSaveDto toSaveDTO(BookDamage bookDamage) {
-        return BookDamageSaveDtoImpl.builder()
+        return BookDamageSaveDto.builder()
                 .id(bookDamage.getId())
                 .imagePath(bookDamage.getImagePath())
                 .damageDescription(bookDamage.getDamageDescription())
@@ -36,14 +46,14 @@ public class BookDamageConverter {
     }
 
     public static BookDamageListDto toListDTO(BookDamage bookDamage) {
-        return BookDamageListDtoImpl.builder()
+        return BookDamageListDto.builder()
                 .id(bookDamage.getId())
                 .build();
     }
 
-    public static Set<BookDamageListDto> toListDTO(Set<BookDamage> bookDamages) {
+    public static List<BookDamageListDto> toListDTO(List<BookDamage> bookDamages) {
         return bookDamages.stream()
                 .map(BookDamageConverter::toListDTO)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 }

@@ -3,6 +3,8 @@ package by.library.yurueu.repository.impl;
 import by.library.yurueu.entity.Role;
 import by.library.yurueu.entity.User;
 import by.library.yurueu.repository.RoleRepository;
+import by.library.yurueu.util.HibernateUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -29,7 +31,7 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
     }
 
     @Override
-    protected void constructQuery(Query query, Role role){
+    protected void constructQuery(Query query, Role role) {
         query.setParameter(ROLE_NAME_COLUMN, role.getRoleName())
                 .setParameter(ID_COLUMN, role.getId());
     }
@@ -41,5 +43,14 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
 
     private void deleteUserRoleLinks(Role role, Set<User> users) {
         users.forEach(user -> user.getRoles().remove(role));
+    }
+
+    @Override
+    public Set<User> findUsersByRoleId(Long roleId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Role role = session.get(Role.class, roleId);
+            Hibernate.initialize(role.getUsers());
+            return role.getUsers();
+        }
     }
 }

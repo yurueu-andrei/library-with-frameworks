@@ -15,21 +15,28 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
     private final Class<E> clazz;
 
     protected abstract String getSelectAllQuery();
+
     protected abstract String getUpdateQuery();
 
     protected abstract void constructQuery(Query query, E element);
 
-    public E findById(Long id) {
+    public E findById(Long id) throws RepositoryException {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(clazz, id);
+            E element = session.get(clazz, id);
+            if (element == null) {
+                throw new RepositoryException(String.format("%s was not found", clazz.getSimpleName()));
+            }
+            return element;
         }
     }
 
     public List<E> findAll() throws RepositoryException {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery(getSelectAllQuery(), clazz).list();
-        } catch (Exception ex) {
-            throw new RepositoryException(clazz.getSimpleName() + "s were not found[" + ex.getMessage() + "]");
+            List<E> elements = session.createQuery(getSelectAllQuery(), clazz).list();
+            if (elements.isEmpty()) {
+                throw new RepositoryException(String.format("%ss were not found", clazz.getSimpleName()));
+            }
+            return elements;
         }
     }
 
@@ -38,7 +45,7 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
             session.save(element);
             return element;
         } catch (Exception ex) {
-            throw new RepositoryException(clazz.getSimpleName() + " was not added[" + ex.getMessage() + "]");
+            throw new RepositoryException(String.format("%s was not added", clazz.getSimpleName()));
         }
     }
 
@@ -53,7 +60,7 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
                 return true;
             } catch (Exception ex) {
                 session.getTransaction().rollback();
-                throw new RepositoryException(clazz.getSimpleName() + " was not updated[" + ex.getMessage() + "]");
+                throw new RepositoryException(String.format("%s was not updated", clazz.getSimpleName()));
             }
         }
     }
@@ -69,10 +76,11 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
                 return true;
             } catch (Exception ex) {
                 session.getTransaction().rollback();
-                throw new RepositoryException(clazz.getSimpleName() + " was not deleted[" + ex.getMessage() + "]");
+                throw new RepositoryException(String.format("%s was not deleted", clazz.getSimpleName()));
             }
         }
     }
 
-    protected void deleteLinks(Session session, E element) {}
+    protected void deleteLinks(Session session, E element) {
+    }
 }

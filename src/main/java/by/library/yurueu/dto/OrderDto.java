@@ -1,16 +1,25 @@
 package by.library.yurueu.dto;
 
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
-public interface OrderDto {
-    Long getId();
-    String getOrderStatus();
-    LocalDate getStartDate();
-    LocalDate getEndDate();
-    int getPrice();
-    Long getUserId();
+@Getter
+@Builder
+@EqualsAndHashCode
+@ToString
+public class OrderDto {
+    private Long id;
+    private String orderStatus;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private int price;
+    private Long userId;
 
-    Set<BookDamageListDto> getBookDamages();
-    Set<BookCopyListDto> getBookCopies();
+    private List<BookDamageListDto> bookDamages;
+    private List<BookCopyListDto> bookCopies;
 }

@@ -1,20 +1,20 @@
-package by.library.yurueu.dto.impl;
+package by.library.yurueu.dto;
 
-import by.library.yurueu.dto.AuthorDto;
-import by.library.yurueu.dto.BookCopyListDto;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Builder
 @Getter
-public class AuthorDtoImpl implements AuthorDto {
+@EqualsAndHashCode
+@ToString
+public class AuthorUpdateDto {
     private Long id;
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
     private String imagePath;
-    private Set<BookCopyListDto> books;
 }

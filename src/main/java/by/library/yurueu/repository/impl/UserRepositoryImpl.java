@@ -1,9 +1,16 @@
 package by.library.yurueu.repository.impl;
 
+import by.library.yurueu.entity.Order;
+import by.library.yurueu.entity.Role;
 import by.library.yurueu.entity.User;
 import by.library.yurueu.repository.UserRepository;
+import by.library.yurueu.util.HibernateUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
     private static final String FIRST_NAME_COLUMN = "firstName";
@@ -39,7 +46,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     }
 
     @Override
-    protected void constructQuery(Query query, User user){
+    protected void constructQuery(Query query, User user) {
         query.setParameter(FIRST_NAME_COLUMN, user.getFirstName())
                 .setParameter(LAST_NAME_COLUMN, user.getLastName())
                 .setParameter(PASSPORT_COLUMN, user.getPassportNumber())
@@ -65,5 +72,30 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
         session.createQuery(DELETE_BOOK_DAMAGE_QUERY)
                 .setParameter(USER_ID_COLUMN, user.getId())
                 .executeUpdate();
+    }
+
+    @Override
+    public Set<Role> findRolesByUserId(Long userId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            User user = session.get(User.class, userId);
+            Hibernate.initialize(user.getRoles());
+            return user.getRoles();
+        }
+    }
+
+    @Override
+    public Set<Order> findOrdersByUserId(Long userId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            User user = session.get(User.class, userId);
+            Hibernate.initialize(user.getOrders());
+            return user.getOrders();
+        }
+    }
+
+    @Override
+    public Set<Role> findRolesByRolesId(Set<Long> rolesId) {
+        return rolesId.stream()
+                .map(roleId -> Role.builder().id(roleId).build())
+                .collect(Collectors.toSet());
     }
 }

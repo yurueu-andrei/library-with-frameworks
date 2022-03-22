@@ -3,6 +3,8 @@ package by.library.yurueu.repository.impl;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.Genre;
 import by.library.yurueu.repository.GenreRepository;
+import by.library.yurueu.util.HibernateUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -29,7 +31,7 @@ public class GenreRepositoryImpl extends AbstractRepositoryImpl<Genre> implement
     }
 
     @Override
-    protected void constructQuery(Query query, Genre genre){
+    protected void constructQuery(Query query, Genre genre) {
         query.setParameter(GENRE_NAME_COLUMN, genre.getGenreName())
                 .setParameter(ID_COLUMN, genre.getId());
     }
@@ -41,5 +43,14 @@ public class GenreRepositoryImpl extends AbstractRepositoryImpl<Genre> implement
 
     private void deleteBookGenreLinks(Genre genre, Set<Book> books) {
         books.forEach(book -> book.getGenres().remove(genre));
+    }
+
+    @Override
+    public Set<Book> findBooksByGenreId(Long genreId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Genre genre = session.get(Genre.class, genreId);
+            Hibernate.initialize(genre.getBooks());
+            return genre.getBooks();
+        }
     }
 }

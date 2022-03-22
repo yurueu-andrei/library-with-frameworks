@@ -79,6 +79,6 @@ public class BookCopyRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNull(bookCopyRepository.findById(bookCopyId));
+        Assertions.assertThrows(RepositoryException.class, () -> bookCopyRepository.findById(bookCopyId));
     }
 }

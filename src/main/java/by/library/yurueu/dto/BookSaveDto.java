@@ -1,19 +1,23 @@
 package by.library.yurueu.dto;
 
-import java.util.Set;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-public interface BookSaveDto {
-    Long getId();
-    String getTitle();
-    int getPagesNumber();
-    String getImagePath();
-    Set<Long> getGenresId();
-    Set<Long> getAuthorsId();
+import java.util.List;
 
-    void setId(Long id);
-    void setTitle(String title);
-    void setPagesNumber(int pagesNumber);
-    void setImagePath(String imagePath);
-    void setGenresId(Set<Long> genresId);
-    void setAuthorsId(Set<Long> authorsId);
+@Getter
+@Setter
+@Builder
+@EqualsAndHashCode
+@ToString
+public class BookSaveDto {
+    private Long id;
+    private String title;
+    private int pagesNumber;
+    private String imagePath;
+    private List<Long> genresId;
+    private List<Long> authorsId;
 }

@@ -1,6 +1,13 @@
 package by.library.yurueu.repository;
 
-import by.library.yurueu.entity.*;
+import by.library.yurueu.entity.Author;
+import by.library.yurueu.entity.Book;
+import by.library.yurueu.entity.BookCopy;
+import by.library.yurueu.entity.BookDamage;
+import by.library.yurueu.entity.Genre;
+import by.library.yurueu.entity.Order;
+import by.library.yurueu.entity.Role;
+import by.library.yurueu.entity.User;
 import by.library.yurueu.service.FlywayService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,21 +1,20 @@
-package by.library.yurueu.dto.impl;
+package by.library.yurueu.dto;
 
-import by.library.yurueu.dto.BookCopySaveDto;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
-
+import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Getter
-@Setter
 @Builder
-public class BookCopySaveDtoImpl implements BookCopySaveDto {
+@EqualsAndHashCode
+@ToString
+public class BookCopyUpdateDto {
     private Long id;
     private String status;
     private LocalDate registrationDate;
     private int pricePerDay;
     private String imagePath;
-    private Long bookId;
 }

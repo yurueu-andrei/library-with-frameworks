@@ -1,13 +1,22 @@
 package by.library.yurueu.dto;
 
-import java.time.LocalDate;
-import java.util.Set;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-public interface AuthorDto {
-    Long getId();
-    String getFirstName();
-    String getLastName();
-    LocalDate getBirthDate();
-    String getImagePath();
-    Set<BookCopyListDto> getBooks();
+import java.time.LocalDate;
+import java.util.List;
+
+@Builder
+@Getter
+@EqualsAndHashCode
+@ToString
+public class AuthorDto {
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private LocalDate birthDate;
+    private String imagePath;
+    private List<BookCopyListDto> books;
 }
