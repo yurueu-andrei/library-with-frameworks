@@ -6,29 +6,23 @@ import by.library.yurueu.entity.Genre;
 import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.GenreRepository;
-import by.library.yurueu.repository.impl.GenreRepositoryImpl;
-import by.library.yurueu.service.GenreService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class GenreServiceImplTest {
-
-    private final GenreRepository genreRepository;
-    private final GenreService genreService;
-
-    public GenreServiceImplTest() {
-        genreRepository = mock(GenreRepositoryImpl.class);
-        genreService = new GenreServiceImpl(genreRepository);
-    }
+    @Mock
+    private GenreRepository genreRepository;
+    @InjectMocks
+    private GenreServiceImpl genreService;
 
     @Test
     void findById_shouldReturnGenreDto() throws ServiceException, RepositoryException {

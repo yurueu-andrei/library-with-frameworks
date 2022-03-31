@@ -9,29 +9,24 @@ import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.UserRepository;
-import by.library.yurueu.repository.impl.UserRepositoryImpl;
-import by.library.yurueu.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class UserServiceImplTest {
-    private final UserRepository userRepository;
-    private final UserService userService;
-
-    public UserServiceImplTest() {
-        userRepository = mock(UserRepositoryImpl.class);
-        userService = new UserServiceImpl(userRepository);
-    }
+    @Mock
+    private UserRepository userRepository;
+    @InjectMocks
+    private UserServiceImpl userService;
 
     @Test
     void findByIdTest_shouldReturnUserDto() throws RepositoryException, ServiceException {

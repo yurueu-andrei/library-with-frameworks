@@ -16,29 +16,24 @@ import by.library.yurueu.entity.Order;
 import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.BookCopyRepository;
-import by.library.yurueu.repository.impl.BookCopyRepositoryImpl;
-import by.library.yurueu.service.BookCopyService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class BookCopyServiceImplTest {
-    private final BookCopyRepository bookCopyRepository;
-    private final BookCopyService bookCopyService;
-
-    public BookCopyServiceImplTest() {
-        bookCopyRepository = mock(BookCopyRepositoryImpl.class);
-        bookCopyService = new BookCopyServiceImpl(bookCopyRepository);
-    }
+    @Mock
+    private BookCopyRepository bookCopyRepository;
+    @InjectMocks
+    private BookCopyServiceImpl bookCopyService;
 
     @Test
     void findById_shouldReturnBookCopyDto() throws RepositoryException, ServiceException {

@@ -5,28 +5,23 @@ import by.library.yurueu.entity.Role;
 import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.RoleRepository;
-import by.library.yurueu.repository.impl.RoleRepositoryImpl;
-import by.library.yurueu.service.RoleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class RoleServiceImplTest {
-    private final RoleRepository roleRepository;
-    private final RoleService roleService;
-
-    public RoleServiceImplTest() {
-        roleRepository = mock(RoleRepositoryImpl.class);
-        roleService = new RoleServiceImpl(roleRepository);
-    }
+    @Mock
+    private RoleRepository roleRepository;
+    @InjectMocks
+    private RoleServiceImpl roleService;
 
     @Test
     void findAll_shouldReturnListOfRoleDto() throws RepositoryException, ServiceException {
