@@ -12,10 +12,12 @@ import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.BookDamageRepository;
 import by.library.yurueu.service.BookDamageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @RequiredArgsConstructor
+@Service
 public class BookDamageServiceImpl implements BookDamageService {
     private final BookDamageRepository bookDamageRepository;
 

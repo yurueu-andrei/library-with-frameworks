@@ -10,10 +10,12 @@ import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.UserRepository;
 import by.library.yurueu.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @RequiredArgsConstructor
+@Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 

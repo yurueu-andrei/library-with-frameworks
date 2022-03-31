@@ -7,10 +7,12 @@ import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.RoleRepository;
 import by.library.yurueu.service.RoleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @RequiredArgsConstructor
+@Service
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
 

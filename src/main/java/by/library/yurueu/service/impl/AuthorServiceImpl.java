@@ -10,10 +10,12 @@ import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.AuthorRepository;
 import by.library.yurueu.service.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @RequiredArgsConstructor
+@Service
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
 

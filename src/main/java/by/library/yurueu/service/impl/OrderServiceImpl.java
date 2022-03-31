@@ -11,11 +11,13 @@ import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.OrderRepository;
 import by.library.yurueu.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
 

@@ -11,10 +11,12 @@ import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.BookCopyRepository;
 import by.library.yurueu.service.BookCopyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @RequiredArgsConstructor
+@Service
 public class BookCopyServiceImpl implements BookCopyService {
     private final BookCopyRepository bookCopyRepository;
 
