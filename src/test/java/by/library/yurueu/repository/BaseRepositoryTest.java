@@ -8,19 +8,20 @@ import by.library.yurueu.entity.Genre;
 import by.library.yurueu.entity.Order;
 import by.library.yurueu.entity.Role;
 import by.library.yurueu.entity.User;
-import by.library.yurueu.service.FlywayService;
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static by.library.yurueu.property.Property.*;
-
+@SpringBootTest
 public abstract class BaseRepositoryTest {
-    private final FlywayService flywayService;
-
+    @Autowired
+    private Flyway flyway;
     private List<User> users;
     private List<Role> roles;
     private List<Order> orders;
@@ -29,9 +30,7 @@ public abstract class BaseRepositoryTest {
     private List<BookDamage> bookDamage;
     private List<BookCopy> bookCopies;
     private List<Author> authors;
-
     public BaseRepositoryTest() {
-        flywayService = new FlywayService(H2_URL, H2_USER, H2_PASSWORD, MIGRATION_LOCATION);
         fillUsers();
         fillRoles();
         fillOrders();
@@ -44,12 +43,12 @@ public abstract class BaseRepositoryTest {
 
     @BeforeEach
     public void migrate() {
-        flywayService.migrate();
+        flyway.migrate();
     }
 
     @AfterEach
     public void clean() {
-        flywayService.clean();
+        flyway.clean();
     }
 
     private void fillUsers() {

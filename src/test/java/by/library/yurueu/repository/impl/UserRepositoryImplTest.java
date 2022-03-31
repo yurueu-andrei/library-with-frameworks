@@ -6,16 +6,14 @@ import by.library.yurueu.repository.BaseRepositoryTest;
 import by.library.yurueu.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class UserRepositoryImplTest extends BaseRepositoryTest {
-    private final UserRepository userRepository;
-
-    public UserRepositoryImplTest() {
-        userRepository = new UserRepositoryImpl();
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     public void findByIdTest_shouldReturnTheFirstUserInDB() throws RepositoryException {

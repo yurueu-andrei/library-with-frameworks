@@ -6,15 +6,13 @@ import by.library.yurueu.repository.BaseRepositoryTest;
 import by.library.yurueu.repository.GenreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class GenreRepositoryImplTest extends BaseRepositoryTest {
-    private final GenreRepository genreRepository;
-
-    public GenreRepositoryImplTest() {
-        genreRepository = new GenreRepositoryImpl();
-    }
+    @Autowired
+    private GenreRepository genreRepository;
 
     @Test
     public void findByIdTest_shouldReturnTheFirstGenreInDB() throws RepositoryException {

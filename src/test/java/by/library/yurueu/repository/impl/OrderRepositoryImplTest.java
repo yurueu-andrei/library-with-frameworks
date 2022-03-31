@@ -7,16 +7,14 @@ import by.library.yurueu.repository.BaseRepositoryTest;
 import by.library.yurueu.repository.OrderRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class OrderRepositoryImplTest extends BaseRepositoryTest {
-    private final OrderRepository orderRepository;
-
-    public OrderRepositoryImplTest() {
-        orderRepository = new OrderRepositoryImpl();
-    }
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Test
     public void findByIdTest_shouldReturnTheFirstOrderInDB() throws RepositoryException {

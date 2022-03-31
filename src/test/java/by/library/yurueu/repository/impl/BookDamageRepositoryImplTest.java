@@ -9,15 +9,13 @@ import by.library.yurueu.repository.BaseRepositoryTest;
 import by.library.yurueu.repository.BookDamageRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class BookDamageRepositoryImplTest extends BaseRepositoryTest {
-    private final BookDamageRepository bookDamageRepository;
-
-    public BookDamageRepositoryImplTest() {
-        bookDamageRepository = new BookDamageRepositoryImpl();
-    }
+    @Autowired
+    private BookDamageRepository bookDamageRepository;
 
     @Test
     public void findByIdTest_shouldReturnTheFirstBookDamageInDB() throws RepositoryException {

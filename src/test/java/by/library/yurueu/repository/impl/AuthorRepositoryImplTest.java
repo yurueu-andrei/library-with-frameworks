@@ -6,16 +6,15 @@ import by.library.yurueu.repository.AuthorRepository;
 import by.library.yurueu.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class AuthorRepositoryImplTest extends BaseRepositoryTest {
-    private final AuthorRepository authorRepository;
 
-    public AuthorRepositoryImplTest() {
-        authorRepository = new AuthorRepositoryImpl();
-    }
+public class AuthorRepositoryImplTest extends BaseRepositoryTest {
+    @Autowired
+    private AuthorRepository authorRepository;
 
     @Test
     public void findByIdTest_shouldReturnTheFirstAuthorInDB() throws RepositoryException {

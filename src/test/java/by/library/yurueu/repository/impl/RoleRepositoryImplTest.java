@@ -6,15 +6,13 @@ import by.library.yurueu.repository.BaseRepositoryTest;
 import by.library.yurueu.repository.RoleRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class RoleRepositoryImplTest extends BaseRepositoryTest {
-    private final RoleRepository roleRepository;
-
-    public RoleRepositoryImplTest() {
-        roleRepository = new RoleRepositoryImpl();
-    }
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Test
     void findByIdTest_shouldReturnTheFirstRoleInDB() throws RepositoryException {

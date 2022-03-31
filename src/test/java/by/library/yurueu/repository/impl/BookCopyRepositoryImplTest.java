@@ -7,16 +7,14 @@ import by.library.yurueu.repository.BaseRepositoryTest;
 import by.library.yurueu.repository.BookCopyRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class BookCopyRepositoryImplTest extends BaseRepositoryTest {
-    private final BookCopyRepository bookCopyRepository;
-
-    public BookCopyRepositoryImplTest() {
-        bookCopyRepository = new BookCopyRepositoryImpl();
-    }
+    @Autowired
+    private BookCopyRepository bookCopyRepository;
 
     @Test
     public void findByIdTest_shouldReturnTheFirstBookCopyInDB() throws RepositoryException {
