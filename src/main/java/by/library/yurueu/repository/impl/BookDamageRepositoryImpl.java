@@ -2,8 +2,13 @@ package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.repository.BookDamageRepository;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManagerFactory;
+
+@Repository
 public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage> implements BookDamageRepository {
     private static final String IMAGE_PATH_COLUMN = "imagePath";
     private static final String DAMAGE_DESCRIPTION_COLUMN = "damageDescription";
@@ -14,8 +19,8 @@ public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage>
                     " SET imagePath=:imagePath, damageDescription=:damageDescription " +
                     " WHERE id=:id";
 
-    public BookDamageRepositoryImpl() {
-        super(BookDamage.class);
+    public BookDamageRepositoryImpl(EntityManagerFactory factory) {
+        super(BookDamage.class, factory.unwrap(SessionFactory.class));
     }
 
     @Override

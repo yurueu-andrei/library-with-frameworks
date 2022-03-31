@@ -3,21 +3,24 @@ package by.library.yurueu.repository.impl;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.Genre;
 import by.library.yurueu.repository.GenreRepository;
-import by.library.yurueu.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.Set;
 
+@Repository
 public class GenreRepositoryImpl extends AbstractRepositoryImpl<Genre> implements GenreRepository {
     private static final String GENRE_NAME_COLUMN = "genreName";
 
     private static final String SELECT_ALL_QUERY = "from Genre";
     private static final String UPDATE_QUERY = "UPDATE Genre SET genreName=:genreName WHERE id=:id";
 
-    public GenreRepositoryImpl() {
-        super(Genre.class);
+    public GenreRepositoryImpl(EntityManagerFactory factory) {
+        super(Genre.class, factory.unwrap(SessionFactory.class));
     }
 
     @Override
@@ -47,7 +50,7 @@ public class GenreRepositoryImpl extends AbstractRepositoryImpl<Genre> implement
 
     @Override
     public Set<Book> findBooksByGenreId(Long genreId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             Genre genre = session.get(Genre.class, genreId);
             Hibernate.initialize(genre.getBooks());
             return genre.getBooks();

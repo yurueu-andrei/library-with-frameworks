@@ -3,21 +3,24 @@ package by.library.yurueu.repository.impl;
 import by.library.yurueu.entity.Role;
 import by.library.yurueu.entity.User;
 import by.library.yurueu.repository.RoleRepository;
-import by.library.yurueu.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.Set;
 
+@Repository
 public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements RoleRepository {
     private static final String ROLE_NAME_COLUMN = "roleName";
 
     private static final String SELECT_ALL_QUERY = "from Role";
     private static final String UPDATE_QUERY = "UPDATE Role SET roleName=:roleName WHERE id=:id";
 
-    public RoleRepositoryImpl() {
-        super(Role.class);
+    public RoleRepositoryImpl(EntityManagerFactory factory) {
+        super(Role.class, factory.unwrap(SessionFactory.class));
     }
 
     @Override
@@ -47,7 +50,7 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
 
     @Override
     public Set<User> findUsersByRoleId(Long roleId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             Role role = session.get(Role.class, roleId);
             Hibernate.initialize(role.getUsers());
             return role.getUsers();

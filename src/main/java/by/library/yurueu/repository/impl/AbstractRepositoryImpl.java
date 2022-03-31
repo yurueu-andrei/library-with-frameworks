@@ -2,17 +2,21 @@ package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BaseRepository;
-import by.library.yurueu.util.HibernateUtil;
-import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
     protected static final String ID_COLUMN = "id";
     private final Class<E> clazz;
+    private final SessionFactory sessionFactory;
+
+    public AbstractRepositoryImpl(Class<E> clazz, SessionFactory sessionFactory) {
+        this.clazz = clazz;
+        this.sessionFactory = sessionFactory;
+    }
 
     protected abstract String getSelectAllQuery();
 
@@ -20,8 +24,12 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
 
     protected abstract void constructQuery(Query query, E element);
 
+    protected SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
     public E findById(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             E element = session.get(clazz, id);
             if (element == null) {
                 throw new RepositoryException(String.format("%s was not found", clazz.getSimpleName()));
@@ -31,7 +39,7 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
     }
 
     public List<E> findAll() throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             List<E> elements = session.createQuery(getSelectAllQuery(), clazz).list();
             if (elements.isEmpty()) {
                 throw new RepositoryException(String.format("%ss were not found", clazz.getSimpleName()));
@@ -41,7 +49,7 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
     }
 
     public E add(E element) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             session.save(element);
             return element;
         } catch (Exception ex) {
@@ -50,7 +58,7 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
     }
 
     public boolean update(E element) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             try {
                 session.getTransaction().begin();
                 Query query = session.createQuery(getUpdateQuery());
@@ -66,7 +74,7 @@ public abstract class AbstractRepositoryImpl<E> implements BaseRepository<E> {
     }
 
     public boolean delete(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             try {
                 session.getTransaction().begin();
                 E element = session.get(clazz, id);

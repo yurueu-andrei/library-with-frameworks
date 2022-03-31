@@ -6,11 +6,15 @@ import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.entity.Genre;
 import by.library.yurueu.repository.BookRepository;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Repository
 public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements BookRepository {
     private static final String TITLE_COLUMN = "title";
     private static final String PAGES_COLUMN = "pages";
@@ -25,8 +29,8 @@ public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements 
     private static final String DELETE_BOOK_COPIES_QUERY = "DELETE BookCopy bc WHERE bc.book.id=:bookId";
     private static final String DELETE_BOOK_DAMAGE_QUERY = "DELETE BookDamage bd WHERE bd.bookCopy.id=:bookCopyId";
 
-    public BookRepositoryImpl() {
-        super(Book.class);
+    public BookRepositoryImpl(EntityManagerFactory factory) {
+        super(Book.class, factory.unwrap(SessionFactory.class));
     }
 
     @Override

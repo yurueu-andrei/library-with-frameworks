@@ -5,14 +5,17 @@ import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.entity.Order;
 import by.library.yurueu.entity.User;
 import by.library.yurueu.repository.OrderRepository;
-import by.library.yurueu.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Repository
 public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implements OrderRepository {
     private static final String ORDER_STATUS_COLUMN = "orderStatus";
     private static final String START_DATE_COLUMN = "startDate";
@@ -28,8 +31,8 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
 
     private static final String DELETE_BOOK_DAMAGE_QUERY = "DELETE BookDamage bd WHERE bd.order.id=:orderId";
 
-    public OrderRepositoryImpl() {
-        super(Order.class);
+    public OrderRepositoryImpl(EntityManagerFactory factory) {
+        super(Order.class, factory.unwrap(SessionFactory.class));
     }
 
     @Override
@@ -64,7 +67,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
 
     @Override
     public User findUserByOrderId(Long orderId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             Order order = session.get(Order.class, orderId);
             Hibernate.initialize(order.getUser());
             return order.getUser();
@@ -73,7 +76,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
 
     @Override
     public Set<BookCopy> findBookCopiesByOrderId(Long orderId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             Order order = session.get(Order.class, orderId);
             Hibernate.initialize(order.getBookCopies());
             return order.getBookCopies();
@@ -82,7 +85,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
 
     @Override
     public Set<BookDamage> findBookDamagesByOrderId(Long orderId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             Order order = session.get(Order.class, orderId);
             Hibernate.initialize(order.getBookDamages());
             return order.getBookDamages();

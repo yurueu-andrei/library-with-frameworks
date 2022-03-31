@@ -4,14 +4,17 @@ import by.library.yurueu.entity.Order;
 import by.library.yurueu.entity.Role;
 import by.library.yurueu.entity.User;
 import by.library.yurueu.repository.UserRepository;
-import by.library.yurueu.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Repository
 public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
     private static final String FIRST_NAME_COLUMN = "firstName";
     private static final String LAST_NAME_COLUMN = "lastName";
@@ -31,8 +34,8 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     private static final String DELETE_ORDERS_QUERY = "DELETE Order o WHERE o.user.id=:userId";
     private static final String DELETE_BOOK_DAMAGE_QUERY = "DELETE BookDamage bd WHERE bd.user.id=:userId";
 
-    public UserRepositoryImpl() {
-        super(User.class);
+    public UserRepositoryImpl(EntityManagerFactory factory) {
+        super(User.class, factory.unwrap(SessionFactory.class));
     }
 
     @Override
@@ -76,7 +79,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
 
     @Override
     public Set<Role> findRolesByUserId(Long userId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             User user = session.get(User.class, userId);
             Hibernate.initialize(user.getRoles());
             return user.getRoles();
@@ -85,7 +88,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
 
     @Override
     public Set<Order> findOrdersByUserId(Long userId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             User user = session.get(User.class, userId);
             Hibernate.initialize(user.getOrders());
             return user.getOrders();

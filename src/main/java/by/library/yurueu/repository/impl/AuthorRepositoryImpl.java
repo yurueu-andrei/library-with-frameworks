@@ -3,13 +3,16 @@ package by.library.yurueu.repository.impl;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.repository.AuthorRepository;
-import by.library.yurueu.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.Set;
 
+@Repository
 public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> implements AuthorRepository {
     private static final String FIRST_NAME_COLUMN = "firstName";
     private static final String LAST_NAME_COLUMN = "lastName";
@@ -22,8 +25,8 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
                     " SET firstName=:firstName, lastName=:lastName, birthDate=:birthDate, imagePath=:imagePath " +
                     " WHERE id=:id";
 
-    public AuthorRepositoryImpl() {
-        super(Author.class);
+    public AuthorRepositoryImpl(EntityManagerFactory factory) {
+        super(Author.class, factory.unwrap(SessionFactory.class));
     }
 
     @Override
@@ -56,7 +59,7 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
 
     @Override
     public Set<Book> findBooksByAuthorId(Long authorId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             Author author = session.get(Author.class, authorId);
             Hibernate.initialize(author.getBooks());
             return author.getBooks();

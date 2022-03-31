@@ -5,13 +5,16 @@ import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.entity.Order;
 import by.library.yurueu.repository.BookCopyRepository;
-import by.library.yurueu.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.Set;
 
+@Repository
 public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> implements BookCopyRepository {
     private static final String BOOK_COPY_STATUS_COLUMN = "status";
     private static final String REGISTRATION_DATE_COLUMN = "registrationDate";
@@ -27,8 +30,8 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
 
     private static final String DELETE_BOOK_DAMAGE_QUERY = "DELETE BookDamage bd WHERE bd.bookCopy.id=:bookCopyId";
 
-    public BookCopyRepositoryImpl() {
-        super(BookCopy.class);
+    public BookCopyRepositoryImpl(EntityManagerFactory factory) {
+        super(BookCopy.class, factory.unwrap(SessionFactory.class));
     }
 
     @Override
@@ -68,7 +71,7 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
 
     @Override
     public Book findBookByBookCopyId(Long bookCopyId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             BookCopy bookCopy = session.get(BookCopy.class, bookCopyId);
             Hibernate.initialize(bookCopy.getBook());
             return bookCopy.getBook();
@@ -77,7 +80,7 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
 
     @Override
     public Set<BookDamage> findBookDamagesByBookCopyId(Long bookCopyId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             BookCopy bookCopy = session.get(BookCopy.class, bookCopyId);
             Hibernate.initialize(bookCopy.getBookDamages());
             return bookCopy.getBookDamages();
@@ -86,7 +89,7 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
 
     @Override
     public Set<Order> findOrdersByBookCopyId(Long bookCopyId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             BookCopy bookCopy = session.get(BookCopy.class, bookCopyId);
             Hibernate.initialize(bookCopy.getOrders());
             return bookCopy.getOrders();
