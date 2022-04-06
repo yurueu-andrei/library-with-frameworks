@@ -6,7 +6,6 @@ import by.library.yurueu.dto.UserSaveDto;
 import by.library.yurueu.dto.UserUpdateDto;
 import by.library.yurueu.entity.Role;
 import by.library.yurueu.entity.User;
-import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -18,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
@@ -29,15 +29,14 @@ class UserServiceImplTest {
     private UserServiceImpl userService;
 
     @Test
-    void findByIdTest_shouldReturnUserDto() throws RepositoryException, ServiceException {
+    void findByIdTest_shouldReturnUserDto() throws ServiceException {
         //given
         Long id = 1L;
         UserDto expected = UserDto.builder().id(id).rolesId(new ArrayList<>()).orders(new ArrayList<>()).build();
 
         //when
-        when(userRepository.findById(id)).thenReturn(User.builder().id(id).build());
-        when(userRepository.findRolesByUserId(id)).thenReturn(new HashSet<>());
-        when(userRepository.findOrdersByUserId(id)).thenReturn(new HashSet<>());
+        when(userRepository.findById(id)).thenReturn(Optional.of(User.builder().id(id)
+                .roles(new HashSet<>()).orders(new HashSet<>()).build()));
         UserDto actual = userService.findById(id);
 
         //then
@@ -45,7 +44,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfUserListDto() throws RepositoryException, ServiceException {
+    void findAllTest_shouldReturnListOfUserListDto() throws ServiceException {
         //given
         List<UserListDto> expected = new ArrayList<>() {{
             add(UserListDto.builder().id(1L).build());
@@ -64,13 +63,15 @@ class UserServiceImplTest {
     }
 
     @Test
-    void addTest_shouldAddUser() throws RepositoryException, ServiceException {
+    void addTest_shouldAddUser() throws ServiceException {
         //given
         HashSet<Role> roles = new HashSet<>() {{add(Role.builder().id(1L).build());}};
         UserSaveDto expected = UserSaveDto.builder().id(3L).rolesId(new ArrayList<>() {{add(1L);}}).build();
+        User userWithoutId = User.builder().roles(roles).build();
+        User userWithId = User.builder().id(3L).roles(roles).build();
 
         //when
-        when(userRepository.add(User.builder().roles(roles).build())).thenReturn(User.builder().id(3L).roles(roles).build());
+        when(userRepository.save(userWithoutId)).thenReturn(userWithId);
         UserSaveDto actual = userService.add(UserSaveDto.builder().rolesId(new ArrayList<>() {{add(1L);}}).build());
 
         //then
@@ -78,12 +79,13 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateTest_shouldUpdateUser() throws RepositoryException, ServiceException {
+    void updateTest_shouldUpdateUser() throws ServiceException {
         //given
         UserUpdateDto expected = UserUpdateDto.builder().id(4L).firstName("Sergei").lastName("Smirnov").build();
+        User user = User.builder().id(4L).firstName("Sergei").lastName("Smirnov").build();
 
         //when
-        when(userRepository.update(User.builder().id(4L).firstName("Sergei").lastName("Smirnov").build())).thenReturn(true);
+        when(userRepository.save(user)).thenReturn(user);
         boolean actual = userService.update(expected);
 
         //then
@@ -91,16 +93,15 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteTest_shouldDeleteUser() throws RepositoryException, ServiceException {
+    void deleteTest_shouldDeleteUser() throws ServiceException {
         //given
         Long id = 3L;
 
         //when
-        when(userRepository.delete(id)).thenReturn(true);
+        when(userRepository.findById(id)).thenReturn(Optional.of(User.builder().id(3L).build()));
         boolean actual = userService.delete(id);
 
         //then
         Assertions.assertTrue(actual);
-        Assertions.assertThrows(ServiceException.class, () -> userService.findById(id));
     }
 }

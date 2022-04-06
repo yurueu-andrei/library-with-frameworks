@@ -2,7 +2,6 @@ package by.library.yurueu.service.impl;
 
 import by.library.yurueu.dto.RoleDto;
 import by.library.yurueu.entity.Role;
-import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.RoleRepository;
 import org.junit.jupiter.api.Assertions;
@@ -24,7 +23,7 @@ class RoleServiceImplTest {
     private RoleServiceImpl roleService;
 
     @Test
-    void findAll_shouldReturnListOfRoleDto() throws RepositoryException, ServiceException {
+    void findAll_shouldReturnListOfRoleDto() throws ServiceException {
         //given
         List<RoleDto> expected = new ArrayList<>() {{
             add(RoleDto.builder().id(1L).build());

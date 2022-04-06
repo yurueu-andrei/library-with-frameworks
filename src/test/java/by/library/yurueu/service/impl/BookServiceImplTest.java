@@ -4,7 +4,6 @@ import by.library.yurueu.dto.BookSaveDto;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.Genre;
-import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.BookRepository;
 import org.junit.jupiter.api.Assertions;
@@ -15,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
@@ -26,24 +26,24 @@ class BookServiceImplTest {
     private BookServiceImpl bookService;
 
     @Test
-    void add_shouldAddBook() throws RepositoryException, ServiceException {
+    void add_shouldAddBook() throws ServiceException {
         //given
         BookSaveDto expected = BookSaveDto.builder().id(3L).title("hello")
                 .genresId(new ArrayList<>(){{add(1L);}})
                 .authorsId(new ArrayList<>(){{add(1L);}})
                 .build();
+        Book bookWithoutId = Book.builder().title("hello")
+                .genres(new HashSet<>(){{add(Genre.builder().id(1L).build());}})
+                .authors(new HashSet<>(){{add(Author.builder().id(1L).build());}})
+                .build();
+        Book bookWithId = Book.builder().id(3L).title("hello")
+                .genres(new HashSet<>(){{add(Genre.builder().id(1L).build());}})
+                .authors(new HashSet<>(){{add(Author.builder().id(1L).build());}})
+                .build();
 
         //when
-        when(bookRepository.findGenresByGenresId(new HashSet<>(){{add(1L);}}))
-                .thenReturn(new HashSet<>(){{add(Genre.builder().id(1L).build());}});
-        when(bookRepository.findAuthorsByAuthorsId(new HashSet<>(){{add(1L);}}))
-                .thenReturn(new HashSet<>(){{add(Author.builder().id(1L).build());}});
-
-        when(bookRepository.add(Book.builder().title("hello").build()))
-                .thenReturn(Book.builder().id(3L).title("hello")
-                        .genres(new HashSet<>(){{add(Genre.builder().id(1L).build());}})
-                        .authors(new HashSet<>(){{add(Author.builder().id(1L).build());}})
-                        .build());
+        when(bookRepository.save(bookWithoutId))
+                .thenReturn(bookWithId);
         BookSaveDto actual = bookService.add(BookSaveDto.builder()
                         .genresId(new ArrayList<>(){{add(1L);}})
                         .authorsId(new ArrayList<>(){{add(1L);}})
@@ -55,12 +55,12 @@ class BookServiceImplTest {
     }
 
     @Test
-    void delete_shouldDeleteBook() throws RepositoryException, ServiceException {
+    void delete_shouldDeleteBook() throws ServiceException {
         //given
         Long id = 3L;
 
         //when
-        when(bookRepository.delete(id)).thenReturn(true);
+        when(bookRepository.findById(id)).thenReturn(Optional.of(Book.builder().id(3L).build()));
         boolean actual = bookService.delete(id);
 
         //then
