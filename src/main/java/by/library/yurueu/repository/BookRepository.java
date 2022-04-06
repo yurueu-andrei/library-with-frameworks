@@ -1,12 +1,12 @@
 package by.library.yurueu.repository;
 
-import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Book;
-import by.library.yurueu.entity.Genre;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-import java.util.Set;
+import java.util.Optional;
 
-public interface BookRepository extends BaseRepository<Book> {
-    Set<Author> findAuthorsByAuthorsId(Set<Long> authorsId);
-    Set<Genre> findGenresByGenresId(Set<Long> genresId);
+public interface BookRepository extends JpaRepository<Book, Long> {
+    @Query("from Book b left join fetch b.genres left join fetch b.authors left join fetch b.bookCopies where b.id=:id")
+    Optional<Book> findById(Long id);
 }

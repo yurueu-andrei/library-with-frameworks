@@ -1,15 +1,12 @@
 package by.library.yurueu.repository;
 
-import by.library.yurueu.entity.BookCopy;
-import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.entity.Order;
-import by.library.yurueu.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-import java.util.Set;
+import java.util.Optional;
 
-public interface OrderRepository extends BaseRepository<Order> {
-    User findUserByOrderId(Long id);
-    Set<BookCopy> findBookCopiesByOrderId(Long id);
-    Set<BookDamage> findBookDamagesByOrderId(Long id);
-    Set<BookCopy> findBookCopiesByBookCopiesId(Set<Long> bookCopiesId);
+public interface OrderRepository extends JpaRepository<Order, Long> {
+    @Query("from Order o left join fetch o.bookCopies left join fetch o.user left join fetch o.bookDamages where o.id=:id")
+    Optional<Order> findById(Long id);
 }
