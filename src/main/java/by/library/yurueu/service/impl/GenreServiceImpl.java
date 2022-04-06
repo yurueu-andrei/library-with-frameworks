@@ -61,12 +61,10 @@ public class GenreServiceImpl implements GenreService {
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        try {
-            Optional<Genre> genre = genreRepository.findById(id);
-            genreRepository.delete(genre.get());
-            return true;
-        } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
-        }
+        Optional<Genre> genre = genreRepository.findById(id);
+        genreRepository.delete(genre.orElseThrow(
+                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
+        );
+        return true;
     }
 }

@@ -50,12 +50,10 @@ public class BookDamageServiceImpl implements BookDamageService {
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        try {
-            Optional<BookDamage> bookDamage = bookDamageRepository.findById(id);
-            bookDamageRepository.delete(bookDamage.get());
-            return true;
-        } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
-        }
+        Optional<BookDamage> bookDamage = bookDamageRepository.findById(id);
+        bookDamageRepository.delete(bookDamage.orElseThrow(
+                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
+        );
+        return true;
     }
 }

@@ -63,12 +63,10 @@ public class BookCopyServiceImpl implements BookCopyService {
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        try {
-            Optional<BookCopy> bookCopy = bookCopyRepository.findById(id);
-            bookCopyRepository.delete(bookCopy.get());
-            return true;
-        } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
-        }
+        Optional<BookCopy> bookCopy = bookCopyRepository.findById(id);
+        bookCopyRepository.delete(bookCopy.orElseThrow(
+                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
+        );
+        return true;
     }
 }

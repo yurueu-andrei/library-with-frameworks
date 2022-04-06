@@ -63,12 +63,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        try {
-            Optional<User> user = userRepository.findById(id);
-            userRepository.delete(user.get());
-            return true;
-        } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
-        }
+        Optional<User> user = userRepository.findById(id);
+        userRepository.delete(user.orElseThrow(
+                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
+        );
+        return true;
     }
 }

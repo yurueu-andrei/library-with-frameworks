@@ -31,12 +31,10 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        try {
-            Optional<Book> book = bookRepository.findById(id);
-            bookRepository.delete(book.get());
-            return true;
-        } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
-        }
+        Optional<Book> book = bookRepository.findById(id);
+        bookRepository.delete(book.orElseThrow(
+                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
+        );
+        return true;
     }
 }

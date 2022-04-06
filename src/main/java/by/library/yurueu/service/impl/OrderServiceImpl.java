@@ -63,12 +63,10 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        try {
-            Optional<Order> order = orderRepository.findById(id);
-            orderRepository.delete(order.get());
-            return true;
-        } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
-        }
+        Optional<Order> order = orderRepository.findById(id);
+        orderRepository.delete(order.orElseThrow(
+                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
+        );
+        return true;
     }
 }

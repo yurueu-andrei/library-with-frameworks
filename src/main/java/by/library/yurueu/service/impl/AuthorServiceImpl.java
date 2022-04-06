@@ -63,12 +63,10 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        try {
-            Optional<Author> author = authorRepository.findById(id);
-            authorRepository.delete(author.get());
-            return true;
-        } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
-        }
+        Optional<Author> author = authorRepository.findById(id);
+        authorRepository.delete(author.orElseThrow(
+                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
+        );
+        return true;
     }
 }
