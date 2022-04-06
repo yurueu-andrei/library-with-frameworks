@@ -22,11 +22,11 @@ public class AuthorConverter {
                 .lastName(author.getLastName())
                 .birthDate(author.getBirthDate())
                 .imagePath(author.getImagePath())
-                .books(constructBookCopiesListDto(author.getBooks()))
+                .books(constructBookCopiesListDTO(author.getBooks()))
                 .build();
     }
 
-    private static List<BookCopyListDto> constructBookCopiesListDto(Set<Book> books) {
+    private static List<BookCopyListDto> constructBookCopiesListDTO(Set<Book> books) {
         List<BookCopyListDto> bookCopiesListDto = new ArrayList<>();
         books.forEach(book -> {
             List<BookCopy> bookCopies = new ArrayList<>(book.getBookCopies());
