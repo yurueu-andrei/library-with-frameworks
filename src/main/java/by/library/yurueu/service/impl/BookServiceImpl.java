@@ -8,32 +8,35 @@ import by.library.yurueu.repository.BookRepository;
 import by.library.yurueu.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
 
+    @Transactional
     @Override
     public BookSaveDto add(BookSaveDto bookSaveDto) throws ServiceException {
         try {
             Book book = BookConverter.fromSaveDTO(bookSaveDto);
-            book.setGenres(bookRepository.findGenresByGenresId(new HashSet<>(bookSaveDto.getGenresId())));
-            book.setAuthors(bookRepository.findAuthorsByAuthorsId(new HashSet<>(bookSaveDto.getAuthorsId())));
-            return BookConverter.toSaveDTO(bookRepository.add(book));
+            return BookConverter.toSaveDTO(bookRepository.save(book));
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
     }
 
+    @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
         try {
-            return bookRepository.delete(id);
+            Optional<Book> book = bookRepository.findById(id);
+            bookRepository.delete(book.get());
+            return true;
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
         }
     }
 }

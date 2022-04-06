@@ -4,17 +4,16 @@ import by.library.yurueu.converter.BookDamageConverter;
 import by.library.yurueu.dto.BookDamageDto;
 import by.library.yurueu.dto.BookDamageListDto;
 import by.library.yurueu.dto.BookDamageSaveDto;
-import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.entity.BookDamage;
-import by.library.yurueu.entity.Order;
-import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.BookDamageRepository;
 import by.library.yurueu.service.BookDamageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -23,46 +22,40 @@ public class BookDamageServiceImpl implements BookDamageService {
 
     @Override
     public BookDamageDto findById(Long id) throws ServiceException {
-        try {
-            BookDamage bookDamage = bookDamageRepository.findById(id);
-            bookDamage.setBookCopy(BookCopy.builder().id(bookDamage.getBookCopy().getId()).build());
-            bookDamage.setUser(User.builder().id(bookDamage.getUser().getId()).build());
-            bookDamage.setOrder(Order.builder().id(bookDamage.getOrder().getId()).build());
-            return BookDamageConverter.toDTO(bookDamage);
-        } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
-        }
+        return bookDamageRepository.findById(id).map(BookDamageConverter::toDTO)
+                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<BookDamageListDto> findAll() throws ServiceException {
         try {
-            List<BookDamage> bookDamages = bookDamageRepository.findAll();
-            return BookDamageConverter.toListDTO(bookDamages);
+            return BookDamageConverter.toListDTO(bookDamageRepository.findAll());
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
         }
     }
 
+    @Transactional
     @Override
     public BookDamageSaveDto add(BookDamageSaveDto bookDamageSaveDto) throws ServiceException {
         try {
             BookDamage bookDamage = BookDamageConverter.fromSaveDTO(bookDamageSaveDto);
-            bookDamage.setUser(User.builder().id(bookDamageSaveDto.getUserId()).build());
-            bookDamage.setOrder(Order.builder().id(bookDamageSaveDto.getOrderId()).build());
-            bookDamage.setBookCopy(BookCopy.builder().id(bookDamageSaveDto.getBookCopyId()).build());
-            return BookDamageConverter.toSaveDTO(bookDamageRepository.add(bookDamage));
+            return BookDamageConverter.toSaveDTO(bookDamageRepository.save(bookDamage));
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
     }
 
+    @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
         try {
-            return bookDamageRepository.delete(id);
+            Optional<BookDamage> bookDamage = bookDamageRepository.findById(id);
+            bookDamageRepository.delete(bookDamage.get());
+            return true;
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
         }
     }
 }
