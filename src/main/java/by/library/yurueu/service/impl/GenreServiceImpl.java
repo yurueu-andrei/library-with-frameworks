@@ -8,59 +8,63 @@ import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.GenreRepository;
 import by.library.yurueu.service.GenreService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
+@Service
 public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
 
     @Override
     public GenreListDto findById(Long id) throws ServiceException {
-        try {
-            Genre genre = genreRepository.findById(id);
-            return GenreConverter.toListDTO(genre);
-        } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
-        }
+        return genreRepository.findById(id).map(GenreConverter::toListDTO)
+                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<GenreListDto> findAll() throws ServiceException {
         try {
-            List<Genre> genres = genreRepository.findAll();
-            return GenreConverter.toListDTO(genres);
+            return GenreConverter.toListDTO(genreRepository.findAll());
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
         }
     }
 
+    @Transactional
     @Override
     public GenreListDto add(GenreListDto genreListDto) throws ServiceException {
         try {
             Genre genre = GenreConverter.fromListDTO(genreListDto);
-            return GenreConverter.toListDTO(genreRepository.add(genre));
+            return GenreConverter.toListDTO(genreRepository.save(genre));
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
     }
 
+    @Transactional
     @Override
     public boolean update(GenreUpdateDto genreUpdateDto) throws ServiceException {
         try {
             Genre genre = GenreConverter.fromUpdateDTO(genreUpdateDto);
-            return genreRepository.update(genre);
+            genreRepository.save(genre);
+            return true;
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not updated"));
         }
     }
 
+    @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        try {
-            return genreRepository.delete(id);
-        } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
-        }
+        Optional<Genre> genre = genreRepository.findById(id);
+        genreRepository.delete(genre.orElseThrow(
+                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
+        );
+        return true;
     }
 }

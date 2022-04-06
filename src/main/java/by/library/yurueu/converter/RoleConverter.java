@@ -20,10 +20,10 @@ public class RoleConverter {
                 .collect(Collectors.toList());
     }
 
-    public static Role fromListDTO(RoleDto roleListDto) {
-        return Role.builder()
-                .id(roleListDto.getId())
-                .roleName(roleListDto.getRoleName())
-                .build();
-    }
+//    public static Role fromListDTO(RoleDto roleListDto) {
+//        return Role.builder()
+//                .id(roleListDto.getId())
+//                .roleName(roleListDto.getRoleName())
+//                .build();
+//    }
 }

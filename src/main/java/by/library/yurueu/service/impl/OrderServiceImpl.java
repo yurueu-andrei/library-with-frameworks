@@ -6,70 +6,67 @@ import by.library.yurueu.dto.OrderListDto;
 import by.library.yurueu.dto.OrderSaveDto;
 import by.library.yurueu.dto.OrderUpdateDto;
 import by.library.yurueu.entity.Order;
-import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.OrderRepository;
 import by.library.yurueu.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
+@Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
 
     @Override
     public OrderDto findById(Long id) throws ServiceException {
-        try {
-            Order order = orderRepository.findById(id);
-            order.setUser(User.builder().id(order.getUser().getId()).build());
-            order.setBookCopies(orderRepository.findBookCopiesByOrderId(id));
-            order.setBookDamages(orderRepository.findBookDamagesByOrderId(id));
-            return OrderConverter.toDTO(order);
-        } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
-        }
+        return orderRepository.findById(id).map(OrderConverter::toDTO)
+                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<OrderListDto> findAll() throws ServiceException {
         try {
-            List<Order> orders = orderRepository.findAll();
-            return OrderConverter.toListDTO(orders);
+            return OrderConverter.toListDTO(orderRepository.findAll());
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
         }
     }
 
+    @Transactional
     @Override
     public OrderSaveDto add(OrderSaveDto orderSaveDto) throws ServiceException {
         try {
             Order order = OrderConverter.fromSaveDTO(orderSaveDto);
-            order.setUser(User.builder().id(orderSaveDto.getUserId()).build());
-            order.setBookCopies(orderRepository.findBookCopiesByBookCopiesId(new HashSet<>(orderSaveDto.getBookCopiesId())));
-            return OrderConverter.toSaveDTO(orderRepository.add(order));
+            return OrderConverter.toSaveDTO(orderRepository.save(order));
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
     }
 
+    @Transactional
     @Override
     public boolean update(OrderUpdateDto orderUpdateDto) throws ServiceException {
         try {
-            Order order = OrderConverter.fromUpdateDto(orderUpdateDto);
-            return orderRepository.update(order);
+            Order order = OrderConverter.fromUpdateDTO(orderUpdateDto);
+            orderRepository.save(order);
+            return true;
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not updated"));
         }
     }
 
+    @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        try {
-            return orderRepository.delete(id);
-        } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), ex.getMessage()));
-        }
+        Optional<Order> order = orderRepository.findById(id);
+        orderRepository.delete(order.orElseThrow(
+                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
+        );
+        return true;
     }
 }

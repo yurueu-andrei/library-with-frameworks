@@ -12,53 +12,45 @@ import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.entity.Genre;
-import by.library.yurueu.entity.Order;
-import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.BookCopyRepository;
-import by.library.yurueu.repository.impl.BookCopyRepositoryImpl;
-import by.library.yurueu.service.BookCopyService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class BookCopyServiceImplTest {
-    private final BookCopyRepository bookCopyRepository;
-    private final BookCopyService bookCopyService;
-
-    public BookCopyServiceImplTest() {
-        bookCopyRepository = mock(BookCopyRepositoryImpl.class);
-        bookCopyService = new BookCopyServiceImpl(bookCopyRepository);
-    }
+    @Mock
+    private BookCopyRepository bookCopyRepository;
+    @InjectMocks
+    private BookCopyServiceImpl bookCopyService;
 
     @Test
-    void findById_shouldReturnBookCopyDto() throws RepositoryException, ServiceException {
+    void findById_shouldReturnBookCopyDto() throws ServiceException {
         //given
         Long id = 1L;
         BookCopyDto expected = BookCopyDto.builder().id(id)
                 .bookDamages(new ArrayList<>(){{add(BookDamageListDto.builder().id(1L).build());}})
                 .authors(new ArrayList<>(){{add(AuthorListDto.builder().id(1L).build());}})
                 .genres(new ArrayList<>(){{add(GenreListDto.builder().id(1L).build());}}).build();
-
         //when
-        when(bookCopyRepository.findById(id)).thenReturn(BookCopy.builder().id(id).build());
-        when(bookCopyRepository.findBookByBookCopyId(id))
-                .thenReturn(Book.builder().id(id)
-                        .bookCopies(new HashSet<>(){{add(BookCopy.builder().id(id).build());}})
-                        .authors(new HashSet<>(){{add(Author.builder().id(1L).books(new HashSet<>(){{add(Book.builder().id(id).build());}}).build());}})
-                        .genres(new HashSet<>(){{add(Genre.builder().id(1L).books(new HashSet<>(){{add(Book.builder().id(id).build());}}).build());}})
-                        .build());
-        when(bookCopyRepository.findBookDamagesByBookCopyId(id)).thenReturn(new HashSet<>(){{add(BookDamage.builder().id(1L).build());}});
-        when(bookCopyRepository.findOrdersByBookCopyId(id)).thenReturn(new HashSet<>(){{add(Order.builder().id(1L).build());}});
+        when(bookCopyRepository.findById(id)).thenReturn(Optional.of(BookCopy.builder()
+                .id(id)
+                .bookDamages(new HashSet<>(){{add(BookDamage.builder().id(1L).build());}})
+                .book(Book.builder()
+                        .authors(new HashSet<>(){{add(Author.builder().id(1L).build());}})
+                        .genres(new HashSet<>(){{add(Genre.builder().id(1L).build());}})
+                        .build())
+                .build()));
         BookCopyDto actual = bookCopyService.findById(id);
 
         //then
@@ -66,7 +58,7 @@ class BookCopyServiceImplTest {
     }
 
     @Test
-    void findAll_shouldReturnListOfBookCopyListDto() throws RepositoryException, ServiceException {
+    void findAll_shouldReturnListOfBookCopyListDto() throws ServiceException {
         //given
         List<BookCopyListDto> expected = new ArrayList<>() {{
             add(BookCopyListDto.builder().id(1L).build());
@@ -85,13 +77,14 @@ class BookCopyServiceImplTest {
     }
 
     @Test
-    void add_shouldAddBookCopy() throws RepositoryException, ServiceException {
+    void add_shouldAddBookCopy() throws ServiceException {
         //given
         BookCopySaveDto expected = BookCopySaveDto.builder().id(3L).bookId(1L).build();
-
+        BookCopy bookCopyWithoutId = BookCopy.builder().book(Book.builder().id(1L).build()).build();
+        BookCopy bookCopyWithId = BookCopy.builder().id(3L).book(Book.builder().id(1L).build()).build();
         //when
-        when(bookCopyRepository.add(BookCopy.builder().book(Book.builder().id(1L).build()).build()))
-                .thenReturn(BookCopy.builder().id(3L).book(Book.builder().id(1L).build()).build());
+        when(bookCopyRepository.save(bookCopyWithoutId))
+                .thenReturn(bookCopyWithId);
         BookCopySaveDto actual = bookCopyService.add(BookCopySaveDto.builder().build());
 
         //then
@@ -99,12 +92,13 @@ class BookCopyServiceImplTest {
     }
 
     @Test
-    void update_shouldUpdateBookCopy() throws ServiceException, RepositoryException {
+    void update_shouldUpdateBookCopy() throws ServiceException {
         //given
         BookCopyUpdateDto expected = BookCopyUpdateDto.builder().id(4L).imagePath("image path").build();
-
+        BookCopy bookCopy = BookCopy.builder().id(4L).imagePath("image path").build();
         //when
-        when(bookCopyRepository.update(BookCopy.builder().id(4L).imagePath("image path").build())).thenReturn(true);
+        when(bookCopyRepository.save(bookCopy))
+                .thenReturn(bookCopy);
         boolean actual = bookCopyService.update(expected);
 
         //then
@@ -112,16 +106,15 @@ class BookCopyServiceImplTest {
     }
 
     @Test
-    void delete_shouldDeleteBookCopy() throws RepositoryException, ServiceException {
+    void delete_shouldDeleteBookCopy() throws ServiceException {
         //given
         Long id = 3L;
 
         //when
-        when(bookCopyRepository.delete(id)).thenReturn(true);
+        when(bookCopyRepository.findById(id)).thenReturn(Optional.of(BookCopy.builder().id(3L).build()));
         boolean actual = bookCopyService.delete(id);
 
         //then
         Assertions.assertTrue(actual);
-        Assertions.assertThrows(ServiceException.class, () -> bookCopyService.findById(id));
     }
 }

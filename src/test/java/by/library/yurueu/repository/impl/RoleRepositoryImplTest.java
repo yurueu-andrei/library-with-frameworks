@@ -1,35 +1,34 @@
 package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.Role;
-import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BaseRepositoryTest;
 import by.library.yurueu.repository.RoleRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 
 public class RoleRepositoryImplTest extends BaseRepositoryTest {
-    private final RoleRepository roleRepository;
-
-    public RoleRepositoryImplTest() {
-        roleRepository = new RoleRepositoryImpl();
-    }
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Test
-    void findByIdTest_shouldReturnTheFirstRoleInDB() throws RepositoryException {
+    void findByIdTest_shouldReturnTheFirstRoleInDB() {
         //given
         Role expected = findRoleForFindById();
 
         //when
-        Role actual = roleRepository.findById(expected.getId());
+        Optional<Role> role = roleRepository.findById(expected.getId());
+        Role actual = role.orElse(Role.builder().build());
 
         //then
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void findAllTest_shouldReturnAllRolesList() throws RepositoryException {
+    void findAllTest_shouldReturnAllRolesList() {
         //given
         List<Role> expected = findRolesForFindAll();
 
@@ -41,42 +40,30 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedRole() throws RepositoryException {
+    void addTest_shouldReturnAddedRole() {
         //given
         Role expected = Role.builder().id(3L).roleName("superUser").build();
         Role actual = Role.builder().roleName("superUser").build();
 
         //when
-        actual = roleRepository.add(actual);
+        actual = roleRepository.saveAndFlush(actual);
 
         //then
         Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, roleRepository.findById(expected.getId()));
+        Assertions.assertEquals(expected, roleRepository.findById(expected.getId()).get());
     }
 
     @Test
-    void updateTest_shouldUpdateRole() throws RepositoryException {
+    void updateTest_shouldUpdateRole() {
         //given
         Role role = Role.builder().id(2L).roleName("superUser").build();
 
         // when
-        boolean isUpdated = roleRepository.update(role);
+        roleRepository.saveAndFlush(role);
+        Optional<Role> foundRole = roleRepository.findById(role.getId());
 
         //then
-        Assertions.assertTrue(isUpdated);
-        Assertions.assertEquals(role, roleRepository.findById(role.getId()));
-    }
-
-    @Test
-    void deleteTest_shouldDeleteRole() throws RepositoryException {
-        //given
-        Long roleId = 1L;
-
-        // when
-        boolean isDeleted = roleRepository.delete(roleId);
-
-        //then
-        Assertions.assertTrue(isDeleted);
-        Assertions.assertThrows(RepositoryException.class, () -> roleRepository.findById(roleId));
+        Assertions.assertTrue(foundRole.isPresent());
+        Assertions.assertEquals(role, roleRepository.findById(role.getId()).get());
     }
 }

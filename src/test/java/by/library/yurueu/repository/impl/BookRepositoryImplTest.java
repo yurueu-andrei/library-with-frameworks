@@ -1,35 +1,34 @@
 package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.Book;
-import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BaseRepositoryTest;
 import by.library.yurueu.repository.BookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 
 public class BookRepositoryImplTest extends BaseRepositoryTest {
-    private final BookRepository bookRepository;
-
-    public BookRepositoryImplTest() {
-        bookRepository = new BookRepositoryImpl();
-    }
+    @Autowired
+    private BookRepository bookRepository;
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstBookInDB() throws RepositoryException {
+    public void findByIdTest_shouldReturnTheFirstBookInDB() {
         //given
         Book expected = findBookForFindById();
 
         //when
-        Book actual = bookRepository.findById(expected.getId());
+        Optional<Book> book = bookRepository.findById(expected.getId());
+        Book actual = book.orElse(Book.builder().build());
 
         //then
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void findAllTest_shouldReturnAllBooksList() throws RepositoryException {
+    void findAllTest_shouldReturnAllBooksList() {
         //given
         List<Book> expected = findBooksForFindAll();
 
@@ -41,42 +40,30 @@ public class BookRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedBook() throws RepositoryException {
+    void addTest_shouldReturnAddedBook() {
         //given
         Book expected = Book.builder().id(6L).title("asd").pagesNumber(12).imagePath("image path").build();
         Book actual = Book.builder().title("asd").pagesNumber(12).imagePath("image path").build();
 
         //when
-        actual = bookRepository.add(actual);
+        actual = bookRepository.saveAndFlush(actual);
 
         //then
         Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, bookRepository.findById(expected.getId()));
+        Assertions.assertEquals(expected, bookRepository.findById(expected.getId()).get());
     }
 
     @Test
-    void updateTest_shouldUpdateBook() throws RepositoryException {
+    void updateTest_shouldUpdateBook() {
         //given
         Book book = Book.builder().id(2L).title("Hello").pagesNumber(12).imagePath("image path").build();
 
         // when
-        boolean isUpdated = bookRepository.update(book);
+        bookRepository.saveAndFlush(book);
+        Optional<Book> foundBook = bookRepository.findById(book.getId());
 
         //then
-        Assertions.assertTrue(isUpdated);
-        Assertions.assertEquals(book, bookRepository.findById(book.getId()));
-    }
-
-    @Test
-    public void deleteTest_shouldDeleteBook() throws RepositoryException {
-        //given
-        Long bookId = 1L;
-
-        // when
-        boolean isDeleted = bookRepository.delete(bookId);
-
-        //then
-        Assertions.assertTrue(isDeleted);
-        Assertions.assertThrows(RepositoryException.class, () -> bookRepository.findById(bookId));
+        Assertions.assertTrue(foundBook.isPresent());
+        Assertions.assertEquals(book, bookRepository.findById(book.getId()).get());
     }
 }

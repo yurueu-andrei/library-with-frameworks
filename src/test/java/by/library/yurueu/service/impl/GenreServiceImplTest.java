@@ -3,41 +3,35 @@ package by.library.yurueu.service.impl;
 import by.library.yurueu.dto.GenreListDto;
 import by.library.yurueu.dto.GenreUpdateDto;
 import by.library.yurueu.entity.Genre;
-import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.GenreRepository;
-import by.library.yurueu.repository.impl.GenreRepositoryImpl;
-import by.library.yurueu.service.GenreService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class GenreServiceImplTest {
-
-    private final GenreRepository genreRepository;
-    private final GenreService genreService;
-
-    public GenreServiceImplTest() {
-        genreRepository = mock(GenreRepositoryImpl.class);
-        genreService = new GenreServiceImpl(genreRepository);
-    }
+    @Mock
+    private GenreRepository genreRepository;
+    @InjectMocks
+    private GenreServiceImpl genreService;
 
     @Test
-    void findById_shouldReturnGenreDto() throws ServiceException, RepositoryException {
+    void findById_shouldReturnGenreDto() throws ServiceException {
         //given
         Long id = 1L;
         GenreListDto expected = GenreListDto.builder().id(id).genreName("hello").build();
 
         //when
-        when(genreRepository.findById(id)).thenReturn(Genre.builder().id(id).genreName("hello").build());
+        when(genreRepository.findById(id)).thenReturn(Optional.of(Genre.builder().id(id).genreName("hello").build()));
         GenreListDto actual = genreService.findById(id);
 
         //then
@@ -45,7 +39,7 @@ class GenreServiceImplTest {
     }
 
     @Test
-    void findAll_shouldReturnListOfRoleDto() throws RepositoryException, ServiceException {
+    void findAll_shouldReturnListOfRoleDto() throws ServiceException {
         //given
         List<GenreListDto> expected = new ArrayList<>() {{
             add(GenreListDto.builder().id(1L).build());
@@ -64,13 +58,15 @@ class GenreServiceImplTest {
     }
 
     @Test
-    void add_shouldAddRole() throws RepositoryException, ServiceException {
+    void add_shouldAddRole() throws ServiceException {
         //given
         GenreListDto expected = GenreListDto.builder().id(3L).genreName("hello").build();
+        Genre genreWithoutId = Genre.builder().genreName("hello").build();
+        Genre genreWithId = Genre.builder().id(3L).genreName("hello").build();
 
         //when
-        when(genreRepository.add(Genre.builder().genreName("hello").build()))
-                .thenReturn(Genre.builder().id(3L).genreName("hello").build());
+        when(genreRepository.save(genreWithoutId))
+                .thenReturn(genreWithId);
         GenreListDto actual = genreService.add(GenreListDto.builder().genreName("hello").build());
 
         //then
@@ -78,12 +74,13 @@ class GenreServiceImplTest {
     }
 
     @Test
-    void update_shouldUpdateRole() throws RepositoryException, ServiceException {
+    void update_shouldUpdateRole() throws ServiceException {
         //given
         GenreUpdateDto expected = GenreUpdateDto.builder().id(4L).genreName("hello").build();
+        Genre genre = Genre.builder().id(4L).genreName("hello").build();
 
         //when
-        when(genreRepository.update(Genre.builder().id(4L).genreName("hello").build())).thenReturn(true);
+        when(genreRepository.save(genre)).thenReturn(genre);
         boolean actual = genreService.update(expected);
 
         //then
@@ -91,16 +88,15 @@ class GenreServiceImplTest {
     }
 
     @Test
-    void delete_shouldDeleteRole() throws RepositoryException, ServiceException {
+    void delete_shouldDeleteRole() throws ServiceException {
         //given
         Long id = 3L;
 
         //when
-        when(genreRepository.delete(id)).thenReturn(true);
+        when(genreRepository.findById(id)).thenReturn(Optional.of(Genre.builder().id(3L).build()));
         boolean actual = genreService.delete(id);
 
         //then
         Assertions.assertTrue(actual);
-        Assertions.assertThrows(ServiceException.class, () -> genreService.findById(id));
     }
 }

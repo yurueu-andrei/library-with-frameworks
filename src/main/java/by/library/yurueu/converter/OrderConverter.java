@@ -80,7 +80,7 @@ public class OrderConverter {
                 .collect(Collectors.toList());
     }
 
-    public static Order fromUpdateDto(OrderUpdateDto orderUpdateDto) {
+    public static Order fromUpdateDTO(OrderUpdateDto orderUpdateDto) {
         return Order.builder()
                 .id(orderUpdateDto.getId())
                 .orderStatus(orderUpdateDto.getOrderStatus())

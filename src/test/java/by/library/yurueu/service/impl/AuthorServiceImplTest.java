@@ -8,47 +8,42 @@ import by.library.yurueu.dto.BookCopyListDto;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
-import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.AuthorRepository;
-import by.library.yurueu.repository.impl.AuthorRepositoryImpl;
-import by.library.yurueu.service.AuthorService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class AuthorServiceImplTest {
-    private final AuthorRepository authorRepository;
-    private final AuthorService authorService;
-
-    public AuthorServiceImplTest() {
-        authorRepository = mock(AuthorRepositoryImpl.class);
-        authorService = new AuthorServiceImpl(authorRepository);
-    }
+    @Mock
+    private AuthorRepository authorRepository;
+    @InjectMocks
+    private AuthorServiceImpl authorService;
 
     @Test
-    void findById_shouldReturnAuthorDto() throws ServiceException, RepositoryException {
+    void findById_shouldReturnAuthorDto() throws ServiceException {
         //given
         Long id = 1L;
         AuthorDto expected = AuthorDto.builder().id(id).firstName("Alexander")
                 .books(new ArrayList<>(){{add(BookCopyListDto.builder().id(3L).build());}}).build();
 
         //when
-        when(authorRepository.findById(id)).thenReturn(Author.builder().id(id).firstName("Alexander").build());
-        when(authorRepository.findBooksByAuthorId(id))
-                .thenReturn(new HashSet<>(){{
-                    add(Book.builder().id(1L)
-                        .bookCopies(new HashSet<>(){{add(BookCopy.builder().id(3L)
-                                .book(Book.builder().id(1L).build()).build());}}).build());}});
+        when(authorRepository.findById(id)).thenReturn(Optional.of(Author.builder().id(id)
+                .firstName("Alexander")
+                .books(new HashSet<>(){{add(Book.builder().bookCopies(
+                        new HashSet<>(){{add(BookCopy.builder().id(3L).book(Book.builder().id(3L).build()).build());}})
+                        .build());}})
+                .build()));
         AuthorDto actual = authorService.findById(id);
 
         //then
@@ -56,7 +51,7 @@ class AuthorServiceImplTest {
     }
 
     @Test
-    void findAll_shouldReturnListOfAuthorListDto() throws RepositoryException, ServiceException {
+    void findAll_shouldReturnListOfAuthorListDto() throws ServiceException {
         //given
         List<AuthorListDto> expected = new ArrayList<>() {{
             add(AuthorListDto.builder().id(1L).build());
@@ -75,13 +70,15 @@ class AuthorServiceImplTest {
     }
 
     @Test
-    void add_shouldAddAuthor() throws RepositoryException, ServiceException {
+    void add_shouldAddAuthor() throws ServiceException {
         //given
         AuthorSaveDto expected = AuthorSaveDto.builder().id(3L).firstName("Alexander").build();
+        Author authorWithoutId = Author.builder().firstName("Alexander").build();
+        Author authorWithId = Author.builder().id(3L).firstName("Alexander").build();
 
         //when
-        when(authorRepository.add(Author.builder().firstName("Alexander").build()))
-                .thenReturn(Author.builder().id(3L).firstName("Alexander").build());
+        when(authorRepository.save(authorWithoutId))
+                .thenReturn(authorWithId);
         AuthorSaveDto actual = authorService.add(AuthorSaveDto.builder().firstName("Alexander").build());
 
         //then
@@ -89,12 +86,13 @@ class AuthorServiceImplTest {
     }
 
     @Test
-    void update_shouldUpdateAuthor() throws RepositoryException, ServiceException {
+    void update_shouldUpdateAuthor() throws ServiceException {
         //given
         AuthorUpdateDto expected = AuthorUpdateDto.builder().id(4L).firstName("Alexander").build();
+        Author author = Author.builder().id(4L).firstName("Alexander").build();
 
         //when
-        when(authorRepository.update(Author.builder().id(4L).firstName("Alexander").build())).thenReturn(true);
+        when(authorRepository.save(author)).thenReturn(author);
         boolean actual = authorService.update(expected);
 
         //then
@@ -102,16 +100,15 @@ class AuthorServiceImplTest {
     }
 
     @Test
-    void delete_shouldDeleteAuthor() throws RepositoryException, ServiceException {
+    void delete_shouldDeleteAuthor() throws ServiceException {
         //given
         Long id = 3L;
 
         //when
-        when(authorRepository.delete(id)).thenReturn(true);
+        when(authorRepository.findById(id)).thenReturn(Optional.of(Author.builder().id(3L).build()));
         boolean actual = authorService.delete(id);
 
         //then
         Assertions.assertTrue(actual);
-        Assertions.assertThrows(ServiceException.class, () -> authorService.findById(id));
     }
 }
