@@ -1,7 +1,6 @@
 package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.Author;
-import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.AuthorRepository;
 import by.library.yurueu.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
@@ -10,26 +9,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
-
+import java.util.Optional;
 
 public class AuthorRepositoryImplTest extends BaseRepositoryTest {
     @Autowired
     private AuthorRepository authorRepository;
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstAuthorInDB() throws RepositoryException {
+    public void findByIdTest_shouldReturnTheFirstAuthorInDB() {
         //given
         Author expected = findAuthorForFindById();
 
         //when
-        Author actual = authorRepository.findById(expected.getId());
-
+        Optional<Author> author = authorRepository.findById(expected.getId());
+        Author actual = author.orElse(Author.builder().build());
         //then
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    public void findAllTest_shouldReturnAllAuthorsList() throws RepositoryException {
+    public void findAllTest_shouldReturnAllAuthorsList() {
         //given
         List<Author> expected = findAuthorsForFindAll();
 
@@ -41,42 +40,30 @@ public class AuthorRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void addTest_shouldReturnAddedAuthor() throws RepositoryException {
+    public void addTest_shouldReturnAddedAuthor() {
         //given
         Author expected = Author.builder().id(6L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
         Author actual = Author.builder().firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
 
         //when
-        actual = authorRepository.add(actual);
+        actual = authorRepository.saveAndFlush(actual);
 
         //then
         Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, authorRepository.findById(expected.getId()));
+        Assertions.assertEquals(expected, authorRepository.findById(expected.getId()).get());
     }
 
     @Test
-    public void updateTest_shouldUpdateAuthor() throws RepositoryException {
+    public void updateTest_shouldUpdateAuthor() {
         //given
         Author author = Author.builder().id(2L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1998, 8, 8)).imagePath("image path").build();
 
         // when
-        boolean isUpdated = authorRepository.update(author);
+        authorRepository.saveAndFlush(author);
+        Optional<Author> foundAuthor = authorRepository.findById(author.getId());
 
         //then
-        Assertions.assertTrue(isUpdated);
-        Assertions.assertEquals(author, authorRepository.findById(author.getId()));
-    }
-
-    @Test
-    public void deleteTest_shouldDeleteAuthor() throws RepositoryException {
-        //given
-        Long authorId = 1L;
-
-        // when
-        boolean isDeleted = authorRepository.delete(authorId);
-
-        //then
-        Assertions.assertTrue(isDeleted);
-        Assertions.assertThrows(RepositoryException.class, () -> authorRepository.findById(authorId));
+        Assertions.assertTrue(foundAuthor.isPresent());
+        Assertions.assertEquals(author, authorRepository.findById(author.getId()).get());
     }
 }

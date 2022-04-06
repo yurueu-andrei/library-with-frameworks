@@ -2,7 +2,6 @@ package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
-import by.library.yurueu.exception.RepositoryException;
 import by.library.yurueu.repository.BaseRepositoryTest;
 import by.library.yurueu.repository.BookCopyRepository;
 import org.junit.jupiter.api.Assertions;
@@ -11,25 +10,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public class BookCopyRepositoryImplTest extends BaseRepositoryTest {
     @Autowired
     private BookCopyRepository bookCopyRepository;
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstBookCopyInDB() throws RepositoryException {
+    public void findByIdTest_shouldReturnTheFirstBookCopyInDB() {
         //given
         BookCopy expected = findBookCopyForFindById();
 
         //when
-        BookCopy actual = bookCopyRepository.findById(expected.getId());
+        Optional<BookCopy> bookCopy = bookCopyRepository.findById(expected.getId());
+        BookCopy actual = bookCopy.orElse(BookCopy.builder().build());
 
         //then
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void findAllTest_shouldReturnAllBookCopiesList() throws RepositoryException {
+    void findAllTest_shouldReturnAllBookCopiesList() {
         //given
         List<BookCopy> expected = findBookCopiesForFindAll();
 
@@ -41,42 +42,30 @@ public class BookCopyRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedBookCopy() throws RepositoryException {
+    void addTest_shouldReturnAddedBookCopy() {
         //given
         BookCopy expected = BookCopy.builder().id(6L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).book(Book.builder().id(1L).build()).build();
         BookCopy actual = BookCopy.builder().status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).book(Book.builder().id(1L).build()).build();
 
         //when
-        actual = bookCopyRepository.add(actual);
+        actual = bookCopyRepository.saveAndFlush(actual);
 
         //then
         Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, bookCopyRepository.findById(expected.getId()));
+        Assertions.assertEquals(expected, bookCopyRepository.findById(expected.getId()).get());
     }
 
     @Test
-    void updateTest_shouldUpdateBookCopy() throws RepositoryException {
+    void updateTest_shouldUpdateBookCopy() {
         //given
-        BookCopy bookCopy = BookCopy.builder().id(2L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).build();
+        BookCopy bookCopy = BookCopy.builder().id(2L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).book(Book.builder().id(1L).build()).build();
 
         // when
-        boolean isUpdated = bookCopyRepository.update(bookCopy);
+        bookCopyRepository.saveAndFlush(bookCopy);
+        Optional<BookCopy> foundBookCopy = bookCopyRepository.findById(bookCopy.getId());
 
         //then
-        Assertions.assertTrue(isUpdated);
-        Assertions.assertEquals(bookCopy, bookCopyRepository.findById(bookCopy.getId()));
-    }
-
-    @Test
-    public void deleteTest_shouldDeleteBookCopy() throws RepositoryException {
-        //given
-        Long bookCopyId = 1L;
-
-        // when
-        boolean isDeleted = bookCopyRepository.delete(bookCopyId);
-
-        //then
-        Assertions.assertTrue(isDeleted);
-        Assertions.assertThrows(RepositoryException.class, () -> bookCopyRepository.findById(bookCopyId));
+        Assertions.assertTrue(foundBookCopy.isPresent());
+        Assertions.assertEquals(bookCopy, bookCopyRepository.findById(bookCopy.getId()).get());
     }
 }
