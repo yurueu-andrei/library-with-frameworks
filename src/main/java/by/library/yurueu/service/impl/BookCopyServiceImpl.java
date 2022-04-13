@@ -3,8 +3,7 @@ package by.library.yurueu.service.impl;
 import by.library.yurueu.converter.BookCopyConverter;
 import by.library.yurueu.dto.BookCopyDto;
 import by.library.yurueu.dto.BookCopyListDto;
-import by.library.yurueu.dto.BookCopySaveDto;
-import by.library.yurueu.dto.BookCopyUpdateDto;
+import by.library.yurueu.dto.BookCopySaveAndUpdateDto;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.BookCopyRepository;
@@ -43,9 +42,9 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     @Transactional
     @Override
-    public BookCopySaveDto add(BookCopySaveDto bookCopySaveDto) throws ServiceException {
+    public BookCopySaveAndUpdateDto add(BookCopySaveAndUpdateDto bookCopySaveAndUpdateDto) throws ServiceException {
         try {
-            BookCopy bookCopy = BookCopyConverter.fromSaveDTO(bookCopySaveDto);
+            BookCopy bookCopy = BookCopyConverter.fromSaveDTO(bookCopySaveAndUpdateDto);
             return BookCopyConverter.toSaveDTO(bookCopyRepository.save(bookCopy));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
@@ -54,7 +53,7 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     @Transactional
     @Override
-    public boolean update(BookCopyUpdateDto bookCopyUpdateDto) throws ServiceException {
+    public boolean update(BookCopySaveAndUpdateDto bookCopyUpdateDto) throws ServiceException {
         try {
             BookCopy bookCopy = BookCopyConverter.fromUpdateDTO(bookCopyUpdateDto);
             bookCopyRepository.save(bookCopy);

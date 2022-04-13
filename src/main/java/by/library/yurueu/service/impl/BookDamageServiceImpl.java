@@ -3,7 +3,6 @@ package by.library.yurueu.service.impl;
 import by.library.yurueu.converter.BookDamageConverter;
 import by.library.yurueu.dto.BookDamageDto;
 import by.library.yurueu.dto.BookDamageListDto;
-import by.library.yurueu.dto.BookDamageSaveDto;
 import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.BookDamageRepository;
@@ -38,7 +37,7 @@ public class BookDamageServiceImpl implements BookDamageService {
 
     @Transactional
     @Override
-    public BookDamageSaveDto add(BookDamageSaveDto bookDamageSaveDto) throws ServiceException {
+    public BookDamageDto add(BookDamageDto bookDamageSaveDto) throws ServiceException {
         try {
             BookDamage bookDamage = BookDamageConverter.fromSaveDTO(bookDamageSaveDto);
             return BookDamageConverter.toSaveDTO(bookDamageRepository.save(bookDamage));
