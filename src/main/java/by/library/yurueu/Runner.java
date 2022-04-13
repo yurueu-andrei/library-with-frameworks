@@ -16,7 +16,11 @@ public class Runner implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) {
-
+    public void run(String... args) throws Exception {
+//        UserService bean = applicationContext.getBean(UserService.class);
+//        OrderService bean2 = applicationContext.getBean(OrderService.class);
+//        System.out.println(bean2.findAll());
+//        bean.delete(1L);
+//        System.out.println(bean2.findAll());
     }
 }
