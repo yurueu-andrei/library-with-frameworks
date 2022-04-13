@@ -35,12 +35,16 @@ public class UserController {
     }
 
     @PostMapping
-    public UserSaveDto add(@RequestBody UserSaveDto userSaveDto) throws ServiceException {
+    public UserSaveDto add(
+            @RequestBody UserSaveDto userSaveDto
+    ) throws ServiceException {
         return userService.add(userSaveDto);
     }
 
     @PutMapping
-    public UserUpdateDto update(@RequestBody UserUpdateDto userUpdateDto) throws ServiceException {
+    public UserUpdateDto update(
+            @RequestBody UserUpdateDto userUpdateDto
+    ) throws ServiceException {
         userService.update(userUpdateDto);
         return userUpdateDto;
     }

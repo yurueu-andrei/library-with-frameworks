@@ -35,12 +35,16 @@ public class OrderController {
     }
 
     @PostMapping
-    public OrderSaveDto add(@RequestBody OrderSaveDto orderSaveDto) throws ServiceException {
+    public OrderSaveDto add(
+            @RequestBody OrderSaveDto orderSaveDto
+    ) throws ServiceException {
         return orderService.add(orderSaveDto);
     }
 
     @PutMapping
-    public OrderUpdateDto update(@RequestBody OrderUpdateDto orderUpdateDto) throws ServiceException {
+    public OrderUpdateDto update(
+            @RequestBody OrderUpdateDto orderUpdateDto
+    ) throws ServiceException {
         orderService.update(orderUpdateDto);
         return orderUpdateDto;
     }

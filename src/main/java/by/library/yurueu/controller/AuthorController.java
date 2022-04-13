@@ -2,8 +2,7 @@ package by.library.yurueu.controller;
 
 import by.library.yurueu.dto.AuthorDto;
 import by.library.yurueu.dto.AuthorListDto;
-import by.library.yurueu.dto.AuthorSaveDto;
-import by.library.yurueu.dto.AuthorUpdateDto;
+import by.library.yurueu.dto.AuthorSaveAndUpdateDto;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.service.AuthorService;
 import lombok.RequiredArgsConstructor;
@@ -35,12 +34,16 @@ public class AuthorController {
     }
 
     @PostMapping
-    public AuthorSaveDto add(@RequestBody AuthorSaveDto authorSaveDto) throws ServiceException {
-        return authorService.add(authorSaveDto);
+    public AuthorSaveAndUpdateDto add(
+            @RequestBody AuthorSaveAndUpdateDto authorSaveAndUpdateDto
+    ) throws ServiceException {
+        return authorService.add(authorSaveAndUpdateDto);
     }
 
     @PutMapping
-    public AuthorUpdateDto update(@RequestBody AuthorUpdateDto authorUpdateDto) throws ServiceException {
+    public AuthorSaveAndUpdateDto update(
+            @RequestBody AuthorSaveAndUpdateDto authorUpdateDto
+    ) throws ServiceException {
         authorService.update(authorUpdateDto);
         return authorUpdateDto;
     }

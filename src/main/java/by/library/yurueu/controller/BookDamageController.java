@@ -2,7 +2,6 @@ package by.library.yurueu.controller;
 
 import by.library.yurueu.dto.BookDamageDto;
 import by.library.yurueu.dto.BookDamageListDto;
-import by.library.yurueu.dto.BookDamageSaveDto;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.service.BookDamageService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,9 @@ public class BookDamageController {
     }
 
     @PostMapping
-    public BookDamageSaveDto add(@RequestBody BookDamageSaveDto bookDamageSaveDto) throws ServiceException {
+    public BookDamageDto add(
+            @RequestBody BookDamageDto bookDamageSaveDto
+    ) throws ServiceException {
         return bookDamageService.add(bookDamageSaveDto);
     }
 
