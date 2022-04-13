@@ -2,8 +2,7 @@ package by.library.yurueu.service.impl;
 
 import by.library.yurueu.dto.AuthorDto;
 import by.library.yurueu.dto.AuthorListDto;
-import by.library.yurueu.dto.AuthorSaveDto;
-import by.library.yurueu.dto.AuthorUpdateDto;
+import by.library.yurueu.dto.AuthorSaveAndUpdateDto;
 import by.library.yurueu.dto.BookCopyListDto;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Book;
@@ -76,14 +75,14 @@ class AuthorServiceImplTest {
     @Test
     void add_shouldAddAuthor() throws ServiceException {
         //given
-        AuthorSaveDto expected = AuthorSaveDto.builder().id(3L).firstName("Alexander").build();
+        AuthorSaveAndUpdateDto expected = AuthorSaveAndUpdateDto.builder().id(3L).firstName("Alexander").build();
         Author authorWithoutId = Author.builder().firstName("Alexander").build();
         Author authorWithId = Author.builder().id(3L).firstName("Alexander").build();
 
         //when
         when(authorRepository.save(authorWithoutId))
                 .thenReturn(authorWithId);
-        AuthorSaveDto actual = authorService.add(AuthorSaveDto.builder().firstName("Alexander").build());
+        AuthorSaveAndUpdateDto actual = authorService.add(AuthorSaveAndUpdateDto.builder().firstName("Alexander").build());
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -92,7 +91,7 @@ class AuthorServiceImplTest {
     @Test
     void update_shouldUpdateAuthor() throws ServiceException {
         //given
-        AuthorUpdateDto expected = AuthorUpdateDto.builder().id(4L).firstName("Alexander").build();
+        AuthorSaveAndUpdateDto expected = AuthorSaveAndUpdateDto.builder().id(4L).firstName("Alexander").build();
         Author author = Author.builder().id(4L).firstName("Alexander").build();
 
         //when

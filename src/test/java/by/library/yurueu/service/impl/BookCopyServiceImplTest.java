@@ -3,8 +3,7 @@ package by.library.yurueu.service.impl;
 import by.library.yurueu.dto.AuthorListDto;
 import by.library.yurueu.dto.BookCopyDto;
 import by.library.yurueu.dto.BookCopyListDto;
-import by.library.yurueu.dto.BookCopySaveDto;
-import by.library.yurueu.dto.BookCopyUpdateDto;
+import by.library.yurueu.dto.BookCopySaveAndUpdateDto;
 import by.library.yurueu.dto.BookDamageListDto;
 import by.library.yurueu.dto.GenreDto;
 import by.library.yurueu.entity.Author;
@@ -79,13 +78,13 @@ class BookCopyServiceImplTest {
     @Test
     void add_shouldAddBookCopy() throws ServiceException {
         //given
-        BookCopySaveDto expected = BookCopySaveDto.builder().id(3L).bookId(1L).build();
+        BookCopySaveAndUpdateDto expected = BookCopySaveAndUpdateDto.builder().id(3L).bookId(1L).build();
         BookCopy bookCopyWithoutId = BookCopy.builder().book(Book.builder().id(1L).build()).build();
         BookCopy bookCopyWithId = BookCopy.builder().id(3L).book(Book.builder().id(1L).build()).build();
         //when
         when(bookCopyRepository.save(bookCopyWithoutId))
                 .thenReturn(bookCopyWithId);
-        BookCopySaveDto actual = bookCopyService.add(BookCopySaveDto.builder().build());
+        BookCopySaveAndUpdateDto actual = bookCopyService.add(BookCopySaveAndUpdateDto.builder().build());
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -94,7 +93,7 @@ class BookCopyServiceImplTest {
     @Test
     void update_shouldUpdateBookCopy() throws ServiceException {
         //given
-        BookCopyUpdateDto expected = BookCopyUpdateDto.builder().id(4L).imagePath("image path").build();
+        BookCopySaveAndUpdateDto expected = BookCopySaveAndUpdateDto.builder().id(4L).imagePath("image path").build();
         BookCopy bookCopy = BookCopy.builder().id(4L).imagePath("image path").build();
         //when
         when(bookCopyRepository.save(bookCopy))

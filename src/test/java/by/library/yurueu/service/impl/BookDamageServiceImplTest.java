@@ -2,7 +2,6 @@ package by.library.yurueu.service.impl;
 
 import by.library.yurueu.dto.BookDamageDto;
 import by.library.yurueu.dto.BookDamageListDto;
-import by.library.yurueu.dto.BookDamageSaveDto;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.entity.Order;
@@ -68,7 +67,7 @@ class BookDamageServiceImplTest {
     @Test
     void add_shouldAddBookDamage() throws ServiceException {
         //given
-        BookDamageSaveDto expected = BookDamageSaveDto.builder().id(3L).bookCopyId(1L).orderId(1L).userId(1L).build();
+        BookDamageDto expected = BookDamageDto.builder().id(3L).bookCopyId(1L).orderId(1L).userId(1L).build();
         BookDamage bookDamageWithoutId = BookDamage.builder()
                 .bookCopy(BookCopy.builder().id(1L).build())
                 .order(Order.builder().id(1L).build())
@@ -81,7 +80,7 @@ class BookDamageServiceImplTest {
         //when
         when(bookDamageRepository.save(bookDamageWithoutId))
                 .thenReturn(bookDamageWithId);
-        BookDamageSaveDto actual = bookDamageService.add(BookDamageSaveDto.builder()
+        BookDamageDto actual = bookDamageService.add(BookDamageDto.builder()
                 .bookCopyId(1L).orderId(1L).userId(1L).build());
 
         //then
