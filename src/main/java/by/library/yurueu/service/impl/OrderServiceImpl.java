@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<Order> orderToDelete = orderRepository.findById(id);
         if (orderToDelete.isPresent()) {
             Order order = orderToDelete.get();
-            order.setDeleteStatus("DELETED");
+            order.setStatus("DELETED");
             orderRepository.save(order);
             return true;
         }

@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
         if (userToDelete.isPresent()) {
             User user = userToDelete.get();
             deleteLinks(user);
-            user.setDeleteStatus("DELETED");
+            user.setStatus("DELETED");
             userRepository.save(user);
             return true;
         }
@@ -80,12 +80,12 @@ public class UserServiceImpl implements UserService {
 
     private void deleteLinks(User user) {
         user.getOrders().forEach(order -> {
-            order.setDeleteStatus("DELETED");
+            order.setStatus("DELETED");
             orderRepository.save(order);
         });
 
         user.getBookDamages().forEach(bookDamage -> {
-            bookDamage.setDeleteStatus("DELETED");
+            bookDamage.setStatus("DELETED");
             bookDamageRepository.save(bookDamage);
         });
     }

@@ -41,7 +41,7 @@ public class BookServiceImpl implements BookService {
         if (bookToDelete.isPresent()){
             Book book = bookToDelete.get();
             deleteLinks(book);
-            book.setDeleteStatus("DELETED");
+            book.setStatus("DELETED");
             bookRepository.save(book);
             return true;
         }
@@ -50,11 +50,11 @@ public class BookServiceImpl implements BookService {
 
     private void deleteLinks(Book book) {
         book.getBookCopies().forEach(bookCopy -> {
-            bookCopy.setDeleteStatus("DELETED");
+            bookCopy.setStatus("DELETED");
             bookCopyRepository.save(bookCopy);
 
             bookCopy.getBookDamages().forEach(bookDamage -> {
-                bookDamage.setDeleteStatus("DELETED");
+                bookDamage.setStatus("DELETED");
                 bookDamageRepository.save(bookDamage);
             });
         });

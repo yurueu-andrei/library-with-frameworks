@@ -53,7 +53,7 @@ public class BookDamageServiceImpl implements BookDamageService {
         Optional<BookDamage> bookDamageToDelete = bookDamageRepository.findById(id);
         if (bookDamageToDelete.isPresent()) {
             BookDamage bookDamage = bookDamageToDelete.get();
-            bookDamage.setDeleteStatus("DELETED");
+            bookDamage.setStatus("DELETED");
             bookDamageRepository.save(bookDamage);
             return true;
         }

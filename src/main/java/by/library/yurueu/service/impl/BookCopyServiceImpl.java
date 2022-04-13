@@ -71,7 +71,7 @@ public class BookCopyServiceImpl implements BookCopyService {
         if (bookCopyToDelete.isPresent()) {
             BookCopy bookCopy = bookCopyToDelete.get();
             deleteLinks(bookCopy);
-            bookCopy.setDeleteStatus("DELETED");
+            bookCopy.setStatus("DELETED");
             bookCopyRepository.save(bookCopy);
             return true;
         }
@@ -80,7 +80,7 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     private void deleteLinks(BookCopy bookCopy) {
         bookCopy.getBookDamages().forEach(bookDamage -> {
-            bookDamage.setDeleteStatus("DELETED");
+            bookDamage.setStatus("DELETED");
             bookDamageRepository.save(bookDamage);
         });
     }

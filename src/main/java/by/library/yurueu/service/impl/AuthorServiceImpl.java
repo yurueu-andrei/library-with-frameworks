@@ -68,7 +68,7 @@ public class AuthorServiceImpl implements AuthorService {
         Optional<Author> authorToDelete = authorRepository.findById(id);
         if (authorToDelete.isPresent()) {
             Author author = authorToDelete.get();
-            author.setDeleteStatus("DELETED");
+            author.setStatus("DELETED");
             authorRepository.save(author);
             return true;
         }
