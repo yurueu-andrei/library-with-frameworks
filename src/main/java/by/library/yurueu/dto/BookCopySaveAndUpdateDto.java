@@ -13,10 +13,11 @@ import java.time.LocalDate;
 @Builder
 @EqualsAndHashCode
 @ToString
-public class AuthorSaveDto {
+public class BookCopySaveAndUpdateDto {
     private Long id;
-    private String firstName;
-    private String lastName;
-    private LocalDate birthDate;
+    private String status;
+    private LocalDate registrationDate;
+    private int pricePerDay;
     private String imagePath;
+    private Long bookId;
 }
