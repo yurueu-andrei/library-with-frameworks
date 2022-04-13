@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/book-damages")
+@RequestMapping(value = "/damages")
 public class BookDamageController {
     private final BookDamageService bookDamageService;
 
