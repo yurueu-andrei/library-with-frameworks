@@ -9,9 +9,9 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("from User u left join fetch u.orders left join fetch u.roles " +
-            "where u.id=:id and not u.deleteStatus='DELETED'")
+            "where u.id=:id and not u.status='DELETED'")
     Optional<User> findById(Long id);
 
-    @Query("from User u where not u.deleteStatus='DELETED'")
+    @Query("from User u where not u.status='DELETED'")
     List<User> findAll();
 }

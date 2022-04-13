@@ -9,9 +9,9 @@ import java.util.Optional;
 
 public interface AuthorRepository extends JpaRepository<Author, Long> {
     @Query("from Author a left join fetch a.books b left join fetch b.bookCopies bc " +
-            "where a.id=:id and not a.deleteStatus='DELETED'")
+            "where a.id=:id and not a.status='DELETED'")
     Optional<Author> findById(Long id);
 
-    @Query("from Author a where not a.deleteStatus='DELETED'")
+    @Query("from Author a where not a.status='DELETED'")
     List<Author> findAll();
 }

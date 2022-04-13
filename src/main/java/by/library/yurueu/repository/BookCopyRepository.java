@@ -10,9 +10,9 @@ import java.util.Optional;
 public interface BookCopyRepository extends JpaRepository<BookCopy, Long> {
     @Query("from BookCopy bc left join fetch bc.book b left join fetch b.genres left join fetch b.authors " +
             "left join fetch bc.bookDamages bd left join fetch bc.orders " +
-            "where bc.id=:id and not bc.deleteStatus='DELETED'")
+            "where bc.id=:id and not bc.status='DELETED'")
     Optional<BookCopy> findById(Long id);
 
-    @Query("from BookCopy bc where not bc.deleteStatus='DELETED'")
+    @Query("from BookCopy bc where not bc.status='DELETED'")
     List<BookCopy> findAll();
 }
