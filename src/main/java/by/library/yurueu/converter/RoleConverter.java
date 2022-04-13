@@ -19,11 +19,4 @@ public class RoleConverter {
                 .map(RoleConverter::toListDTO)
                 .collect(Collectors.toList());
     }
-
-//    public static Role fromListDTO(RoleDto roleListDto) {
-//        return Role.builder()
-//                .id(roleListDto.getId())
-//                .roleName(roleListDto.getRoleName())
-//                .build();
-//    }
 }

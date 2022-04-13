@@ -24,7 +24,6 @@ public class BookCopyConverter {
                 .bookDamages(BookDamageConverter.toListDTO(new ArrayList<>(bookCopy.getBookDamages())))
                 .authors(AuthorConverter.toListDTO(new ArrayList<>(bookCopy.getBook().getAuthors())))
                 .genres(GenreConverter.toListDTO(new ArrayList<>(bookCopy.getBook().getGenres())))
-                .deleteStatus(bookCopy.getDeleteStatus())
                 .build();
     }
 
@@ -36,7 +35,6 @@ public class BookCopyConverter {
                 .imagePath(bookCopy.getImagePath())
                 .pricePerDay(bookCopy.getPricePerDay())
                 .bookId(bookCopy.getBook().getId())
-                .deleteStatus(bookCopy.getDeleteStatus())
                 .build();
     }
 
@@ -48,7 +46,6 @@ public class BookCopyConverter {
                 .imagePath(bookCopySaveDto.getImagePath())
                 .pricePerDay(bookCopySaveDto.getPricePerDay())
                 .book(Book.builder().id(bookCopySaveDto.getBookId()).build())
-                .deleteStatus(bookCopySaveDto.getDeleteStatus())
                 .build();
     }
 
@@ -74,7 +71,6 @@ public class BookCopyConverter {
                 .registrationDate(bookCopyUpdateDto.getRegistrationDate())
                 .pricePerDay(bookCopyUpdateDto.getPricePerDay())
                 .imagePath(bookCopyUpdateDto.getImagePath())
-                .deleteStatus(bookCopyUpdateDto.getDeleteStatus())
                 .book(Book.builder().id(bookCopyUpdateDto.getBookId()).build())
                 .build();
     }

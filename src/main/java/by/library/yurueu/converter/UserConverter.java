@@ -24,7 +24,6 @@ public class UserConverter {
                 .birthDate(user.getBirthDate())
                 .rolesId(constructRolesId(user.getRoles()))
                 .orders(OrderConverter.toListDTO(new ArrayList<>(user.getOrders())))
-                .deleteStatus(user.getDeleteStatus())
                 .build();
     }
 
@@ -44,7 +43,6 @@ public class UserConverter {
                 .address(user.getAddress())
                 .birthDate(user.getBirthDate())
                 .rolesId(constructRolesId(user.getRoles()))
-                .deleteStatus(user.getDeleteStatus())
                 .build();
     }
 
@@ -58,7 +56,6 @@ public class UserConverter {
                 .address(userSaveDto.getAddress())
                 .birthDate(userSaveDto.getBirthDate())
                 .roles(constructRoles(userSaveDto.getRolesId()))
-                .deleteStatus(userSaveDto.getDeleteStatus())
                 .build();
     }
 
@@ -91,7 +88,6 @@ public class UserConverter {
                 .email(userUpdateDto.getEmail())
                 .address(userUpdateDto.getAddress())
                 .birthDate(userUpdateDto.getBirthDate())
-                .deleteStatus(userUpdateDto.getDeleteStatus())
                 .build();
     }
 }
