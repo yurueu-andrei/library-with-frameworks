@@ -8,6 +8,8 @@ import by.library.yurueu.dto.BookCopyUpdateDto;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.BookCopyRepository;
+import by.library.yurueu.repository.BookDamageRepository;
+import by.library.yurueu.repository.OrderRepository;
 import by.library.yurueu.service.BookCopyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ import java.util.Optional;
 @Service
 public class BookCopyServiceImpl implements BookCopyService {
     private final BookCopyRepository bookCopyRepository;
+    private final BookDamageRepository bookDamageRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     public BookCopyDto findById(Long id) throws ServiceException {
@@ -63,10 +67,21 @@ public class BookCopyServiceImpl implements BookCopyService {
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        Optional<BookCopy> bookCopy = bookCopyRepository.findById(id);
-        bookCopyRepository.delete(bookCopy.orElseThrow(
-                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
-        );
-        return true;
+        Optional<BookCopy> bookCopyToDelete = bookCopyRepository.findById(id);
+        if (bookCopyToDelete.isPresent()) {
+            BookCopy bookCopy = bookCopyToDelete.get();
+            deleteLinks(bookCopy);
+            bookCopy.setDeleteStatus("DELETED");
+            bookCopyRepository.save(bookCopy);
+            return true;
+        }
+        throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
+    }
+
+    private void deleteLinks(BookCopy bookCopy) {
+        bookCopy.getBookDamages().forEach(bookDamage -> {
+            bookDamage.setDeleteStatus("DELETED");
+            bookDamageRepository.save(bookDamage);
+        });
     }
 }

@@ -7,6 +7,7 @@ import by.library.yurueu.dto.OrderSaveDto;
 import by.library.yurueu.dto.OrderUpdateDto;
 import by.library.yurueu.entity.Order;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.repository.BookDamageRepository;
 import by.library.yurueu.repository.OrderRepository;
 import by.library.yurueu.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.Optional;
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
+    private final BookDamageRepository bookDamageRepository;
 
     @Override
     public OrderDto findById(Long id) throws ServiceException {
@@ -63,10 +65,13 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        Optional<Order> order = orderRepository.findById(id);
-        orderRepository.delete(order.orElseThrow(
-                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
-        );
-        return true;
+        Optional<Order> orderToDelete = orderRepository.findById(id);
+        if (orderToDelete.isPresent()) {
+            Order order = orderToDelete.get();
+            order.setDeleteStatus("DELETED");
+            orderRepository.save(order);
+            return true;
+        }
+        throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
     }
 }

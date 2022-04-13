@@ -2,6 +2,7 @@ package by.library.yurueu.service.impl;
 
 import by.library.yurueu.converter.GenreConverter;
 import by.library.yurueu.dto.GenreListDto;
+import by.library.yurueu.dto.GenreSaveDto;
 import by.library.yurueu.dto.GenreUpdateDto;
 import by.library.yurueu.entity.Genre;
 import by.library.yurueu.exception.ServiceException;
@@ -37,10 +38,10 @@ public class GenreServiceImpl implements GenreService {
 
     @Transactional
     @Override
-    public GenreListDto add(GenreListDto genreListDto) throws ServiceException {
+    public GenreSaveDto add(GenreSaveDto genreSaveDto) throws ServiceException {
         try {
-            Genre genre = GenreConverter.fromListDTO(genreListDto);
-            return GenreConverter.toListDTO(genreRepository.save(genre));
+            Genre genre = GenreConverter.fromSaveDTO(genreSaveDto);
+            return GenreConverter.toSaveDTO(genreRepository.save(genre));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
@@ -61,10 +62,13 @@ public class GenreServiceImpl implements GenreService {
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        Optional<Genre> genre = genreRepository.findById(id);
-        genreRepository.delete(genre.orElseThrow(
-                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
-        );
-        return true;
+        Optional<Genre> genreToDelete = genreRepository.findById(id);
+        if (genreToDelete.isPresent()) {
+            Genre genre = genreToDelete.get();
+            genre.setDeleteStatus("DELETED");
+            genreRepository.save(genre);
+            return true;
+        }
+        throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
     }
 }

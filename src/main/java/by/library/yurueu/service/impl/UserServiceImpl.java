@@ -7,6 +7,8 @@ import by.library.yurueu.dto.UserSaveDto;
 import by.library.yurueu.dto.UserUpdateDto;
 import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.repository.BookDamageRepository;
+import by.library.yurueu.repository.OrderRepository;
 import by.library.yurueu.repository.UserRepository;
 import by.library.yurueu.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,8 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final BookDamageRepository bookDamageRepository;
 
     @Override
     public UserDto findById(Long id) throws ServiceException {
@@ -63,10 +67,26 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        Optional<User> user = userRepository.findById(id);
-        userRepository.delete(user.orElseThrow(
-                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
-        );
-        return true;
+        Optional<User> userToDelete = userRepository.findById(id);
+        if (userToDelete.isPresent()) {
+            User user = userToDelete.get();
+            deleteLinks(user);
+            user.setDeleteStatus("DELETED");
+            userRepository.save(user);
+            return true;
+        }
+        throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
+    }
+
+    private void deleteLinks(User user) {
+        user.getOrders().forEach(order -> {
+            order.setDeleteStatus("DELETED");
+            orderRepository.save(order);
+        });
+
+        user.getBookDamages().forEach(bookDamage -> {
+            bookDamage.setDeleteStatus("DELETED");
+            bookDamageRepository.save(bookDamage);
+        });
     }
 }

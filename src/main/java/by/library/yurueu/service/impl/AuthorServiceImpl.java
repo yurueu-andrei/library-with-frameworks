@@ -8,6 +8,7 @@ import by.library.yurueu.dto.AuthorUpdateDto;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.AuthorRepository;
+import by.library.yurueu.repository.BookRepository;
 import by.library.yurueu.service.AuthorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.Optional;
 @Service
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
 
     @Override
     public AuthorDto findById(Long id) throws ServiceException {
@@ -63,10 +65,13 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        Optional<Author> author = authorRepository.findById(id);
-        authorRepository.delete(author.orElseThrow(
-                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
-        );
-        return true;
+        Optional<Author> authorToDelete = authorRepository.findById(id);
+        if (authorToDelete.isPresent()) {
+            Author author = authorToDelete.get();
+            author.setDeleteStatus("DELETED");
+            authorRepository.save(author);
+            return true;
+        }
+        throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
     }
 }
