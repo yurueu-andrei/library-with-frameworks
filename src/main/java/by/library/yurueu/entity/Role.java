@@ -1,11 +1,11 @@
 package by.library.yurueu.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,8 +20,8 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@SuperBuilder
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "roles")
 public class Role {

@@ -1,15 +1,18 @@
 package by.library.yurueu.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.time.LocalDate;
@@ -17,14 +20,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+@Builder
 @Entity
 @Table(name = "authors")
-public class Author extends BaseEntity {
+public class Author {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "author_status")
+    private String status;
+
     @Column(name = "first_name")
     private String firstName;
 
