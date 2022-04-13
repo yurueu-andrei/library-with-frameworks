@@ -2,8 +2,7 @@ package by.library.yurueu.converter;
 
 import by.library.yurueu.dto.AuthorDto;
 import by.library.yurueu.dto.AuthorListDto;
-import by.library.yurueu.dto.AuthorSaveDto;
-import by.library.yurueu.dto.AuthorUpdateDto;
+import by.library.yurueu.dto.AuthorSaveAndUpdateDto;
 import by.library.yurueu.dto.BookCopyListDto;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Book;
@@ -35,8 +34,8 @@ public class AuthorConverter {
         return bookCopiesListDto;
     }
 
-    public static AuthorSaveDto toSaveDTO(Author author) {
-        return AuthorSaveDto.builder()
+    public static AuthorSaveAndUpdateDto toSaveDTO(Author author) {
+        return AuthorSaveAndUpdateDto.builder()
                 .id(author.getId())
                 .firstName(author.getFirstName())
                 .lastName(author.getLastName())
@@ -45,13 +44,13 @@ public class AuthorConverter {
                 .build();
     }
 
-    public static Author fromSaveDTO(AuthorSaveDto authorSaveDto) {
+    public static Author fromSaveDTO(AuthorSaveAndUpdateDto authorSaveAndUpdateDto) {
         return Author.builder()
-                .id(authorSaveDto.getId())
-                .firstName(authorSaveDto.getFirstName())
-                .lastName(authorSaveDto.getLastName())
-                .birthDate(authorSaveDto.getBirthDate())
-                .imagePath(authorSaveDto.getImagePath())
+                .id(authorSaveAndUpdateDto.getId())
+                .firstName(authorSaveAndUpdateDto.getFirstName())
+                .lastName(authorSaveAndUpdateDto.getLastName())
+                .birthDate(authorSaveAndUpdateDto.getBirthDate())
+                .imagePath(authorSaveAndUpdateDto.getImagePath())
                 .build();
     }
 
@@ -69,7 +68,7 @@ public class AuthorConverter {
                 .collect(Collectors.toList());
     }
 
-    public static Author fromUpdateDTO(AuthorUpdateDto authorUpdateDto) {
+    public static Author fromUpdateDTO(AuthorSaveAndUpdateDto authorUpdateDto) {
         return Author.builder()
                 .id(authorUpdateDto.getId())
                 .firstName(authorUpdateDto.getFirstName())

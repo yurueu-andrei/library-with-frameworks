@@ -2,7 +2,6 @@ package by.library.yurueu.converter;
 
 import by.library.yurueu.dto.BookDamageDto;
 import by.library.yurueu.dto.BookDamageListDto;
-import by.library.yurueu.dto.BookDamageSaveDto;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.entity.Order;
@@ -23,8 +22,8 @@ public class BookDamageConverter {
                 .build();
     }
 
-    public static BookDamageSaveDto toSaveDTO(BookDamage bookDamage) {
-        return BookDamageSaveDto.builder()
+    public static BookDamageDto toSaveDTO(BookDamage bookDamage) {
+        return BookDamageDto.builder()
                 .id(bookDamage.getId())
                 .imagePath(bookDamage.getImagePath())
                 .damageDescription(bookDamage.getDamageDescription())
@@ -34,7 +33,7 @@ public class BookDamageConverter {
                 .build();
     }
 
-    public static BookDamage fromSaveDTO(BookDamageSaveDto bookDamageSaveDto) {
+    public static BookDamage fromSaveDTO(BookDamageDto bookDamageSaveDto) {
         return BookDamage.builder()
                 .id(bookDamageSaveDto.getId())
                 .imagePath(bookDamageSaveDto.getImagePath())
