@@ -13,6 +13,7 @@ public class BookDamageDto {
     private Long id;
     private String imagePath;
     private String damageDescription;
+    private String deleteStatus;
     private Long userId;
     private Long orderId;
     private Long bookCopyId;

@@ -20,6 +20,7 @@ public class UserDto {
     private String email;
     private String address;
     private LocalDate birthDate;
+    private String deleteStatus;
 
     private List<Long> rolesId;
     private List<OrderListDto> orders;

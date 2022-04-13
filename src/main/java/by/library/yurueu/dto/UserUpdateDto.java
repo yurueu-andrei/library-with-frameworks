@@ -21,4 +21,5 @@ public class UserUpdateDto {
     private String email;
     private String address;
     private LocalDate birthDate;
+    private String deleteStatus;
 }

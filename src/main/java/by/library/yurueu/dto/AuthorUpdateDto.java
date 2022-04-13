@@ -17,4 +17,5 @@ public class AuthorUpdateDto {
     private String lastName;
     private LocalDate birthDate;
     private String imagePath;
+    private String deleteStatus;
 }

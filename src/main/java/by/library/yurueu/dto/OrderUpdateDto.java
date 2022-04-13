@@ -17,4 +17,5 @@ public class OrderUpdateDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private int price;
+    private String deleteStatus;
 }

@@ -18,6 +18,7 @@ public class OrderDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private int price;
+    private String deleteStatus;
     private Long userId;
 
     private List<BookDamageListDto> bookDamages;

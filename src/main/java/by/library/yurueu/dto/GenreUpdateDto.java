@@ -12,4 +12,5 @@ import lombok.ToString;
 public class GenreUpdateDto {
     private Long id;
     private String genreName;
+    private String deleteStatus;
 }
