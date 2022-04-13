@@ -44,7 +44,9 @@ public class OrderServiceImpl implements OrderService {
     public OrderSaveDto add(OrderSaveDto orderSaveDto) throws ServiceException {
         try {
             Order order = OrderConverter.fromSaveDTO(orderSaveDto);
-            return OrderConverter.toSaveDTO(orderRepository.save(order));
+            order.setStatus("ACTIVE");
+            orderRepository.save(order);
+            return OrderConverter.toSaveDTO(order);
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
@@ -55,6 +57,7 @@ public class OrderServiceImpl implements OrderService {
     public boolean update(OrderUpdateDto orderUpdateDto) throws ServiceException {
         try {
             Order order = OrderConverter.fromUpdateDTO(orderUpdateDto);
+            order.setStatus("ACTIVE");
             orderRepository.save(order);
             return true;
         } catch (Exception ex) {

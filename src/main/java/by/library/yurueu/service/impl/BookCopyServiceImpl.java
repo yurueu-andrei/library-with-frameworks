@@ -45,7 +45,9 @@ public class BookCopyServiceImpl implements BookCopyService {
     public BookCopySaveAndUpdateDto add(BookCopySaveAndUpdateDto bookCopySaveAndUpdateDto) throws ServiceException {
         try {
             BookCopy bookCopy = BookCopyConverter.fromSaveDTO(bookCopySaveAndUpdateDto);
-            return BookCopyConverter.toSaveDTO(bookCopyRepository.save(bookCopy));
+            bookCopy.setStatus("AVAILABLE");
+            bookCopyRepository.save(bookCopy);
+            return BookCopyConverter.toSaveDTO(bookCopy);
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
@@ -56,6 +58,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     public boolean update(BookCopySaveAndUpdateDto bookCopyUpdateDto) throws ServiceException {
         try {
             BookCopy bookCopy = BookCopyConverter.fromUpdateDTO(bookCopyUpdateDto);
+            bookCopy.setStatus("AVAILABLE");
             bookCopyRepository.save(bookCopy);
             return true;
         } catch (Exception ex) {

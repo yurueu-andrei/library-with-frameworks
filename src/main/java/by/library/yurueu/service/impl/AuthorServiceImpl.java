@@ -43,7 +43,9 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorSaveAndUpdateDto add(AuthorSaveAndUpdateDto authorSaveAndUpdateDto) throws ServiceException {
         try {
             Author author = AuthorConverter.fromSaveDTO(authorSaveAndUpdateDto);
-            return AuthorConverter.toSaveDTO(authorRepository.save(author));
+            author.setStatus("ACTIVE");
+            authorRepository.save(author);
+            return AuthorConverter.toSaveDTO(author);
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
@@ -54,6 +56,7 @@ public class AuthorServiceImpl implements AuthorService {
     public boolean update(AuthorSaveAndUpdateDto authorUpdateDto) throws ServiceException {
         try {
             Author author = AuthorConverter.fromUpdateDTO(authorUpdateDto);
+            author.setStatus("ACTIVE");
             authorRepository.save(author);
             return true;
         } catch (Exception ex) {

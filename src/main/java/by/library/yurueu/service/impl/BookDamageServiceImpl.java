@@ -40,7 +40,9 @@ public class BookDamageServiceImpl implements BookDamageService {
     public BookDamageDto add(BookDamageDto bookDamageSaveDto) throws ServiceException {
         try {
             BookDamage bookDamage = BookDamageConverter.fromSaveDTO(bookDamageSaveDto);
-            return BookDamageConverter.toSaveDTO(bookDamageRepository.save(bookDamage));
+            bookDamage.setStatus("ACTIVE");
+            bookDamageRepository.save(bookDamage);
+            return BookDamageConverter.toSaveDTO(bookDamage);
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }

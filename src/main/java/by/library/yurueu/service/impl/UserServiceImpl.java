@@ -46,7 +46,9 @@ public class UserServiceImpl implements UserService {
     public UserSaveDto add(UserSaveDto userSaveDto) throws ServiceException {
         try {
             User user = UserConverter.fromSaveDTO(userSaveDto);
-            return UserConverter.toSaveDTO(userRepository.save(user));
+            user.setStatus("ACTIVE");
+            userRepository.save(user);
+            return UserConverter.toSaveDTO(user);
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
@@ -57,6 +59,7 @@ public class UserServiceImpl implements UserService {
     public boolean update(UserUpdateDto userUpdateDto) throws ServiceException {
         try {
             User user = UserConverter.fromUpdateDTO(userUpdateDto);
+            user.setStatus("ACTIVE");
             userRepository.save(user);
             return true;
         } catch (Exception ex) {

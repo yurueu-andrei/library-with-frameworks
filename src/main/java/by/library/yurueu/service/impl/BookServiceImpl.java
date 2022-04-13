@@ -7,7 +7,6 @@ import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.BookCopyRepository;
 import by.library.yurueu.repository.BookDamageRepository;
 import by.library.yurueu.repository.BookRepository;
-import by.library.yurueu.repository.OrderRepository;
 import by.library.yurueu.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import java.util.Optional;
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookCopyRepository bookCopyRepository;
-    private final OrderRepository orderRepository;
     private final BookDamageRepository bookDamageRepository;
 
     @Transactional
@@ -28,7 +26,9 @@ public class BookServiceImpl implements BookService {
     public BookSaveDto add(BookSaveDto bookSaveDto) throws ServiceException {
         try {
             Book book = BookConverter.fromSaveDTO(bookSaveDto);
-            return BookConverter.toSaveDTO(bookRepository.save(book));
+            book.setStatus("ACTIVE");
+            bookRepository.save(book);
+            return BookConverter.toSaveDTO(book);
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
