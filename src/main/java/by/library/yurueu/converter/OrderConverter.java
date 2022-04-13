@@ -25,6 +25,7 @@ public class OrderConverter {
                 .userId(order.getUser().getId())
                 .bookCopies(BookCopyConverter.toListDTO(new ArrayList<>(order.getBookCopies())))
                 .bookDamages(BookDamageConverter.toListDTO(new ArrayList<>(order.getBookDamages())))
+                .deleteStatus(order.getDeleteStatus())
                 .build();
     }
 
@@ -37,6 +38,7 @@ public class OrderConverter {
                 .price(order.getPrice())
                 .userId(order.getUser().getId())
                 .bookCopiesId(constructBookCopiesId(order.getBookCopies()))
+                .deleteStatus(order.getDeleteStatus())
                 .build();
     }
 
@@ -55,6 +57,7 @@ public class OrderConverter {
                 .price(orderSaveDto.getPrice())
                 .user(User.builder().id(orderSaveDto.getUserId()).build())
                 .bookCopies(constructBookCopies(orderSaveDto.getBookCopiesId()))
+                .deleteStatus(orderSaveDto.getDeleteStatus())
                 .build();
     }
 
@@ -87,6 +90,7 @@ public class OrderConverter {
                 .startDate(orderUpdateDto.getStartDate())
                 .endDate(orderUpdateDto.getEndDate())
                 .price(orderUpdateDto.getPrice())
+                .deleteStatus(orderUpdateDto.getDeleteStatus())
                 .build();
     }
 }

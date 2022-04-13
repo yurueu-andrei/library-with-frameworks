@@ -19,6 +19,7 @@ public class BookConverter {
                 .imagePath(book.getImagePath())
                 .genresId(constructGenresId(book.getGenres()))
                 .authorsId(constructAuthorsId(book.getAuthors()))
+                .deleteStatus(book.getDeleteStatus())
                 .build();
     }
 
@@ -42,6 +43,7 @@ public class BookConverter {
                 .imagePath(bookSaveDto.getImagePath())
                 .genres(constructGenres(bookSaveDto.getGenresId()))
                 .authors(constructAuthors(bookSaveDto.getAuthorsId()))
+                .deleteStatus(bookSaveDto.getDeleteStatus())
                 .build();
     }
 

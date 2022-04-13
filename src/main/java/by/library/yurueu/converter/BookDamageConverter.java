@@ -20,6 +20,7 @@ public class BookDamageConverter {
                 .bookCopyId(bookDamage.getBookCopy().getId())
                 .orderId(bookDamage.getOrder().getId())
                 .userId(bookDamage.getUser().getId())
+                .deleteStatus(bookDamage.getDeleteStatus())
                 .build();
     }
 
@@ -31,6 +32,7 @@ public class BookDamageConverter {
                 .userId(bookDamage.getUser().getId())
                 .orderId(bookDamage.getOrder().getId())
                 .bookCopyId(bookDamage.getBookCopy().getId())
+                .deleteStatus(bookDamage.getDeleteStatus())
                 .build();
     }
 
@@ -42,6 +44,7 @@ public class BookDamageConverter {
                 .user(User.builder().id(bookDamageSaveDto.getUserId()).build())
                 .order(Order.builder().id(bookDamageSaveDto.getOrderId()).build())
                 .bookCopy(BookCopy.builder().id(bookDamageSaveDto.getBookCopyId()).build())
+                .deleteStatus(bookDamageSaveDto.getDeleteStatus())
                 .build();
     }
 

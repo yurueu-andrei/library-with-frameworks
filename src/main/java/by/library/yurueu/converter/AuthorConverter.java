@@ -23,6 +23,7 @@ public class AuthorConverter {
                 .birthDate(author.getBirthDate())
                 .imagePath(author.getImagePath())
                 .books(constructBookCopiesListDTO(author.getBooks()))
+                .deleteStatus(author.getDeleteStatus())
                 .build();
     }
 
@@ -42,6 +43,7 @@ public class AuthorConverter {
                 .lastName(author.getLastName())
                 .birthDate(author.getBirthDate())
                 .imagePath(author.getImagePath())
+                .deleteStatus(author.getDeleteStatus())
                 .build();
     }
 
@@ -52,6 +54,7 @@ public class AuthorConverter {
                 .lastName(authorSaveDto.getLastName())
                 .birthDate(authorSaveDto.getBirthDate())
                 .imagePath(authorSaveDto.getImagePath())
+                .deleteStatus(authorSaveDto.getDeleteStatus())
                 .build();
     }
 
@@ -76,6 +79,7 @@ public class AuthorConverter {
                 .lastName(authorUpdateDto.getLastName())
                 .birthDate(authorUpdateDto.getBirthDate())
                 .imagePath(authorUpdateDto.getImagePath())
+                .deleteStatus(authorUpdateDto.getDeleteStatus())
                 .build();
     }
 }

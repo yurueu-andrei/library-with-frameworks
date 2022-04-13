@@ -4,7 +4,6 @@ import by.library.yurueu.dto.UserDto;
 import by.library.yurueu.dto.UserListDto;
 import by.library.yurueu.dto.UserSaveDto;
 import by.library.yurueu.dto.UserUpdateDto;
-import by.library.yurueu.entity.BaseEntity;
 import by.library.yurueu.entity.Role;
 import by.library.yurueu.entity.User;
 
@@ -25,12 +24,13 @@ public class UserConverter {
                 .birthDate(user.getBirthDate())
                 .rolesId(constructRolesId(user.getRoles()))
                 .orders(OrderConverter.toListDTO(new ArrayList<>(user.getOrders())))
+                .deleteStatus(user.getDeleteStatus())
                 .build();
     }
 
     private static List<Long> constructRolesId(Set<Role> roles) {
         return roles.stream()
-                .map(BaseEntity::getId)
+                .map(Role::getId)
                 .collect(Collectors.toList());
     }
 
@@ -44,6 +44,7 @@ public class UserConverter {
                 .address(user.getAddress())
                 .birthDate(user.getBirthDate())
                 .rolesId(constructRolesId(user.getRoles()))
+                .deleteStatus(user.getDeleteStatus())
                 .build();
     }
 
@@ -57,6 +58,7 @@ public class UserConverter {
                 .address(userSaveDto.getAddress())
                 .birthDate(userSaveDto.getBirthDate())
                 .roles(constructRoles(userSaveDto.getRolesId()))
+                .deleteStatus(userSaveDto.getDeleteStatus())
                 .build();
     }
 
@@ -89,6 +91,7 @@ public class UserConverter {
                 .email(userUpdateDto.getEmail())
                 .address(userUpdateDto.getAddress())
                 .birthDate(userUpdateDto.getBirthDate())
+                .deleteStatus(userUpdateDto.getDeleteStatus())
                 .build();
     }
 }

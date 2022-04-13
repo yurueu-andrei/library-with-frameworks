@@ -1,6 +1,7 @@
 package by.library.yurueu.converter;
 
 import by.library.yurueu.dto.GenreListDto;
+import by.library.yurueu.dto.GenreSaveDto;
 import by.library.yurueu.dto.GenreUpdateDto;
 import by.library.yurueu.entity.Genre;
 
@@ -25,6 +26,23 @@ public class GenreConverter {
         return Genre.builder()
                 .id(genreUpdateDto.getId())
                 .genreName(genreUpdateDto.getGenreName())
+                .deleteStatus(genreUpdateDto.getDeleteStatus())
+                .build();
+    }
+
+    public static Genre fromSaveDTO(GenreSaveDto genreSaveDto) {
+        return Genre.builder()
+                .id(genreSaveDto.getId())
+                .genreName(genreSaveDto.getGenreName())
+                .deleteStatus(genreSaveDto.getDeleteStatus())
+                .build();
+    }
+
+    public static GenreSaveDto toSaveDTO(Genre genre) {
+        return GenreSaveDto.builder()
+                .id(genre.getId())
+                .genreName(genre.getGenreName())
+                .deleteStatus(genre.getDeleteStatus())
                 .build();
     }
 
