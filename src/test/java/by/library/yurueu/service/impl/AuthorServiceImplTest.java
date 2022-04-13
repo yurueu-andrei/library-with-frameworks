@@ -10,6 +10,7 @@ import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.AuthorRepository;
+import by.library.yurueu.repository.BookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.mockito.Mockito.when;
 
@@ -27,6 +29,8 @@ import static org.mockito.Mockito.when;
 class AuthorServiceImplTest {
     @Mock
     private AuthorRepository authorRepository;
+    @Mock
+    private BookRepository bookRepository;
     @InjectMocks
     private AuthorServiceImpl authorService;
 
@@ -103,9 +107,12 @@ class AuthorServiceImplTest {
     void delete_shouldDeleteAuthor() throws ServiceException {
         //given
         Long id = 3L;
+        Book book = Book.builder().id(1L).authors(new HashSet<>()).build();
+        Set<Book> books = new HashSet<>() {{add(book);}};
 
         //when
-        when(authorRepository.findById(id)).thenReturn(Optional.of(Author.builder().id(3L).build()));
+        when(authorRepository.findById(id)).thenReturn(Optional.of(Author.builder().id(3L).books(books).build()));
+        when(bookRepository.save(book)).thenReturn(book);
         boolean actual = authorService.delete(id);
 
         //then

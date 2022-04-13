@@ -1,9 +1,12 @@
 package by.library.yurueu.service.impl;
 
 import by.library.yurueu.dto.GenreListDto;
+import by.library.yurueu.dto.GenreSaveDto;
 import by.library.yurueu.dto.GenreUpdateDto;
+import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.Genre;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.repository.BookRepository;
 import by.library.yurueu.repository.GenreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,8 +15,10 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.mockito.Mockito.when;
 
@@ -21,6 +26,8 @@ import static org.mockito.Mockito.when;
 class GenreServiceImplTest {
     @Mock
     private GenreRepository genreRepository;
+    @Mock
+    private BookRepository bookRepository;
     @InjectMocks
     private GenreServiceImpl genreService;
 
@@ -60,14 +67,13 @@ class GenreServiceImplTest {
     @Test
     void add_shouldAddRole() throws ServiceException {
         //given
-        GenreListDto expected = GenreListDto.builder().id(3L).genreName("hello").build();
-        Genre genreWithoutId = Genre.builder().genreName("hello").build();
-        Genre genreWithId = Genre.builder().id(3L).genreName("hello").build();
+        GenreSaveDto expected = GenreSaveDto.builder().id(3L).genreName("hello").deleteStatus("EXISTS").build();
+        Genre genreWithoutId = Genre.builder().genreName("hello").deleteStatus("EXISTS").build();
+        Genre genreWithId = Genre.builder().id(3L).genreName("hello").deleteStatus("EXISTS").build();
 
         //when
-        when(genreRepository.save(genreWithoutId))
-                .thenReturn(genreWithId);
-        GenreListDto actual = genreService.add(GenreListDto.builder().genreName("hello").build());
+        when(genreRepository.save(genreWithoutId)).thenReturn(genreWithId);
+        GenreSaveDto actual = genreService.add(GenreSaveDto.builder().genreName("hello").deleteStatus("EXISTS").build());
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -91,9 +97,12 @@ class GenreServiceImplTest {
     void delete_shouldDeleteRole() throws ServiceException {
         //given
         Long id = 3L;
+        Book book = Book.builder().id(1L).genres(new HashSet<>()).build();
+        Set<Book> books = new HashSet<>() {{add(book);}};
 
         //when
-        when(genreRepository.findById(id)).thenReturn(Optional.of(Genre.builder().id(3L).build()));
+        when(genreRepository.findById(id)).thenReturn(Optional.of(Genre.builder().id(3L).books(books).build()));
+        when(bookRepository.save(book)).thenReturn(book);
         boolean actual = genreService.delete(id);
 
         //then

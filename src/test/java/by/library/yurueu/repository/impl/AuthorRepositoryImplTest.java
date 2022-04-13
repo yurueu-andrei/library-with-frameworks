@@ -1,6 +1,7 @@
 package by.library.yurueu.repository.impl;
 
 import by.library.yurueu.entity.Author;
+import by.library.yurueu.entity.Book;
 import by.library.yurueu.repository.AuthorRepository;
 import by.library.yurueu.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,11 +44,10 @@ public class AuthorRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void addTest_shouldReturnAddedAuthor() {
         //given
-        Author expected = Author.builder().id(6L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
-        Author actual = Author.builder().firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
-
+        Author expected = Author.builder().id(6L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").deleteStatus("EXISTS").books(new HashSet<>()).books(new HashSet<>(){{add(Book.builder().bookCopies(new HashSet<>()).id(1L).build());}}).build();
+        Author actual = Author.builder().firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").deleteStatus("EXISTS").books(new HashSet<>(){{add(Book.builder().bookCopies(new HashSet<>()).id(1L).build());}}).build();
         //when
-        actual = authorRepository.saveAndFlush(actual);
+        actual = authorRepository.save(actual);
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -56,10 +57,10 @@ public class AuthorRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void updateTest_shouldUpdateAuthor() {
         //given
-        Author author = Author.builder().id(2L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1998, 8, 8)).imagePath("image path").build();
+        Author author = Author.builder().id(2L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1998, 8, 8)).imagePath("image path").deleteStatus("EXISTS").books(new HashSet<>()).books(new HashSet<>(){{add(Book.builder().bookCopies(new HashSet<>()).id(1L).build());}}).build();
 
         // when
-        authorRepository.saveAndFlush(author);
+        authorRepository.save(author);
         Optional<Author> foundAuthor = authorRepository.findById(author.getId());
 
         //then

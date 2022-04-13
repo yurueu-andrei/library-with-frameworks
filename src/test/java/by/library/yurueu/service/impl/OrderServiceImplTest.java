@@ -116,9 +116,11 @@ class OrderServiceImplTest {
     void delete_shouldDeleteOrder() throws ServiceException {
         //given
         Long id = 3L;
+        Order order = Order.builder().id(3L).orderStatus("DELETED").build();
 
         //when
-        when(orderRepository.findById(id)).thenReturn(Optional.of(Order.builder().id(3L).build()));
+        when(orderRepository.findById(id)).thenReturn(Optional.of(Order.builder().id(3L).orderStatus("COMPLETED").build()));
+        when(orderRepository.save(order)).thenReturn(order);
         boolean actual = orderService.delete(id);
 
         //then

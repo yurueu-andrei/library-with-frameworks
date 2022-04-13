@@ -109,9 +109,11 @@ class BookCopyServiceImplTest {
     void delete_shouldDeleteBookCopy() throws ServiceException {
         //given
         Long id = 3L;
+        BookCopy bookCopy = BookCopy.builder().id(3L).deleteStatus("EXISTS").book(Book.builder().authors(new HashSet<>()).genres(new HashSet<>()).build()).bookDamages(new HashSet<>()).build();
 
         //when
-        when(bookCopyRepository.findById(id)).thenReturn(Optional.of(BookCopy.builder().id(3L).build()));
+        when(bookCopyRepository.findById(id)).thenReturn(Optional.of(bookCopy));
+        when(bookCopyRepository.save(bookCopy)).thenReturn(bookCopy);
         boolean actual = bookCopyService.delete(id);
 
         //then

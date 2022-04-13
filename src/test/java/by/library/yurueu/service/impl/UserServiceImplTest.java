@@ -96,9 +96,11 @@ class UserServiceImplTest {
     void deleteTest_shouldDeleteUser() throws ServiceException {
         //given
         Long id = 3L;
+        User user = User.builder().id(id).orders(new HashSet<>()).bookDamages(new HashSet<>()).build();
 
         //when
-        when(userRepository.findById(id)).thenReturn(Optional.of(User.builder().id(3L).build()));
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.save(user)).thenReturn(user);
         boolean actual = userService.delete(id);
 
         //then
