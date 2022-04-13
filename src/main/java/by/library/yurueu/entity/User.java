@@ -52,6 +52,11 @@ public class User extends BaseEntity {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<BookDamage> bookDamages;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_role_links",
