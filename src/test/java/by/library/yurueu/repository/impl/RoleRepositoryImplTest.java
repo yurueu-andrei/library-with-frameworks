@@ -47,7 +47,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
         Role actual = Role.builder().roleName("superUser").users(new HashSet<>()).build();
 
         //when
-        actual = roleRepository.saveAndFlush(actual);
+        actual = roleRepository.save(actual);
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -60,7 +60,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
         Role role = Role.builder().id(2L).roleName("superUser").users(new HashSet<>()).build();
 
         // when
-        roleRepository.saveAndFlush(role);
+        roleRepository.save(role);
         Optional<Role> foundRole = roleRepository.findById(role.getId());
 
         //then

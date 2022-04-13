@@ -44,11 +44,11 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedUser() {
         //given
-        User expected = User.builder().id(6L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).orders(new HashSet<>()).roles(new HashSet<>()).deleteStatus("EXISTS").build();
-        User actual = User.builder().firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).orders(new HashSet<>()).roles(new HashSet<>()).deleteStatus("EXISTS").build();
+        User expected = User.builder().id(6L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).orders(new HashSet<>()).roles(new HashSet<>()).status("ACTIVE").build();
+        User actual = User.builder().firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).orders(new HashSet<>()).roles(new HashSet<>()).status("ACTIVE").build();
 
         //when
-        actual = userRepository.saveAndFlush(actual);
+        actual = userRepository.save(actual);
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -58,10 +58,10 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void updateTest_shouldUpdateUser() {
         //given
-        User user = User.builder().id(2L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).orders(new HashSet<>()).roles(new HashSet<>()).deleteStatus("EXISTS").build();
+        User user = User.builder().id(2L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).orders(new HashSet<>()).roles(new HashSet<>()).status("ACTIVE").build();
 
         // when
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
         Optional<User> foundUser = userRepository.findById(user.getId());
 
         //then

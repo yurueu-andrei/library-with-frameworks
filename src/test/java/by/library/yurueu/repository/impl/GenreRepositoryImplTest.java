@@ -44,11 +44,11 @@ public class GenreRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedGenre() {
         //given
-        Genre expected = Genre.builder().id(8L).genreName("tale").books(new HashSet<>(){{add(Book.builder().id(1L).bookCopies(new HashSet<>()).build());}}).deleteStatus("EXISTS").build();
-        Genre actual = Genre.builder().genreName("tale").books(new HashSet<>(){{add(Book.builder().id(1L).bookCopies(new HashSet<>()).build());}}).deleteStatus("EXISTS").build();
+        Genre expected = Genre.builder().id(8L).genreName("tale").books(new HashSet<>(){{add(Book.builder().id(1L).bookCopies(new HashSet<>()).build());}}).build();
+        Genre actual = Genre.builder().genreName("tale").books(new HashSet<>(){{add(Book.builder().id(1L).bookCopies(new HashSet<>()).build());}}).build();
 
         //when
-        actual = genreRepository.saveAndFlush(actual);
+        actual = genreRepository.save(actual);
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -58,10 +58,10 @@ public class GenreRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void updateTest_shouldUpdateGenre() {
         //given
-        Genre genre = Genre.builder().id(2L).genreName("tale").books(new HashSet<>(){{add(Book.builder().id(1L).bookCopies(new HashSet<>()).build());}}).deleteStatus("EXISTS").build();
+        Genre genre = Genre.builder().id(2L).genreName("tale").books(new HashSet<>(){{add(Book.builder().id(1L).bookCopies(new HashSet<>()).build());}}).build();
 
         // when
-        genreRepository.saveAndFlush(genre);
+        genreRepository.save(genre);
         Optional<Genre> foundGenre = genreRepository.findById(genre.getId());
 
         //then

@@ -6,7 +6,7 @@ import by.library.yurueu.dto.BookCopyListDto;
 import by.library.yurueu.dto.BookCopySaveDto;
 import by.library.yurueu.dto.BookCopyUpdateDto;
 import by.library.yurueu.dto.BookDamageListDto;
-import by.library.yurueu.dto.GenreListDto;
+import by.library.yurueu.dto.GenreDto;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
@@ -41,7 +41,7 @@ class BookCopyServiceImplTest {
         BookCopyDto expected = BookCopyDto.builder().id(id)
                 .bookDamages(new ArrayList<>(){{add(BookDamageListDto.builder().id(1L).build());}})
                 .authors(new ArrayList<>(){{add(AuthorListDto.builder().id(1L).build());}})
-                .genres(new ArrayList<>(){{add(GenreListDto.builder().id(1L).build());}}).build();
+                .genres(new ArrayList<>(){{add(GenreDto.builder().id(1L).build());}}).build();
         //when
         when(bookCopyRepository.findById(id)).thenReturn(Optional.of(BookCopy.builder()
                 .id(id)
@@ -109,7 +109,7 @@ class BookCopyServiceImplTest {
     void delete_shouldDeleteBookCopy() throws ServiceException {
         //given
         Long id = 3L;
-        BookCopy bookCopy = BookCopy.builder().id(3L).deleteStatus("EXISTS").book(Book.builder().authors(new HashSet<>()).genres(new HashSet<>()).build()).bookDamages(new HashSet<>()).build();
+        BookCopy bookCopy = BookCopy.builder().id(3L).status("EXISTS").book(Book.builder().authors(new HashSet<>()).genres(new HashSet<>()).build()).bookDamages(new HashSet<>()).build();
 
         //when
         when(bookCopyRepository.findById(id)).thenReturn(Optional.of(bookCopy));

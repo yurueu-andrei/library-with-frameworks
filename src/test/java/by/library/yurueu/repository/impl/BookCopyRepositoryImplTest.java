@@ -45,8 +45,8 @@ public class BookCopyRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedBookCopy() {
         //given
-        BookCopy expected = BookCopy.builder().id(6L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).bookDamages(new HashSet<>()).orders(new HashSet<>()).book(Book.builder().id(1L).authors(new HashSet<>()).genres(new HashSet<>()).build()).deleteStatus("EXISTS").build();
-        BookCopy actual = BookCopy.builder().status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).bookDamages(new HashSet<>()).orders(new HashSet<>()).book(Book.builder().id(1L).authors(new HashSet<>()).genres(new HashSet<>()).build()).deleteStatus("EXISTS").build();
+        BookCopy expected = BookCopy.builder().id(6L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).bookDamages(new HashSet<>()).orders(new HashSet<>()).book(Book.builder().id(1L).authors(new HashSet<>()).genres(new HashSet<>()).build()).build();
+        BookCopy actual = BookCopy.builder().status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).bookDamages(new HashSet<>()).orders(new HashSet<>()).book(Book.builder().id(1L).authors(new HashSet<>()).genres(new HashSet<>()).build()).build();
 
         //when
         actual = bookCopyRepository.save(actual);
@@ -59,10 +59,10 @@ public class BookCopyRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void updateTest_shouldUpdateBookCopy() {
         //given
-        BookCopy bookCopy = BookCopy.builder().id(2L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).bookDamages(new HashSet<>()).orders(new HashSet<>()).book(Book.builder().id(1L).authors(new HashSet<>()).genres(new HashSet<>()).build()).deleteStatus("EXISTS").build();
+        BookCopy bookCopy = BookCopy.builder().id(2L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).bookDamages(new HashSet<>()).orders(new HashSet<>()).book(Book.builder().id(1L).authors(new HashSet<>()).genres(new HashSet<>()).build()).build();
 
         // when
-        bookCopyRepository.saveAndFlush(bookCopy);
+        bookCopyRepository.save(bookCopy);
         Optional<BookCopy> foundBookCopy = bookCopyRepository.findById(bookCopy.getId());
 
         //then

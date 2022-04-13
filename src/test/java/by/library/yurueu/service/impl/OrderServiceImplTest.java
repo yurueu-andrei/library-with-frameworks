@@ -101,8 +101,8 @@ class OrderServiceImplTest {
     @Test
     void update_shouldUpdateOrder() throws ServiceException {
         //given
-        OrderUpdateDto expected = OrderUpdateDto.builder().id(4L).orderStatus("ACCEPTED").build();
-        Order order = Order.builder().id(4L).orderStatus("ACCEPTED").build();
+        OrderUpdateDto expected = OrderUpdateDto.builder().id(4L).status("ACCEPTED").build();
+        Order order = Order.builder().id(4L).status("ACCEPTED").build();
 
         //when
         when(orderRepository.save(order)).thenReturn(order);
@@ -116,10 +116,10 @@ class OrderServiceImplTest {
     void delete_shouldDeleteOrder() throws ServiceException {
         //given
         Long id = 3L;
-        Order order = Order.builder().id(3L).orderStatus("DELETED").build();
+        Order order = Order.builder().id(3L).status("DELETED").build();
 
         //when
-        when(orderRepository.findById(id)).thenReturn(Optional.of(Order.builder().id(3L).orderStatus("COMPLETED").build()));
+        when(orderRepository.findById(id)).thenReturn(Optional.of(Order.builder().id(3L).status("COMPLETED").build()));
         when(orderRepository.save(order)).thenReturn(order);
         boolean actual = orderService.delete(id);
 

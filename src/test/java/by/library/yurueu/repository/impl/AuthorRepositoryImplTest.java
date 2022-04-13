@@ -44,8 +44,8 @@ public class AuthorRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void addTest_shouldReturnAddedAuthor() {
         //given
-        Author expected = Author.builder().id(6L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").deleteStatus("EXISTS").books(new HashSet<>()).books(new HashSet<>(){{add(Book.builder().bookCopies(new HashSet<>()).id(1L).build());}}).build();
-        Author actual = Author.builder().firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").deleteStatus("EXISTS").books(new HashSet<>(){{add(Book.builder().bookCopies(new HashSet<>()).id(1L).build());}}).build();
+        Author expected = Author.builder().id(6L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").status("ACTIVE").books(new HashSet<>()).books(new HashSet<>(){{add(Book.builder().bookCopies(new HashSet<>()).id(1L).build());}}).build();
+        Author actual = Author.builder().firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").status("ACTIVE").books(new HashSet<>(){{add(Book.builder().bookCopies(new HashSet<>()).id(1L).build());}}).build();
         //when
         actual = authorRepository.save(actual);
 
@@ -57,7 +57,7 @@ public class AuthorRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void updateTest_shouldUpdateAuthor() {
         //given
-        Author author = Author.builder().id(2L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1998, 8, 8)).imagePath("image path").deleteStatus("EXISTS").books(new HashSet<>()).books(new HashSet<>(){{add(Book.builder().bookCopies(new HashSet<>()).id(1L).build());}}).build();
+        Author author = Author.builder().id(2L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1998, 8, 8)).imagePath("image path").status("ACTIVE").books(new HashSet<>()).books(new HashSet<>(){{add(Book.builder().bookCopies(new HashSet<>()).id(1L).build());}}).build();
 
         // when
         authorRepository.save(author);
