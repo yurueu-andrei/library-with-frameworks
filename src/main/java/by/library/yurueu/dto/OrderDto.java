@@ -14,11 +14,10 @@ import java.util.List;
 @ToString
 public class OrderDto {
     private Long id;
-    private String orderStatus;
+    private String status;
     private LocalDate startDate;
     private LocalDate endDate;
     private int price;
-    private String deleteStatus;
     private Long userId;
 
     private List<BookDamageListDto> bookDamages;

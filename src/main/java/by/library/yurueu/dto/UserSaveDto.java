@@ -22,7 +22,6 @@ public class UserSaveDto {
     private String email;
     private String address;
     private LocalDate birthDate;
-    private String deleteStatus;
 
     private List<Long> rolesId;
 }

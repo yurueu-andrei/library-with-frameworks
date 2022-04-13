@@ -17,6 +17,5 @@ public class BookCopyUpdateDto {
     private LocalDate registrationDate;
     private int pricePerDay;
     private String imagePath;
-    private String deleteStatus;
     private Long bookId;
 }

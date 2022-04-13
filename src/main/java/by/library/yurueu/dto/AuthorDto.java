@@ -18,6 +18,5 @@ public class AuthorDto {
     private String lastName;
     private LocalDate birthDate;
     private String imagePath;
-    private String deleteStatus;
     private List<BookCopyListDto> books;
 }

@@ -20,9 +20,8 @@ public class BookCopyDto {
     private LocalDate registrationDate;
     private int pricePerDay;
     private String imagePath;
-    private String deleteStatus;
 
     private List<BookDamageListDto> bookDamages;
-    private List<GenreListDto> genres;
+    private List<GenreDto> genres;
     private List<AuthorListDto> authors;
 }
