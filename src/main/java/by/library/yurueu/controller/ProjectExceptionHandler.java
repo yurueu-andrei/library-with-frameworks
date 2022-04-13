@@ -30,7 +30,7 @@ public class ProjectExceptionHandler extends ResponseEntityExceptionHandler {
             Exception ex
     ) {
         log.error("handleServiceExceptionServerError {}\n", request.getRequestURI(), ex);
-        return new ApiCallError("Parameters is not valid");
+        return new ApiCallError("Parameters are not valid");
     }
 
     @ExceptionHandler(ServiceException.class)
