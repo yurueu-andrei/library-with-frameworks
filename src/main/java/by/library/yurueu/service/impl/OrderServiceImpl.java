@@ -42,6 +42,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderSaveDto add(OrderSaveDto orderSaveDto) throws ServiceException {
         try {
             Order order = OrderConverter.fromSaveDTO(orderSaveDto);
+            order.setStatus("NEW");
             return OrderConverter.toSaveDTO(orderRepository.save(order));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
@@ -53,6 +54,7 @@ public class OrderServiceImpl implements OrderService {
     public boolean update(OrderUpdateDto orderUpdateDto) throws ServiceException {
         try {
             Order order = OrderConverter.fromUpdateDTO(orderUpdateDto);
+            order.setStatus("ACTIVE");
             orderRepository.save(order);
             return true;
         } catch (Exception ex) {
@@ -63,10 +65,13 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        Optional<Order> order = orderRepository.findById(id);
-        orderRepository.delete(order.orElseThrow(
-                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
-        );
-        return true;
+        Optional<Order> orderToDelete = orderRepository.findById(id);
+        if (orderToDelete.isPresent()) {
+            Order order = orderToDelete.get();
+            order.setStatus("DELETED");
+            orderRepository.save(order);
+            return true;
+        }
+        throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
     }
 }

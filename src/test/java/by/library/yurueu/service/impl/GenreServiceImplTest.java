@@ -1,7 +1,6 @@
 package by.library.yurueu.service.impl;
 
-import by.library.yurueu.dto.GenreListDto;
-import by.library.yurueu.dto.GenreUpdateDto;
+import by.library.yurueu.dto.GenreDto;
 import by.library.yurueu.entity.Genre;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.GenreRepository;
@@ -28,11 +27,11 @@ class GenreServiceImplTest {
     void findById_shouldReturnGenreDto() throws ServiceException {
         //given
         Long id = 1L;
-        GenreListDto expected = GenreListDto.builder().id(id).genreName("hello").build();
+        GenreDto expected = GenreDto.builder().id(id).genreName("hello").build();
 
         //when
         when(genreRepository.findById(id)).thenReturn(Optional.of(Genre.builder().id(id).genreName("hello").build()));
-        GenreListDto actual = genreService.findById(id);
+        GenreDto actual = genreService.findById(id);
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -41,9 +40,9 @@ class GenreServiceImplTest {
     @Test
     void findAll_shouldReturnListOfRoleDto() throws ServiceException {
         //given
-        List<GenreListDto> expected = new ArrayList<>() {{
-            add(GenreListDto.builder().id(1L).build());
-            add(GenreListDto.builder().id(2L).build());
+        List<GenreDto> expected = new ArrayList<>() {{
+            add(GenreDto.builder().id(1L).build());
+            add(GenreDto.builder().id(2L).build());
         }};
 
         //when
@@ -51,52 +50,9 @@ class GenreServiceImplTest {
             add(Genre.builder().id(1L).build());
             add(Genre.builder().id(2L).build());
         }});
-        List<GenreListDto> actual = genreService.findAll();
+        List<GenreDto> actual = genreService.findAll();
 
         //then
         Assertions.assertEquals(expected, actual);
-    }
-
-    @Test
-    void add_shouldAddRole() throws ServiceException {
-        //given
-        GenreListDto expected = GenreListDto.builder().id(3L).genreName("hello").build();
-        Genre genreWithoutId = Genre.builder().genreName("hello").build();
-        Genre genreWithId = Genre.builder().id(3L).genreName("hello").build();
-
-        //when
-        when(genreRepository.save(genreWithoutId))
-                .thenReturn(genreWithId);
-        GenreListDto actual = genreService.add(GenreListDto.builder().genreName("hello").build());
-
-        //then
-        Assertions.assertEquals(expected, actual);
-    }
-
-    @Test
-    void update_shouldUpdateRole() throws ServiceException {
-        //given
-        GenreUpdateDto expected = GenreUpdateDto.builder().id(4L).genreName("hello").build();
-        Genre genre = Genre.builder().id(4L).genreName("hello").build();
-
-        //when
-        when(genreRepository.save(genre)).thenReturn(genre);
-        boolean actual = genreService.update(expected);
-
-        //then
-        Assertions.assertTrue(actual);
-    }
-
-    @Test
-    void delete_shouldDeleteRole() throws ServiceException {
-        //given
-        Long id = 3L;
-
-        //when
-        when(genreRepository.findById(id)).thenReturn(Optional.of(Genre.builder().id(3L).build()));
-        boolean actual = genreService.delete(id);
-
-        //then
-        Assertions.assertTrue(actual);
     }
 }

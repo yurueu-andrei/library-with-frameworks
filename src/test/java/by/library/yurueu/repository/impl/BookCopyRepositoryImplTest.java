@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,11 +45,11 @@ public class BookCopyRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedBookCopy() {
         //given
-        BookCopy expected = BookCopy.builder().id(6L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).book(Book.builder().id(1L).build()).build();
-        BookCopy actual = BookCopy.builder().status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).book(Book.builder().id(1L).build()).build();
+        BookCopy expected = BookCopy.builder().id(6L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).bookDamages(new HashSet<>()).orders(new HashSet<>()).book(Book.builder().id(1L).authors(new HashSet<>()).genres(new HashSet<>()).build()).build();
+        BookCopy actual = BookCopy.builder().status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).bookDamages(new HashSet<>()).orders(new HashSet<>()).book(Book.builder().id(1L).authors(new HashSet<>()).genres(new HashSet<>()).build()).build();
 
         //when
-        actual = bookCopyRepository.saveAndFlush(actual);
+        actual = bookCopyRepository.save(actual);
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -58,10 +59,10 @@ public class BookCopyRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void updateTest_shouldUpdateBookCopy() {
         //given
-        BookCopy bookCopy = BookCopy.builder().id(2L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).book(Book.builder().id(1L).build()).build();
+        BookCopy bookCopy = BookCopy.builder().id(2L).status("AVAILABLE").registrationDate(LocalDate.of(2000, 1, 1)).imagePath("image path").pricePerDay(13).bookDamages(new HashSet<>()).orders(new HashSet<>()).book(Book.builder().id(1L).authors(new HashSet<>()).genres(new HashSet<>()).build()).build();
 
         // when
-        bookCopyRepository.saveAndFlush(bookCopy);
+        bookCopyRepository.save(bookCopy);
         Optional<BookCopy> foundBookCopy = bookCopyRepository.findById(bookCopy.getId());
 
         //then

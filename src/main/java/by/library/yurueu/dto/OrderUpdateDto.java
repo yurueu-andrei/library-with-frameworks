@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @ToString
 public class OrderUpdateDto {
     private Long id;
-    private String orderStatus;
+    private String status;
     private LocalDate startDate;
     private LocalDate endDate;
     private int price;

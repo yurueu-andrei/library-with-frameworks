@@ -9,7 +9,7 @@ import lombok.ToString;
 @Builder
 @EqualsAndHashCode
 @ToString
-public class GenreListDto {
+public class GenreDto {
     private Long id;
     private String genreName;
 }

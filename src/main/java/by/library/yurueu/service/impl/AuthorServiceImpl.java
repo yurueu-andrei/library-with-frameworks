@@ -3,8 +3,7 @@ package by.library.yurueu.service.impl;
 import by.library.yurueu.converter.AuthorConverter;
 import by.library.yurueu.dto.AuthorDto;
 import by.library.yurueu.dto.AuthorListDto;
-import by.library.yurueu.dto.AuthorSaveDto;
-import by.library.yurueu.dto.AuthorUpdateDto;
+import by.library.yurueu.dto.AuthorSaveAndUpdateDto;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.AuthorRepository;
@@ -39,9 +38,10 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional
     @Override
-    public AuthorSaveDto add(AuthorSaveDto authorSaveDto) throws ServiceException {
+    public AuthorSaveAndUpdateDto add(AuthorSaveAndUpdateDto authorSaveAndUpdateDto) throws ServiceException {
         try {
-            Author author = AuthorConverter.fromSaveDTO(authorSaveDto);
+            Author author = AuthorConverter.fromSaveDTO(authorSaveAndUpdateDto);
+            author.setStatus("ACTIVE");
             return AuthorConverter.toSaveDTO(authorRepository.save(author));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
@@ -50,9 +50,10 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional
     @Override
-    public boolean update(AuthorUpdateDto authorUpdateDto) throws ServiceException {
+    public boolean update(AuthorSaveAndUpdateDto authorUpdateDto) throws ServiceException {
         try {
             Author author = AuthorConverter.fromUpdateDTO(authorUpdateDto);
+            author.setStatus("ACTIVE");
             authorRepository.save(author);
             return true;
         } catch (Exception ex) {
@@ -63,10 +64,13 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        Optional<Author> author = authorRepository.findById(id);
-        authorRepository.delete(author.orElseThrow(
-                () -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted")))
-        );
-        return true;
+        Optional<Author> authorToDelete = authorRepository.findById(id);
+        if (authorToDelete.isPresent()) {
+            Author author = authorToDelete.get();
+            author.setStatus("DELETED");
+            authorRepository.save(author);
+            return true;
+        }
+        throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
     }
 }

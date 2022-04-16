@@ -2,7 +2,6 @@ package by.library.yurueu.converter;
 
 import by.library.yurueu.dto.BookSaveDto;
 import by.library.yurueu.entity.Author;
-import by.library.yurueu.entity.BaseEntity;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.Genre;
 
@@ -24,13 +23,13 @@ public class BookConverter {
 
     private static List<Long> constructGenresId(Set<Genre> genres) {
         return genres.stream()
-                .map(BaseEntity::getId)
+                .map(Genre::getId)
                 .collect(Collectors.toList());
     }
 
     private static List<Long> constructAuthorsId(Set<Author> authors) {
         return authors.stream()
-                .map(BaseEntity::getId)
+                .map(Author::getId)
                 .collect(Collectors.toList());
     }
 

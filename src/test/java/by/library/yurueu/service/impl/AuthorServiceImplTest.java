@@ -2,24 +2,26 @@ package by.library.yurueu.service.impl;
 
 import by.library.yurueu.dto.AuthorDto;
 import by.library.yurueu.dto.AuthorListDto;
-import by.library.yurueu.dto.AuthorSaveDto;
-import by.library.yurueu.dto.AuthorUpdateDto;
+import by.library.yurueu.dto.AuthorSaveAndUpdateDto;
 import by.library.yurueu.dto.BookCopyListDto;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.AuthorRepository;
+import by.library.yurueu.repository.BookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.mockito.Mockito.when;
 
@@ -27,6 +29,8 @@ import static org.mockito.Mockito.when;
 class AuthorServiceImplTest {
     @Mock
     private AuthorRepository authorRepository;
+    @Mock
+    private BookRepository bookRepository;
     @InjectMocks
     private AuthorServiceImpl authorService;
 
@@ -72,14 +76,15 @@ class AuthorServiceImplTest {
     @Test
     void add_shouldAddAuthor() throws ServiceException {
         //given
-        AuthorSaveDto expected = AuthorSaveDto.builder().id(3L).firstName("Alexander").build();
-        Author authorWithoutId = Author.builder().firstName("Alexander").build();
-        Author authorWithId = Author.builder().id(3L).firstName("Alexander").build();
+        AuthorSaveAndUpdateDto expected = AuthorSaveAndUpdateDto.builder().id(3L).firstName("Alexander").lastName("Pushkin").birthDate(LocalDate.of(2003,4,1)).imagePath("path").build();
+        Author authorWithoutId = Author.builder().status("ACTIVE").firstName("Alexander").lastName("Pushkin").birthDate(LocalDate.of(2003,4,1)).imagePath("path").build();
+        Author authorWithId = Author.builder().id(3L).status("ACTIVE").firstName("Alexander").lastName("Pushkin").birthDate(LocalDate.of(2003,4,1)).imagePath("path").build();
 
         //when
         when(authorRepository.save(authorWithoutId))
                 .thenReturn(authorWithId);
-        AuthorSaveDto actual = authorService.add(AuthorSaveDto.builder().firstName("Alexander").build());
+        AuthorSaveAndUpdateDto actual = authorService.add(AuthorSaveAndUpdateDto.builder().firstName("Alexander").lastName("Pushkin")
+                .birthDate(LocalDate.of(2003,4,1)).imagePath("path").build());
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -88,7 +93,7 @@ class AuthorServiceImplTest {
     @Test
     void update_shouldUpdateAuthor() throws ServiceException {
         //given
-        AuthorUpdateDto expected = AuthorUpdateDto.builder().id(4L).firstName("Alexander").build();
+        AuthorSaveAndUpdateDto expected = AuthorSaveAndUpdateDto.builder().id(4L).firstName("Alexander").build();
         Author author = Author.builder().id(4L).firstName("Alexander").build();
 
         //when
@@ -103,9 +108,12 @@ class AuthorServiceImplTest {
     void delete_shouldDeleteAuthor() throws ServiceException {
         //given
         Long id = 3L;
+        Book book = Book.builder().id(1L).authors(new HashSet<>()).build();
+        Set<Book> books = new HashSet<>() {{add(book);}};
 
         //when
-        when(authorRepository.findById(id)).thenReturn(Optional.of(Author.builder().id(3L).build()));
+        when(authorRepository.findById(id)).thenReturn(Optional.of(Author.builder().id(3L).books(books).build()));
+        when(bookRepository.save(book)).thenReturn(book);
         boolean actual = authorService.delete(id);
 
         //then

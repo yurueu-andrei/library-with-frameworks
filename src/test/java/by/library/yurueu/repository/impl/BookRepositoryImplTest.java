@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,11 +43,11 @@ public class BookRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedBook() {
         //given
-        Book expected = Book.builder().id(6L).title("asd").pagesNumber(12).imagePath("image path").build();
-        Book actual = Book.builder().title("asd").pagesNumber(12).imagePath("image path").build();
+        Book expected = Book.builder().id(6L).title("asd").pagesNumber(12).imagePath("image path").genres(new HashSet<>()).authors(new HashSet<>()).bookCopies(new HashSet<>()).status("ACTIVE").build();
+        Book actual = Book.builder().title("asd").pagesNumber(12).imagePath("image path").genres(new HashSet<>()).authors(new HashSet<>()).bookCopies(new HashSet<>()).status("ACTIVE").build();
 
         //when
-        actual = bookRepository.saveAndFlush(actual);
+        actual = bookRepository.save(actual);
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -56,10 +57,10 @@ public class BookRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void updateTest_shouldUpdateBook() {
         //given
-        Book book = Book.builder().id(2L).title("Hello").pagesNumber(12).imagePath("image path").build();
+        Book book = Book.builder().id(2L).title("Hello").pagesNumber(12).imagePath("image path").genres(new HashSet<>()).authors(new HashSet<>()).bookCopies(new HashSet<>()).status("ACTIVE").build();
 
         // when
-        bookRepository.saveAndFlush(book);
+        bookRepository.save(book);
         Optional<Book> foundBook = bookRepository.findById(book.getId());
 
         //then

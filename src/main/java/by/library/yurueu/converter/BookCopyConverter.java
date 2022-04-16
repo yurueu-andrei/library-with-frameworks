@@ -2,8 +2,7 @@ package by.library.yurueu.converter;
 
 import by.library.yurueu.dto.BookCopyDto;
 import by.library.yurueu.dto.BookCopyListDto;
-import by.library.yurueu.dto.BookCopySaveDto;
-import by.library.yurueu.dto.BookCopyUpdateDto;
+import by.library.yurueu.dto.BookCopySaveAndUpdateDto;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
 
@@ -27,8 +26,8 @@ public class BookCopyConverter {
                 .build();
     }
 
-    public static BookCopySaveDto toSaveDTO(BookCopy bookCopy) {
-        return BookCopySaveDto.builder()
+    public static BookCopySaveAndUpdateDto toSaveDTO(BookCopy bookCopy) {
+        return BookCopySaveAndUpdateDto.builder()
                 .id(bookCopy.getId())
                 .status(bookCopy.getStatus())
                 .registrationDate(bookCopy.getRegistrationDate())
@@ -38,14 +37,14 @@ public class BookCopyConverter {
                 .build();
     }
 
-    public static BookCopy fromSaveDTO(BookCopySaveDto bookCopySaveDto) {
+    public static BookCopy fromSaveDTO(BookCopySaveAndUpdateDto bookCopySaveAndUpdateDto) {
         return BookCopy.builder()
-                .id(bookCopySaveDto.getId())
-                .status(bookCopySaveDto.getStatus())
-                .registrationDate(bookCopySaveDto.getRegistrationDate())
-                .imagePath(bookCopySaveDto.getImagePath())
-                .pricePerDay(bookCopySaveDto.getPricePerDay())
-                .book(Book.builder().id(bookCopySaveDto.getBookId()).build())
+                .id(bookCopySaveAndUpdateDto.getId())
+                .status(bookCopySaveAndUpdateDto.getStatus())
+                .registrationDate(bookCopySaveAndUpdateDto.getRegistrationDate())
+                .imagePath(bookCopySaveAndUpdateDto.getImagePath())
+                .pricePerDay(bookCopySaveAndUpdateDto.getPricePerDay())
+                .book(Book.builder().id(bookCopySaveAndUpdateDto.getBookId()).build())
                 .build();
     }
 
@@ -64,13 +63,14 @@ public class BookCopyConverter {
                 .collect(Collectors.toList());
     }
 
-    public static BookCopy fromUpdateDTO(BookCopyUpdateDto bookCopyUpdateDto) {
+    public static BookCopy fromUpdateDTO(BookCopySaveAndUpdateDto bookCopyUpdateDto) {
         return BookCopy.builder()
                 .id(bookCopyUpdateDto.getId())
                 .status(bookCopyUpdateDto.getStatus())
                 .registrationDate(bookCopyUpdateDto.getRegistrationDate())
                 .pricePerDay(bookCopyUpdateDto.getPricePerDay())
                 .imagePath(bookCopyUpdateDto.getImagePath())
+                .book(Book.builder().id(bookCopyUpdateDto.getBookId()).build())
                 .build();
     }
 }

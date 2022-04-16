@@ -22,6 +22,6 @@ public class BookCopyDto {
     private String imagePath;
 
     private List<BookDamageListDto> bookDamages;
-    private List<GenreListDto> genres;
+    private List<GenreDto> genres;
     private List<AuthorListDto> authors;
 }

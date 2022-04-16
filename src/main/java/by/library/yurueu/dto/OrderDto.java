@@ -14,7 +14,7 @@ import java.util.List;
 @ToString
 public class OrderDto {
     private Long id;
-    private String orderStatus;
+    private String status;
     private LocalDate startDate;
     private LocalDate endDate;
     private int price;

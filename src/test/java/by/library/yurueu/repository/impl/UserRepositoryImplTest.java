@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,11 +44,11 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedUser() {
         //given
-        User expected = User.builder().id(6L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
-        User actual = User.builder().firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
+        User expected = User.builder().id(6L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).orders(new HashSet<>()).roles(new HashSet<>()).status("ACTIVE").build();
+        User actual = User.builder().firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).orders(new HashSet<>()).roles(new HashSet<>()).status("ACTIVE").build();
 
         //when
-        actual = userRepository.saveAndFlush(actual);
+        actual = userRepository.save(actual);
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -57,10 +58,10 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void updateTest_shouldUpdateUser() {
         //given
-        User user = User.builder().id(2L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
+        User user = User.builder().id(2L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).orders(new HashSet<>()).roles(new HashSet<>()).status("ACTIVE").build();
 
         // when
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
         Optional<User> foundUser = userRepository.findById(user.getId());
 
         //then

@@ -4,7 +4,6 @@ import by.library.yurueu.dto.UserDto;
 import by.library.yurueu.dto.UserListDto;
 import by.library.yurueu.dto.UserSaveDto;
 import by.library.yurueu.dto.UserUpdateDto;
-import by.library.yurueu.entity.BaseEntity;
 import by.library.yurueu.entity.Role;
 import by.library.yurueu.entity.User;
 
@@ -30,7 +29,7 @@ public class UserConverter {
 
     private static List<Long> constructRolesId(Set<Role> roles) {
         return roles.stream()
-                .map(BaseEntity::getId)
+                .map(Role::getId)
                 .collect(Collectors.toList());
     }
 

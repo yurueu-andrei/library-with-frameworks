@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,11 +43,11 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedRole() {
         //given
-        Role expected = Role.builder().id(3L).roleName("superUser").build();
-        Role actual = Role.builder().roleName("superUser").build();
+        Role expected = Role.builder().id(3L).roleName("superUser").users(new HashSet<>()).build();
+        Role actual = Role.builder().roleName("superUser").users(new HashSet<>()).build();
 
         //when
-        actual = roleRepository.saveAndFlush(actual);
+        actual = roleRepository.save(actual);
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -56,10 +57,10 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void updateTest_shouldUpdateRole() {
         //given
-        Role role = Role.builder().id(2L).roleName("superUser").build();
+        Role role = Role.builder().id(2L).roleName("superUser").users(new HashSet<>()).build();
 
         // when
-        roleRepository.saveAndFlush(role);
+        roleRepository.save(role);
         Optional<Role> foundRole = roleRepository.findById(role.getId());
 
         //then

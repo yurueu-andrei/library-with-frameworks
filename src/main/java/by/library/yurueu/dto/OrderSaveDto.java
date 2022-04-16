@@ -16,7 +16,7 @@ import java.util.List;
 @ToString
 public class OrderSaveDto {
     private Long id;
-    private String orderStatus;
+    private String status;
     private LocalDate startDate;
     private LocalDate endDate;
     private int price;

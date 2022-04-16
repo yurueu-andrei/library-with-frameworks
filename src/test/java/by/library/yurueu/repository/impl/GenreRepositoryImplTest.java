@@ -1,5 +1,6 @@
 package by.library.yurueu.repository.impl;
 
+import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.Genre;
 import by.library.yurueu.repository.BaseRepositoryTest;
 import by.library.yurueu.repository.GenreRepository;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,11 +44,11 @@ public class GenreRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedGenre() {
         //given
-        Genre expected = Genre.builder().id(8L).genreName("tale").build();
-        Genre actual = Genre.builder().genreName("tale").build();
+        Genre expected = Genre.builder().id(8L).genreName("tale").books(new HashSet<>(){{add(Book.builder().id(1L).bookCopies(new HashSet<>()).build());}}).build();
+        Genre actual = Genre.builder().genreName("tale").books(new HashSet<>(){{add(Book.builder().id(1L).bookCopies(new HashSet<>()).build());}}).build();
 
         //when
-        actual = genreRepository.saveAndFlush(actual);
+        actual = genreRepository.save(actual);
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -56,10 +58,10 @@ public class GenreRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void updateTest_shouldUpdateGenre() {
         //given
-        Genre genre = Genre.builder().id(2L).genreName("tale").build();
+        Genre genre = Genre.builder().id(2L).genreName("tale").books(new HashSet<>(){{add(Book.builder().id(1L).bookCopies(new HashSet<>()).build());}}).build();
 
         // when
-        genreRepository.saveAndFlush(genre);
+        genreRepository.save(genre);
         Optional<Genre> foundGenre = genreRepository.findById(genre.getId());
 
         //then

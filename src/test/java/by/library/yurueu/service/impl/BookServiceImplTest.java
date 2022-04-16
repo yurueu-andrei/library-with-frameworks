@@ -3,8 +3,10 @@ package by.library.yurueu.service.impl;
 import by.library.yurueu.dto.BookSaveDto;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Book;
+import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.entity.Genre;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.repository.BookCopyRepository;
 import by.library.yurueu.repository.BookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,8 @@ import static org.mockito.Mockito.when;
 class BookServiceImplTest {
     @Mock
     private BookRepository bookRepository;
+    @Mock
+    private BookCopyRepository bookCopyRepository;
     @InjectMocks
     private BookServiceImpl bookService;
 
@@ -32,11 +36,11 @@ class BookServiceImplTest {
                 .genresId(new ArrayList<>(){{add(1L);}})
                 .authorsId(new ArrayList<>(){{add(1L);}})
                 .build();
-        Book bookWithoutId = Book.builder().title("hello")
+        Book bookWithoutId = Book.builder().title("hello").status("ACTIVE")
                 .genres(new HashSet<>(){{add(Genre.builder().id(1L).build());}})
                 .authors(new HashSet<>(){{add(Author.builder().id(1L).build());}})
                 .build();
-        Book bookWithId = Book.builder().id(3L).title("hello")
+        Book bookWithId = Book.builder().id(3L).title("hello").status("ACTIVE")
                 .genres(new HashSet<>(){{add(Genre.builder().id(1L).build());}})
                 .authors(new HashSet<>(){{add(Author.builder().id(1L).build());}})
                 .build();
@@ -58,9 +62,12 @@ class BookServiceImplTest {
     void delete_shouldDeleteBook() throws ServiceException {
         //given
         Long id = 3L;
+        BookCopy bookCopy = BookCopy.builder().bookDamages(new HashSet<>()).build();
 
         //when
-        when(bookRepository.findById(id)).thenReturn(Optional.of(Book.builder().id(3L).build()));
+        when(bookRepository.findById(id)).thenReturn(Optional.of(Book.builder().id(id)
+                .bookCopies(new HashSet<>(){{add(bookCopy);}}).build()));
+        when(bookCopyRepository.save(bookCopy)).thenReturn(bookCopy);
         boolean actual = bookService.delete(id);
 
         //then

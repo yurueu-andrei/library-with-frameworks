@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,11 +45,11 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedOrder() {
         //given
-        Order expected = Order.builder().id(6L).orderStatus("NEW").startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).user(User.builder().id(1L).build()).build();
-        Order actual = Order.builder().orderStatus("NEW").startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).user(User.builder().id(1L).build()).build();
+        Order expected = Order.builder().id(6L).status("NEW").startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).user(User.builder().id(1L).build()).bookCopies(new HashSet<>()).bookDamages(new HashSet<>()).build();
+        Order actual = Order.builder().status("NEW").startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).user(User.builder().id(1L).build()).bookCopies(new HashSet<>()).bookDamages(new HashSet<>()).build();
 
         //when
-        actual = orderRepository.saveAndFlush(actual);
+        actual = orderRepository.save(actual);
 
         //then
         Assertions.assertEquals(expected, actual);
@@ -58,10 +59,10 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void updateTest_shouldUpdateOrder() {
         //given
-        Order order = Order.builder().id(2L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).user(User.builder().id(1L).build()).build();
+        Order order = Order.builder().id(2L).status("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).user(User.builder().id(1L).build()).bookCopies(new HashSet<>()).bookDamages(new HashSet<>()).build();
 
         // when
-        orderRepository.saveAndFlush(order);
+        orderRepository.save(order);
         Optional<Order> foundOrder = orderRepository.findById(order.getId());
 
         //then
