@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -75,14 +76,15 @@ class AuthorServiceImplTest {
     @Test
     void add_shouldAddAuthor() throws ServiceException {
         //given
-        AuthorSaveAndUpdateDto expected = AuthorSaveAndUpdateDto.builder().id(3L).firstName("Alexander").build();
-        Author authorWithoutId = Author.builder().firstName("Alexander").build();
-        Author authorWithId = Author.builder().id(3L).firstName("Alexander").build();
+        AuthorSaveAndUpdateDto expected = AuthorSaveAndUpdateDto.builder().id(3L).firstName("Alexander").lastName("Pushkin").birthDate(LocalDate.of(2003,4,1)).imagePath("path").build();
+        Author authorWithoutId = Author.builder().status("ACTIVE").firstName("Alexander").lastName("Pushkin").birthDate(LocalDate.of(2003,4,1)).imagePath("path").build();
+        Author authorWithId = Author.builder().id(3L).status("ACTIVE").firstName("Alexander").lastName("Pushkin").birthDate(LocalDate.of(2003,4,1)).imagePath("path").build();
 
         //when
         when(authorRepository.save(authorWithoutId))
                 .thenReturn(authorWithId);
-        AuthorSaveAndUpdateDto actual = authorService.add(AuthorSaveAndUpdateDto.builder().firstName("Alexander").build());
+        AuthorSaveAndUpdateDto actual = authorService.add(AuthorSaveAndUpdateDto.builder().firstName("Alexander").lastName("Pushkin")
+                .birthDate(LocalDate.of(2003,4,1)).imagePath("path").build());
 
         //then
         Assertions.assertEquals(expected, actual);

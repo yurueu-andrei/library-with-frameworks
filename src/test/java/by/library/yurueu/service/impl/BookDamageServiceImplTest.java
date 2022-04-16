@@ -68,11 +68,11 @@ class BookDamageServiceImplTest {
     void add_shouldAddBookDamage() throws ServiceException {
         //given
         BookDamageDto expected = BookDamageDto.builder().id(3L).bookCopyId(1L).orderId(1L).userId(1L).build();
-        BookDamage bookDamageWithoutId = BookDamage.builder()
+        BookDamage bookDamageWithoutId = BookDamage.builder().status("ACTIVE")
                 .bookCopy(BookCopy.builder().id(1L).build())
                 .order(Order.builder().id(1L).build())
                 .user(User.builder().id(1L).build()).build();
-        BookDamage bookDamageWithId = BookDamage.builder()
+        BookDamage bookDamageWithId = BookDamage.builder().status("ACTIVE")
                 .id(3L)
                 .bookCopy(BookCopy.builder().id(1L).build())
                 .order(Order.builder().id(1L).build())

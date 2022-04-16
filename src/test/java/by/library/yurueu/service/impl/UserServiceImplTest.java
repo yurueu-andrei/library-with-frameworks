@@ -67,8 +67,8 @@ class UserServiceImplTest {
         //given
         HashSet<Role> roles = new HashSet<>() {{add(Role.builder().id(1L).build());}};
         UserSaveDto expected = UserSaveDto.builder().id(3L).rolesId(new ArrayList<>() {{add(1L);}}).build();
-        User userWithoutId = User.builder().roles(roles).build();
-        User userWithId = User.builder().id(3L).roles(roles).build();
+        User userWithoutId = User.builder().status("ACTIVE").roles(roles).build();
+        User userWithId = User.builder().id(3L).status("ACTIVE").roles(roles).build();
 
         //when
         when(userRepository.save(userWithoutId)).thenReturn(userWithId);

@@ -36,11 +36,11 @@ class BookServiceImplTest {
                 .genresId(new ArrayList<>(){{add(1L);}})
                 .authorsId(new ArrayList<>(){{add(1L);}})
                 .build();
-        Book bookWithoutId = Book.builder().title("hello")
+        Book bookWithoutId = Book.builder().title("hello").status("ACTIVE")
                 .genres(new HashSet<>(){{add(Genre.builder().id(1L).build());}})
                 .authors(new HashSet<>(){{add(Author.builder().id(1L).build());}})
                 .build();
-        Book bookWithId = Book.builder().id(3L).title("hello")
+        Book bookWithId = Book.builder().id(3L).title("hello").status("ACTIVE")
                 .genres(new HashSet<>(){{add(Genre.builder().id(1L).build());}})
                 .authors(new HashSet<>(){{add(Author.builder().id(1L).build());}})
                 .build();

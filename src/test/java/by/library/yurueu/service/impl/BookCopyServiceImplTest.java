@@ -78,13 +78,13 @@ class BookCopyServiceImplTest {
     @Test
     void add_shouldAddBookCopy() throws ServiceException {
         //given
-        BookCopySaveAndUpdateDto expected = BookCopySaveAndUpdateDto.builder().id(3L).bookId(1L).build();
-        BookCopy bookCopyWithoutId = BookCopy.builder().book(Book.builder().id(1L).build()).build();
-        BookCopy bookCopyWithId = BookCopy.builder().id(3L).book(Book.builder().id(1L).build()).build();
+        BookCopySaveAndUpdateDto expected = BookCopySaveAndUpdateDto.builder().id(3L).status("AVAILABLE").bookId(1L).build();
+        BookCopy bookCopyWithoutId = BookCopy.builder().status("AVAILABLE").book(Book.builder().id(1L).build()).build();
+        BookCopy bookCopyWithId = BookCopy.builder().id(3L).status("AVAILABLE").book(Book.builder().id(1L).build()).build();
         //when
         when(bookCopyRepository.save(bookCopyWithoutId))
                 .thenReturn(bookCopyWithId);
-        BookCopySaveAndUpdateDto actual = bookCopyService.add(BookCopySaveAndUpdateDto.builder().build());
+        BookCopySaveAndUpdateDto actual = bookCopyService.add(BookCopySaveAndUpdateDto.builder().bookId(1L).build());
 
         //then
         Assertions.assertEquals(expected, actual);
