@@ -27,8 +27,7 @@ public class BookServiceImpl implements BookService {
         try {
             Book book = BookConverter.fromSaveDTO(bookSaveDto);
             book.setStatus("ACTIVE");
-            bookRepository.save(book);
-            return BookConverter.toSaveDTO(book);
+            return BookConverter.toSaveDTO(bookRepository.save(book));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }

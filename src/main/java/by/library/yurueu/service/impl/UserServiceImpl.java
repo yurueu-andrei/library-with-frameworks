@@ -47,8 +47,7 @@ public class UserServiceImpl implements UserService {
         try {
             User user = UserConverter.fromSaveDTO(userSaveDto);
             user.setStatus("ACTIVE");
-            userRepository.save(user);
-            return UserConverter.toSaveDTO(user);
+            return UserConverter.toSaveDTO(userRepository.save(user));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }

@@ -8,7 +8,6 @@ import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.repository.BookCopyRepository;
 import by.library.yurueu.repository.BookDamageRepository;
-import by.library.yurueu.repository.OrderRepository;
 import by.library.yurueu.service.BookCopyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import java.util.Optional;
 public class BookCopyServiceImpl implements BookCopyService {
     private final BookCopyRepository bookCopyRepository;
     private final BookDamageRepository bookDamageRepository;
-    private final OrderRepository orderRepository;
 
     @Override
     public BookCopyDto findById(Long id) throws ServiceException {
@@ -46,8 +44,7 @@ public class BookCopyServiceImpl implements BookCopyService {
         try {
             BookCopy bookCopy = BookCopyConverter.fromSaveDTO(bookCopySaveAndUpdateDto);
             bookCopy.setStatus("AVAILABLE");
-            bookCopyRepository.save(bookCopy);
-            return BookCopyConverter.toSaveDTO(bookCopy);
+            return BookCopyConverter.toSaveDTO(bookCopyRepository.save(bookCopy));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
