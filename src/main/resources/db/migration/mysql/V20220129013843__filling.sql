@@ -1,9 +1,9 @@
-INSERT INTO users (first_name, last_name, passport, email, address, birth_date, user_status)
-VALUES ('vlad', 'kaliaha', '1111', 'email1', 'address1', '2005-06-06', 'ACTIVE'),
-       ('andrei', 'yurueu', '2222', 'email2', 'address2', '2001-06-06', 'ACTIVE'),
-       ('yaroslav', 'vasilevski', '3333', 'email3', 'address3', '1998-06-06', 'ACTIVE'),
-       ('anastasiya', 'yurkova', '4444', 'email4', 'address4', '1999-06-06', 'ACTIVE'),
-       ('alexander', 'kupriyanenko', '5555', 'email5', 'address5', '1996-06-06', 'ACTIVE');
+INSERT INTO users (first_name, last_name, passport, email, password, address, birth_date, user_status)
+VALUES ('vlad', 'kaliaha', '1111', 'email1', '$2a$12$Uagtw7S34f0.YNwPIJgIOu8OE5JGY9Oor1E9vX2Bf5T3j24P5qLP2',  'address1', '2005-06-06', 'ACTIVE'),
+       ('andrei', 'yurueu', '2222', 'email2', '$2a$12$31P2DhEMk1Wfs.9aIQn92unceFrbn.d2DFkX583UI/V9AATctMztC', 'address2', '2001-06-06', 'ACTIVE'),
+       ('yaroslav', 'vasilevski', '3333', 'email3', '345', 'address3', '1998-06-06', 'ACTIVE'),
+       ('anastasiya', 'yurkova', '4444', 'email4', '567', 'address4', '1999-06-06', 'ACTIVE'),
+       ('alexander', 'kupriyanenko', '5555', 'email5', '789', 'address5', '1996-06-06', 'ACTIVE');
 
 INSERT INTO roles (role_name)
 VALUES ('admin'),

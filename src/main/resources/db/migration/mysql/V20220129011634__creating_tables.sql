@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users
     last_name  VARCHAR(64)  NOT NULL,
     passport   VARCHAR(128) NOT NULL,
     email      VARCHAR(128) NOT NULL,
+    password   VARCHAR(64)  NOT NULL,
     address    VARCHAR(128) NOT NULL,
     birth_date DATETIME     NOT NULL,
     user_status ENUM ('ACTIVE', 'DELETED') NOT NULL,
