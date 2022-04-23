@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,7 +32,27 @@ public class ProjectExceptionHandler extends ResponseEntityExceptionHandler {
             Exception ex
     ) {
         log.error("handleServiceExceptionServerError {}\n", request.getRequestURI(), ex);
-        return new ApiCallError("Parameters are not valid");
+        return new ApiCallError(ex.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiCallError handleAccessDeniedException(
+            HttpServletRequest request,
+            AccessDeniedException ex
+    ) {
+        log.error("handleAccessDeniedException {}\n", request.getRequestURI(), ex);
+        return new ApiCallError("Access denied!");
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiCallError handleUnauthorizedException(
+            HttpServletRequest request,
+            BadCredentialsException ex
+    ) {
+        log.error("handleUnauthorizedException {}\n", request.getRequestURI(), ex);
+        return new ApiCallError("Incorrect username or password!");
     }
 
     @ExceptionHandler(ServiceException.class)

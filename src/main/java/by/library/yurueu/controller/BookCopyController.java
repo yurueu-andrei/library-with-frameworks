@@ -8,6 +8,7 @@ import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.service.BookCopyService;
 import by.library.yurueu.service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +37,7 @@ public class BookCopyController {
         return bookCopyService.findAll();
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @PostMapping
     public BookSaveDto add(
             @RequestBody BookSaveDto bookSaveDto
@@ -43,6 +45,7 @@ public class BookCopyController {
         return bookService.add(bookSaveDto);
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @PostMapping("/copies")
     public BookCopySaveAndUpdateDto add(
             @RequestBody BookCopySaveAndUpdateDto bookCopySaveAndUpdateDto
@@ -50,6 +53,7 @@ public class BookCopyController {
         return bookCopyService.add(bookCopySaveAndUpdateDto);
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @PutMapping
     public BookCopySaveAndUpdateDto update(
             @RequestBody BookCopySaveAndUpdateDto bookCopyUpdateDto
@@ -58,11 +62,13 @@ public class BookCopyController {
         return bookCopyUpdateDto;
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @DeleteMapping("/{id}")
     public boolean deleteBook(@PathVariable Long id) throws ServiceException {
         return bookService.delete(id);
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @DeleteMapping("/copies/{id}")
     public boolean deleteCopy(@PathVariable Long id) throws ServiceException {
         return bookCopyService.delete(id);

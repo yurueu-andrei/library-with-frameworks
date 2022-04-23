@@ -7,6 +7,7 @@ import by.library.yurueu.dto.UserUpdateDto;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,16 +25,19 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    @PreAuthorize("hasRole({'admin'})")
     @GetMapping("/{id}")
     public UserDto findById(@PathVariable Long id) throws ServiceException {
         return userService.findById(id);
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @GetMapping
     public List<UserListDto> findAll() throws ServiceException {
         return userService.findAll();
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @PostMapping
     public UserSaveDto add(
             @RequestBody UserSaveDto userSaveDto
@@ -41,6 +45,7 @@ public class UserController {
         return userService.add(userSaveDto);
     }
 
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     @PutMapping
     public UserUpdateDto update(
             @RequestBody UserUpdateDto userUpdateDto
@@ -49,6 +54,7 @@ public class UserController {
         return userUpdateDto;
     }
 
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return userService.delete(id);
