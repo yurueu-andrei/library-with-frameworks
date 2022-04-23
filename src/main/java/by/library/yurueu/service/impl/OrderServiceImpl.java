@@ -54,7 +54,6 @@ public class OrderServiceImpl implements OrderService {
     public boolean update(OrderUpdateDto orderUpdateDto) throws ServiceException {
         try {
             Order order = OrderConverter.fromUpdateDTO(orderUpdateDto);
-            order.setStatus("ACTIVE");
             orderRepository.save(order);
             return true;
         } catch (Exception ex) {

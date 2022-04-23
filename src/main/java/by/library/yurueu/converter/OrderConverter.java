@@ -86,6 +86,7 @@ public class OrderConverter {
                 .startDate(orderUpdateDto.getStartDate())
                 .endDate(orderUpdateDto.getEndDate())
                 .price(orderUpdateDto.getPrice())
+                .user(User.builder().id(orderUpdateDto.getUserId()).build())
                 .build();
     }
 }
