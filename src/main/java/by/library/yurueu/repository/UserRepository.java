@@ -14,4 +14,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("from User u where not u.status='DELETED'")
     List<User> findAll();
+
+    @Query("from User u left join fetch u.roles " +
+            "where u.email=:email and not u.status='DELETED'")
+    Optional<User> findByEmail(String email);
 }
