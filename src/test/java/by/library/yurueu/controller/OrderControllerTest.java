@@ -13,9 +13,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -25,11 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(OrderController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class OrderControllerTest {
     @MockBean
     private OrderService orderService;
@@ -38,7 +40,8 @@ public class OrderControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void findByIdTest() throws Exception {
+    @WithMockUser(authorities = "admin")
+    public void findByIdTest_shouldReturnOrderAndStatus200ForAdmin() throws Exception {
         //given
         Long id = 3L;
         List<BookCopyListDto> books = new ArrayList<>(){{add(BookCopyListDto.builder().id(id).build());}};
@@ -50,8 +53,7 @@ public class OrderControllerTest {
 
         //when
         when(orderService.findById(id)).thenReturn(order);
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/orders/3"))
-                .andDo(print())
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/orders/3"))
                 .andExpect(jsonPath("$.status").value("ACTIVE"))
                 .andExpect(jsonPath("$.price").value(123))
                 .andExpect(jsonPath("$.userId").value(3))
@@ -68,7 +70,8 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void findAllTest() throws Exception {
+    @WithMockUser(authorities = "admin")
+    public void findAllTest_shouldReturnOrdersAndStatus200ForAdmin() throws Exception {
         //given
         OrderListDto order1 = OrderListDto.builder().id(1L).status("ACTIVE").price(123)
                 .startDate(LocalDate.of(2003,4,1))
@@ -83,8 +86,7 @@ public class OrderControllerTest {
 
         //when
         when(orderService.findAll()).thenReturn(orders);
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/orders"))
-                .andDo(print())
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/orders"))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].status").value("ACTIVE"))
@@ -104,7 +106,8 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void addTest() throws Exception {
+    @WithMockUser(authorities = "admin")
+    public void addTest_shouldReturnOrderAndStatus200ForAdmin() throws Exception {
         //given
         List<Long> bookCopiesId = new ArrayList<>(){{add(1L);}};
         OrderSaveDto orderWithoutId = OrderSaveDto.builder().status("ACTIVE").price(123)
@@ -122,10 +125,9 @@ public class OrderControllerTest {
 
         //when
         when(orderService.add(orderWithoutId)).thenReturn(orderWithId);
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/orders")
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/orders")
                         .content(mapper.writeValueAsString(orderWithoutId))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.status").value("ACTIVE"))
                 .andExpect(jsonPath("$.price").value(123))
@@ -140,7 +142,8 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void updateTest() throws Exception {
+    @WithMockUser(authorities = "admin")
+    public void updateTest_shouldReturnOrderAndStatus200ForAdmin() throws Exception {
         //given
         OrderUpdateDto order = OrderUpdateDto.builder().id(3L).status("ACTIVE").price(123)
                 .startDate(LocalDate.of(2003,4,1))
@@ -152,10 +155,9 @@ public class OrderControllerTest {
 
         //when
         when(orderService.update(order)).thenReturn(true);
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/orders")
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/orders")
                         .content(mapper.writeValueAsString(order))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(jsonPath("$.id").value(3))
                 .andExpect(jsonPath("$.status").value("ACTIVE"))
                 .andExpect(jsonPath("$.price").value(123))
@@ -169,19 +171,154 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void deleteTest() throws Exception {
+    @WithMockUser(authorities = "admin")
+    public void deleteTest_shouldReturnTrueAndStatus200ForAdmin() throws Exception {
         //given
         Long id = 3L;
 
         //when
         when(orderService.delete(id)).thenReturn(true);
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/orders/3"))
-                .andDo(print())
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/orders/3"))
                 .andExpect(jsonPath("$").value(true))
                 .andExpect(status().isOk())
                 .andReturn();
 
         //then
         Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
+    }
+
+    @Test
+    @WithMockUser(authorities = "user")
+    public void findByIdTest_shouldReturnStatus403ForUser() throws Exception {
+        //given & when & then
+        mockMvc.perform(MockMvcRequestBuilders.get("/orders/3"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(authorities = "user")
+    public void findAllTest_shouldReturnStatus403ForUser() throws Exception {
+        //given & when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/orders"))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        //then
+        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
+    }
+
+    @Test
+    @WithMockUser(authorities = "user")
+    public void addTest_shouldReturnStatus200ForUser() throws Exception {
+        //given
+        List<Long> bookCopiesId = new ArrayList<>(){{add(1L);}};
+        OrderSaveDto orderWithoutId = OrderSaveDto.builder().status("ACTIVE").price(123)
+                .startDate(LocalDate.of(2003,4,1))
+                .endDate(LocalDate.of(2003,4,1))
+                .bookCopiesId(bookCopiesId).build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        //when & then
+        mockMvc.perform(MockMvcRequestBuilders.post("/orders")
+                        .content(mapper.writeValueAsString(orderWithoutId))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(authorities = "user")
+    public void updateTest_shouldReturnStatus200ForUser() throws Exception {
+        //given
+        OrderUpdateDto order = OrderUpdateDto.builder().id(3L).status("ACTIVE").price(123)
+                .startDate(LocalDate.of(2003,4,1))
+                .endDate(LocalDate.of(2003,4,1)).build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        //when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/orders")
+                        .content(mapper.writeValueAsString(order))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        //then
+        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
+    }
+
+    @Test
+    @WithMockUser(authorities = "user")
+    public void deleteTest_shouldReturnStatus200ForUser() throws Exception {
+        //given & when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/orders/3"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        //then
+        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
+    }
+
+    @Test
+    public void findByIdTest_shouldReturnStatus401ForUnauthorized() throws Exception {
+        //given & when & then
+        mockMvc.perform(MockMvcRequestBuilders.get("/orders/3"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void findAllTest_shouldReturnStatus401ForUnauthorized() throws Exception {
+        //given & when & then
+        mockMvc.perform(MockMvcRequestBuilders.get("/orders"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void addTest_shouldReturnStatus401ForUnauthorized() throws Exception {
+        //given
+        List<Long> bookCopiesId = new ArrayList<>(){{add(1L);}};
+        OrderSaveDto orderWithoutId = OrderSaveDto.builder().status("ACTIVE").price(123)
+                .startDate(LocalDate.of(2003,4,1))
+                .endDate(LocalDate.of(2003,4,1))
+                .bookCopiesId(bookCopiesId).build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        //when & then
+        mockMvc.perform(MockMvcRequestBuilders.post("/orders")
+                        .content(mapper.writeValueAsString(orderWithoutId))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void updateTest_shouldReturnStatus401ForUnauthorized() throws Exception {
+        //given
+        OrderUpdateDto order = OrderUpdateDto.builder().id(3L).status("ACTIVE").price(123)
+                .startDate(LocalDate.of(2003,4,1))
+                .endDate(LocalDate.of(2003,4,1)).build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        //when & then
+        mockMvc.perform(MockMvcRequestBuilders.put("/orders")
+                        .content(mapper.writeValueAsString(order))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void deleteTest_shouldReturnStatus401ForUnauthorized() throws Exception {
+        //given & when & then
+        mockMvc.perform(MockMvcRequestBuilders.delete("/orders/3"))
+                .andExpect(status().isUnauthorized());
     }
 }
