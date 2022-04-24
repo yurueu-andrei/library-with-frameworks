@@ -7,6 +7,7 @@ import by.library.yurueu.dto.OrderUpdateDto;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,16 +25,19 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
+    @PreAuthorize("hasRole({'admin'})")
     @GetMapping("/{id}")
     public OrderDto findById(@PathVariable Long id) throws ServiceException {
         return orderService.findById(id);
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @GetMapping
     public List<OrderListDto> findAll() throws ServiceException {
         return orderService.findAll();
     }
 
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     @PostMapping
     public OrderSaveDto add(
             @RequestBody OrderSaveDto orderSaveDto
@@ -41,6 +45,7 @@ public class OrderController {
         return orderService.add(orderSaveDto);
     }
 
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     @PutMapping
     public OrderUpdateDto update(
             @RequestBody OrderUpdateDto orderUpdateDto
@@ -49,6 +54,7 @@ public class OrderController {
         return orderUpdateDto;
     }
 
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return orderService.delete(id);

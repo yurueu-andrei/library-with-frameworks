@@ -53,11 +53,11 @@ public abstract class BaseRepositoryTest {
 
     private void fillUsers() {
         users = new ArrayList<>() {{
-            add(User.builder().id(1L).firstName("vlad").lastName("kaliaha").passportNumber("1111").email("email1").address("address1").birthDate(LocalDate.of(2005, 6, 6)).status("ACTIVE").build());
-            add(User.builder().id(2L).firstName("andrei").lastName("yurueu").passportNumber("2222").email("email2").address("address2").birthDate(LocalDate.of(2001, 6, 6)).status("ACTIVE").build());
-            add(User.builder().id(3L).firstName("yaroslav").lastName("vasilevski").passportNumber("3333").email("email3").address("address3").birthDate(LocalDate.of(1998, 6, 6)).status("ACTIVE").build());
-            add(User.builder().id(4L).firstName("anastasiya").lastName("yurkova").passportNumber("4444").email("email4").address("address4").birthDate(LocalDate.of(1999, 6, 6)).status("ACTIVE").build());
-            add(User.builder().id(5L).firstName("alexander").lastName("kupriyanenko").passportNumber("5555").email("email5").address("address5").birthDate(LocalDate.of(1996, 6, 6)).status("ACTIVE").build());
+            add(User.builder().id(1L).firstName("vlad").lastName("kaliaha").passportNumber("1111").email("email1").password("$2a$12$Uagtw7S34f0.YNwPIJgIOu8OE5JGY9Oor1E9vX2Bf5T3j24P5qLP2").address("address1").birthDate(LocalDate.of(2005, 6, 6)).status("ACTIVE").build());
+            add(User.builder().id(2L).firstName("andrei").lastName("yurueu").passportNumber("2222").email("email2").password("$2a$12$31P2DhEMk1Wfs.9aIQn92unceFrbn.d2DFkX583UI/V9AATctMztC").address("address2").birthDate(LocalDate.of(2001, 6, 6)).status("ACTIVE").build());
+            add(User.builder().id(3L).firstName("yaroslav").lastName("vasilevski").passportNumber("3333").email("email3").password("345").address("address3").birthDate(LocalDate.of(1998, 6, 6)).status("ACTIVE").build());
+            add(User.builder().id(4L).firstName("anastasiya").lastName("yurkova").passportNumber("4444").email("email4").password("567").address("address4").birthDate(LocalDate.of(1999, 6, 6)).status("ACTIVE").build());
+            add(User.builder().id(5L).firstName("alexander").lastName("kupriyanenko").passportNumber("5555").email("email5").password("789").address("address5").birthDate(LocalDate.of(1996, 6, 6)).status("ACTIVE").build());
         }};
     }
 

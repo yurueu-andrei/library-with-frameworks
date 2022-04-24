@@ -6,6 +6,7 @@ import by.library.yurueu.dto.AuthorSaveAndUpdateDto;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.service.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,7 @@ public class AuthorController {
         return authorService.findAll();
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @PostMapping
     public AuthorSaveAndUpdateDto add(
             @RequestBody AuthorSaveAndUpdateDto authorSaveAndUpdateDto
@@ -40,6 +42,7 @@ public class AuthorController {
         return authorService.add(authorSaveAndUpdateDto);
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @PutMapping
     public AuthorSaveAndUpdateDto update(
             @RequestBody AuthorSaveAndUpdateDto authorUpdateDto
@@ -48,6 +51,7 @@ public class AuthorController {
         return authorUpdateDto;
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return authorService.delete(id);

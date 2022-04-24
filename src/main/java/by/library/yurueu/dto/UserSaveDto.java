@@ -20,6 +20,7 @@ public class UserSaveDto {
     private String lastName;
     private String passportNumber;
     private String email;
+    private String password;
     private String address;
     private LocalDate birthDate;
 

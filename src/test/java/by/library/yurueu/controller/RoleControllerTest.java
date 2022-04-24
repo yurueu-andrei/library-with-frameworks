@@ -5,8 +5,10 @@ import by.library.yurueu.service.RoleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -15,11 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(RoleController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class RoleControllerTest {
     @MockBean
     private RoleService roleService;
@@ -28,7 +30,8 @@ public class RoleControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void findAllTest() throws Exception {
+    @WithMockUser(authorities = "admin")
+    public void findAllTest_shouldReturnRolesAndStatus200ForAdmin() throws Exception {
         //given
         RoleDto role1 = RoleDto.builder().id(1L).roleName("Hello").build();
         RoleDto role2 = RoleDto.builder().id(2L).roleName("GoodBye").build();
@@ -39,8 +42,7 @@ public class RoleControllerTest {
 
         //when
         when(roleService.findAll()).thenReturn(authors);
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/roles"))
-                .andDo(print())
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/roles"))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].roleName").value("Hello"))
@@ -51,5 +53,24 @@ public class RoleControllerTest {
 
         //then
         Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
+    }
+
+    @Test
+    @WithMockUser(authorities = "user")
+    public void findAllTest_shouldReturnStatus403ForUser() throws Exception {
+        //given & when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/roles"))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        //then
+        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
+    }
+
+    @Test
+    public void findAllTest_shouldReturnStatus401ForUnauthorized() throws Exception {
+        //given & when & then
+        mockMvc.perform(MockMvcRequestBuilders.get("/roles"))
+                .andExpect(status().isUnauthorized());
     }
 }

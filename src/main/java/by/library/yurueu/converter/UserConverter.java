@@ -40,6 +40,7 @@ public class UserConverter {
                 .lastName(user.getLastName())
                 .passportNumber(user.getPassportNumber())
                 .email(user.getEmail())
+                .password(user.getPassword())
                 .address(user.getAddress())
                 .birthDate(user.getBirthDate())
                 .rolesId(constructRolesId(user.getRoles()))
@@ -53,6 +54,7 @@ public class UserConverter {
                 .lastName(userSaveDto.getLastName())
                 .passportNumber(userSaveDto.getPassportNumber())
                 .email(userSaveDto.getEmail())
+                .password(userSaveDto.getPassword())
                 .address(userSaveDto.getAddress())
                 .birthDate(userSaveDto.getBirthDate())
                 .roles(constructRoles(userSaveDto.getRolesId()))
@@ -86,6 +88,7 @@ public class UserConverter {
                 .lastName(userUpdateDto.getLastName())
                 .passportNumber(userUpdateDto.getPassportNumber())
                 .email(userUpdateDto.getEmail())
+                .password(userUpdateDto.getPassword())
                 .address(userUpdateDto.getAddress())
                 .birthDate(userUpdateDto.getBirthDate())
                 .build();

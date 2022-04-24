@@ -9,3 +9,8 @@ spring:
     show-sql: true
   flyway:
     locations: classpath:db/migration/mysql
+  security:
+    jwt:
+      secret: zdtlD3JK56m6wTTgsNFhqzjqP
+      issuer: andrei.yurueu
+      expiration: 604800000

@@ -15,9 +15,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -27,11 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(BookCopyController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class BookCopyControllerTest {
     @MockBean
     private BookCopyService bookCopyService;
@@ -42,7 +44,8 @@ public class BookCopyControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void findByIdTest() throws Exception {
+    @WithMockUser(authorities = "admin")
+    public void findByIdTest_shouldReturnBookCopyAndStatus200ForAdmin() throws Exception {
         //given
         Long id = 3L;
         List<AuthorListDto> authors = new ArrayList<>(){{add(AuthorListDto.builder().id(id).build());}};
@@ -56,8 +59,7 @@ public class BookCopyControllerTest {
 
         //when
         when(bookCopyService.findById(id)).thenReturn(bookCopyDto);
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/books/3"))
-                .andDo(print())
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/books/3"))
                 .andExpect(jsonPath("$.title").value("Hello"))
                 .andExpect(jsonPath("$.pagesNumber").value(234))
                 .andExpect(jsonPath("$.status").value("AVAILABLE"))
@@ -75,7 +77,8 @@ public class BookCopyControllerTest {
         Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
     }
     @Test
-    public void findAllTest() throws Exception {
+    @WithMockUser(authorities = "admin")
+    public void findAllTest_shouldReturnBookCopiesAndStatus200ForAdmin() throws Exception {
         //given
         BookCopyListDto book1 = BookCopyListDto.builder().id(1L).title("Hello").pricePerDay(123).imagePath("path1").build();
         BookCopyListDto book2 = BookCopyListDto.builder().id(2L).title("GoodBye").pricePerDay(345).imagePath("path2").build();
@@ -86,8 +89,7 @@ public class BookCopyControllerTest {
 
         //when
         when(bookCopyService.findAll()).thenReturn(books);
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/books"))
-                .andDo(print())
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/books"))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].title").value("Hello"))
@@ -105,7 +107,8 @@ public class BookCopyControllerTest {
     }
 
     @Test
-    public void addBookCopyTest() throws Exception {
+    @WithMockUser(authorities = "admin")
+    public void addBookCopyTest_shouldReturnBookCopyAndStatus200ForAdmin() throws Exception {
         //given
         BookCopySaveAndUpdateDto bookCopyWithoutId = BookCopySaveAndUpdateDto.builder().status("AVAILABLE").registrationDate(LocalDate.of(2003,1,4)).pricePerDay(123).imagePath("path").bookId(2L).build();
         BookCopySaveAndUpdateDto bookCopyWithId = BookCopySaveAndUpdateDto.builder().id(3L).status("AVAILABLE").registrationDate(LocalDate.of(2003,1,4)).pricePerDay(123).imagePath("path").bookId(2L).build();
@@ -116,10 +119,9 @@ public class BookCopyControllerTest {
 
         //when
         when(bookCopyService.add(bookCopyWithoutId)).thenReturn(bookCopyWithId);
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/books/copies")
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/books/copies")
                         .content(mapper.writeValueAsString(bookCopyWithoutId))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.status").value("AVAILABLE"))
                 .andExpect(jsonPath("$.registrationDate").value("2003-01-04"))
@@ -134,7 +136,8 @@ public class BookCopyControllerTest {
     }
 
     @Test
-    public void addBookTest() throws Exception {
+    @WithMockUser(authorities = "admin")
+    public void addBookTest_shouldReturnBookAndStatus200ForAdmin() throws Exception {
         //given
         List<Long> authorsId = new ArrayList<>(){{add(1L);}};
         List<Long> genresId = new ArrayList<>(){{add(2L);}};
@@ -144,10 +147,9 @@ public class BookCopyControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         //when
         when(bookService.add(bookWithoutId)).thenReturn(bookWithId);
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/books")
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/books")
                         .content(mapper.writeValueAsString(bookWithoutId))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.title").value("Hello"))
                 .andExpect(jsonPath("$.pagesNumber").value(123))
@@ -164,7 +166,8 @@ public class BookCopyControllerTest {
     }
 
     @Test
-    public void updateTest() throws Exception {
+    @WithMockUser(authorities = "admin")
+    public void updateTest_shouldReturnBookCopyAndStatus200ForAdmin() throws Exception {
         //given
         BookCopySaveAndUpdateDto bookCopy = BookCopySaveAndUpdateDto.builder().id(3L).status("AVAILABLE").registrationDate(LocalDate.of(2003,1,4)).pricePerDay(123).imagePath("path").bookId(2L).build();
 
@@ -174,10 +177,9 @@ public class BookCopyControllerTest {
 
         //when
         when(bookCopyService.update(bookCopy)).thenReturn(true);
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.put("/books")
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/books")
                         .content(mapper.writeValueAsString(bookCopy))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.status").value("AVAILABLE"))
                 .andExpect(jsonPath("$.registrationDate").value("2003-01-04"))
@@ -191,14 +193,14 @@ public class BookCopyControllerTest {
         Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
     }
     @Test
-    public void deleteBookCopyTest() throws Exception {
+    @WithMockUser(authorities = "admin")
+    public void deleteBookCopyTest_shouldReturnTrueAndStatus200ForAdmin() throws Exception {
         //given
         Long id = 3L;
 
         //when
         when(bookCopyService.delete(id)).thenReturn(true);
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/books/copies/3"))
-                .andDo(print())
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/books/copies/3"))
                 .andExpect(jsonPath("$").value(true))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -208,19 +210,196 @@ public class BookCopyControllerTest {
     }
 
     @Test
-    public void deleteBookTest() throws Exception {
+    @WithMockUser(authorities = "admin")
+    public void deleteBookTest_shouldReturnTrueAndStatus200ForAdmin() throws Exception {
         //given
         Long id = 3L;
 
         //when
         when(bookService.delete(id)).thenReturn(true);
-        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.delete("/books/3"))
-                .andDo(print())
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/books/3"))
                 .andExpect(jsonPath("$").value(true))
                 .andExpect(status().isOk())
                 .andReturn();
 
         //then
         Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
+    }
+
+    @Test
+    @WithMockUser(authorities = "user")
+    public void findByIdTest_shouldReturnStatus200ForUser() throws Exception {
+        //given & when & then
+        mockMvc.perform(MockMvcRequestBuilders.get("/books/3"))
+                .andExpect(status().isOk());
+    }
+    @Test
+    @WithMockUser(authorities = "user")
+    public void findAllTest_shouldReturnStatus200ForUser() throws Exception {
+        //given & when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/books"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        //then
+        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
+    }
+
+    @Test
+    @WithMockUser(authorities = "user")
+    public void addBookCopyTest_shouldReturnStatus403ForUser() throws Exception {
+        //given
+        BookCopySaveAndUpdateDto bookCopyWithoutId = BookCopySaveAndUpdateDto.builder().status("AVAILABLE").registrationDate(LocalDate.of(2003,1,4)).pricePerDay(123).imagePath("path").bookId(2L).build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        //when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/books/copies")
+                        .content(mapper.writeValueAsString(bookCopyWithoutId))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        //then
+        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
+    }
+
+    @Test
+    @WithMockUser(authorities = "user")
+    public void addBookTest_shouldReturnStatus403ForUser() throws Exception {
+        //given
+        List<Long> authorsId = new ArrayList<>(){{add(1L);}};
+        List<Long> genresId = new ArrayList<>(){{add(2L);}};
+        BookSaveDto bookWithoutId = BookSaveDto.builder().title("Hello").pagesNumber(123).imagePath("path").authorsId(authorsId).genresId(genresId).build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        //when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/books")
+                        .content(mapper.writeValueAsString(bookWithoutId))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        //then
+        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
+    }
+
+    @Test
+    @WithMockUser(authorities = "user")
+    public void updateTest_shouldReturnStatus403ForUser() throws Exception {
+        //given
+        BookCopySaveAndUpdateDto bookCopy = BookCopySaveAndUpdateDto.builder().id(3L).status("AVAILABLE").registrationDate(LocalDate.of(2003,1,4)).pricePerDay(123).imagePath("path").bookId(2L).build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        //when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/books")
+                        .content(mapper.writeValueAsString(bookCopy))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        //then
+        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
+    }
+    @Test
+    @WithMockUser(authorities = "user")
+    public void deleteBookCopyTest_shouldReturnStatus403ForUser() throws Exception {
+        //given & when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/books/copies/3"))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        //then
+        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
+    }
+
+    @Test
+    @WithMockUser(authorities = "user")
+    public void deleteBookTest_shouldReturnStatus403ForUser() throws Exception {
+        //given & when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/books/3"))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        //then
+        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
+    }
+
+    @Test
+    public void findByIdTest_shouldReturnStatus200ForUnauthorized() throws Exception {
+        //given & when & then
+        mockMvc.perform(MockMvcRequestBuilders.get("/books/3"))
+                .andExpect(status().isOk());
+    }
+    @Test
+    public void findAllTest_shouldReturnStatus200ForUnauthorized() throws Exception {
+        //given & when & then
+        mockMvc.perform(MockMvcRequestBuilders.get("/books"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void addBookCopyTest_shouldReturnStatus401ForUnauthorized() throws Exception {
+        //given
+        BookCopySaveAndUpdateDto bookCopyWithoutId = BookCopySaveAndUpdateDto.builder().status("AVAILABLE").registrationDate(LocalDate.of(2003,1,4)).pricePerDay(123).imagePath("path").bookId(2L).build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        //when & then
+        mockMvc.perform(MockMvcRequestBuilders.post("/books/copies")
+                        .content(mapper.writeValueAsString(bookCopyWithoutId))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void addBookTest_shouldReturnStatus401ForUnauthorized() throws Exception {
+        //given
+        List<Long> authorsId = new ArrayList<>(){{add(1L);}};
+        List<Long> genresId = new ArrayList<>(){{add(2L);}};
+        BookSaveDto bookWithoutId = BookSaveDto.builder().title("Hello").pagesNumber(123).imagePath("path").authorsId(authorsId).genresId(genresId).build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        //when & then
+        mockMvc.perform(MockMvcRequestBuilders.post("/books")
+                        .content(mapper.writeValueAsString(bookWithoutId))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void updateTest_shouldReturnStatus401ForUnauthorized() throws Exception {
+        //given
+        BookCopySaveAndUpdateDto bookCopy = BookCopySaveAndUpdateDto.builder().id(3L).status("AVAILABLE").registrationDate(LocalDate.of(2003,1,4)).pricePerDay(123).imagePath("path").bookId(2L).build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        //when & then
+        mockMvc.perform(MockMvcRequestBuilders.put("/books")
+                        .content(mapper.writeValueAsString(bookCopy))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+    @Test
+    public void deleteBookCopyTest_shouldReturnStatus401ForUnauthorized() throws Exception {
+        //given & when & then
+        mockMvc.perform(MockMvcRequestBuilders.delete("/books/copies/3"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void deleteBookTest_shouldReturnStatus401ForUnauthorized() throws Exception {
+        //given & when & then
+        mockMvc.perform(MockMvcRequestBuilders.delete("/books/3"))
+                .andExpect(status().isUnauthorized());
     }
 }

@@ -12,6 +12,7 @@ import by.library.yurueu.repository.OrderRepository;
 import by.library.yurueu.repository.UserRepository;
 import by.library.yurueu.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
     private final BookDamageRepository bookDamageRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDto findById(Long id) throws ServiceException {
@@ -46,6 +48,7 @@ public class UserServiceImpl implements UserService {
     public UserSaveDto add(UserSaveDto userSaveDto) throws ServiceException {
         try {
             User user = UserConverter.fromSaveDTO(userSaveDto);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setStatus("ACTIVE");
             return UserConverter.toSaveDTO(userRepository.save(user));
         } catch (Exception ex) {

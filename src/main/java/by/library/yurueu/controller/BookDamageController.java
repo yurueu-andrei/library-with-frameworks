@@ -5,6 +5,7 @@ import by.library.yurueu.dto.BookDamageListDto;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.service.BookDamageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,7 @@ public class BookDamageController {
         return bookDamageService.findAll();
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @PostMapping
     public BookDamageDto add(
             @RequestBody BookDamageDto bookDamageSaveDto
@@ -38,6 +40,7 @@ public class BookDamageController {
         return bookDamageService.add(bookDamageSaveDto);
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return bookDamageService.delete(id);
