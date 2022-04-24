@@ -37,7 +37,6 @@ public class UserController {
         return userService.findAll();
     }
 
-    @PreAuthorize("hasRole({'admin'})")
     @PostMapping
     public UserSaveDto add(
             @RequestBody UserSaveDto userSaveDto
