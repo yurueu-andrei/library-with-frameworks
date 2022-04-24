@@ -1,4 +1,4 @@
-package by.library.yurueu.security;
+package by.library.yurueu.dto;
 
 import lombok.Data;
 
