@@ -12,12 +12,16 @@ import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.entity.Genre;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.mapper.BookCopyMapper;
 import by.library.yurueu.repository.BookCopyRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,9 +31,14 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class BookCopyServiceImplTest {
     @Mock
     private BookCopyRepository bookCopyRepository;
+
+    @Spy
+    private BookCopyMapper bookCopyMapper = Mappers.getMapper(BookCopyMapper.class);
+
     @InjectMocks
     private BookCopyServiceImpl bookCopyService;
 

@@ -1,12 +1,12 @@
 package by.library.yurueu.service.impl;
 
-import by.library.yurueu.converter.OrderConverter;
 import by.library.yurueu.dto.OrderDto;
 import by.library.yurueu.dto.OrderListDto;
 import by.library.yurueu.dto.OrderSaveDto;
 import by.library.yurueu.dto.OrderUpdateDto;
 import by.library.yurueu.entity.Order;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.mapper.OrderMapper;
 import by.library.yurueu.repository.OrderRepository;
 import by.library.yurueu.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +20,11 @@ import java.util.Optional;
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
 
     @Override
     public OrderDto findById(Long id) throws ServiceException {
-        return orderRepository.findById(id).map(OrderConverter::toDTO)
+        return orderRepository.findById(id).map(orderMapper::toDTO)
                 .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
@@ -31,7 +32,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderListDto> findAll() throws ServiceException {
         try {
-            return OrderConverter.toListDTO(orderRepository.findAll());
+            return orderMapper.toListDto(orderRepository.findAll());
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
         }
@@ -41,9 +42,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderSaveDto add(OrderSaveDto orderSaveDto) throws ServiceException {
         try {
-            Order order = OrderConverter.fromSaveDTO(orderSaveDto);
+            Order order = orderMapper.fromSaveDTO(orderSaveDto);
             order.setStatus("NEW");
-            return OrderConverter.toSaveDTO(orderRepository.save(order));
+            return orderMapper.toSaveDTO(orderRepository.save(order));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
@@ -53,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean update(OrderUpdateDto orderUpdateDto) throws ServiceException {
         try {
-            Order order = OrderConverter.fromUpdateDTO(orderUpdateDto);
+            Order order = orderMapper.fromUpdateDTO(orderUpdateDto);
             orderRepository.save(order);
             return true;
         } catch (Exception ex) {

@@ -1,11 +1,11 @@
 package by.library.yurueu.service.impl;
 
-import by.library.yurueu.converter.AuthorConverter;
 import by.library.yurueu.dto.AuthorDto;
 import by.library.yurueu.dto.AuthorListDto;
 import by.library.yurueu.dto.AuthorSaveAndUpdateDto;
 import by.library.yurueu.entity.Author;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.mapper.AuthorMapper;
 import by.library.yurueu.repository.AuthorRepository;
 import by.library.yurueu.service.AuthorService;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +19,11 @@ import java.util.Optional;
 @Service
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
+    private final AuthorMapper authorMapper;
 
     @Override
     public AuthorDto findById(Long id) throws ServiceException {
-        return authorRepository.findById(id).map(AuthorConverter::toDTO)
+        return authorRepository.findById(id).map(authorMapper::toDTO)
                 .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
@@ -30,7 +31,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public List<AuthorListDto> findAll() throws ServiceException {
         try {
-            return AuthorConverter.toListDTO(authorRepository.findAll());
+            return authorMapper.toListDto(authorRepository.findAll());
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
         }
@@ -40,9 +41,9 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorSaveAndUpdateDto add(AuthorSaveAndUpdateDto authorSaveAndUpdateDto) throws ServiceException {
         try {
-            Author author = AuthorConverter.fromSaveDTO(authorSaveAndUpdateDto);
+            Author author = authorMapper.fromSaveOrUpdateDTO(authorSaveAndUpdateDto);
             author.setStatus("ACTIVE");
-            return AuthorConverter.toSaveDTO(authorRepository.save(author));
+            return authorMapper.toSaveDTO(authorRepository.save(author));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
@@ -52,7 +53,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public boolean update(AuthorSaveAndUpdateDto authorUpdateDto) throws ServiceException {
         try {
-            Author author = AuthorConverter.fromUpdateDTO(authorUpdateDto);
+            Author author = authorMapper.fromSaveOrUpdateDTO(authorUpdateDto);
             author.setStatus("ACTIVE");
             authorRepository.save(author);
             return true;

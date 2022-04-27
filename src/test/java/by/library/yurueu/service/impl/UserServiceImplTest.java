@@ -7,13 +7,17 @@ import by.library.yurueu.dto.UserUpdateDto;
 import by.library.yurueu.entity.Role;
 import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.mapper.UserMapper;
 import by.library.yurueu.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,11 +27,17 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
+
+    @Spy
+    private UserMapper userMapper = Mappers.getMapper(UserMapper.class);
+
     @Mock
     private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private UserServiceImpl userService;
 
