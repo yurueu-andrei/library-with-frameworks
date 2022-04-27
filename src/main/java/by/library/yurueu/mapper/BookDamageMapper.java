@@ -26,5 +26,6 @@ public interface BookDamageMapper {
     BookDamage fromSaveDTO(BookDamageDto bookDamageDto);
 
     BookDamageListDto toListDTO(BookDamage bookDamage);
+
     List<BookDamageListDto> toListDto(List<BookDamage> bookDamages);
 }

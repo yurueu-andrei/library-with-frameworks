@@ -17,13 +17,18 @@ import java.util.Set;
 public interface AuthorMapper {
     @Mapping(target = "books", source = "author.books")
     AuthorDto toDTO(Author author);
+
+    AuthorSaveAndUpdateDto toSaveDTO(Author author);
+
+    Author fromSaveOrUpdateDTO(AuthorSaveAndUpdateDto authorSaveAndUpdateDto);
+
+    AuthorListDto toListDTO(Author author);
+
+    List<AuthorListDto> toListDto(List<Author> authors);
+
     default List<BookCopy> bookCopiesFromBooks(Set<Book> books) {
         List<BookCopy> bookCopies = new ArrayList<>();
         books.forEach(book -> bookCopies.addAll(book.getBookCopies()));
         return bookCopies;
     }
-    AuthorSaveAndUpdateDto toSaveDTO(Author author);
-    Author fromSaveOrUpdateDTO(AuthorSaveAndUpdateDto authorSaveAndUpdateDto);
-    AuthorListDto toListDTO(Author author);
-    List<AuthorListDto> toListDto(List<Author> authors);
 }

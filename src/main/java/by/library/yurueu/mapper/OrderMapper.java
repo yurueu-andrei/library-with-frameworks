@@ -21,22 +21,25 @@ public interface OrderMapper {
     @Mapping(target = "bookCopiesId", source = "order.bookCopies")
     @Mapping(target = "userId", source = "order.user.id")
     OrderSaveDto toSaveDTO(Order order);
-    default List<Long> bookCopiesToBookCopiesId(Set<BookCopy> bookCopies) {
-        return bookCopies.stream().map(BookCopy::getId)
-                .collect(Collectors.toList());
-    }
 
     @Mapping(target = "user.id", source = "orderSaveDto.userId")
     @Mapping(target = "bookCopies", source = "orderSaveDto.bookCopiesId")
     Order fromSaveDTO(OrderSaveDto orderSaveDto);
-    default Set<BookCopy> bookCopiesIdToBookCopies(List<Long> ids) {
-        return ids.stream().map(id -> BookCopy.builder().id(id).build())
-                .collect(Collectors.toSet());
-    }
 
     @Mapping(target = "user.id", source = "orderUpdateDto.userId")
     Order fromUpdateDTO(OrderUpdateDto orderUpdateDto);
 
     OrderListDto toListDTO(Order order);
+
     List<OrderListDto> toListDto(List<Order> orders);
+
+    default Set<BookCopy> bookCopiesIdToBookCopies(List<Long> ids) {
+        return ids.stream().map(id -> BookCopy.builder().id(id).build())
+                .collect(Collectors.toSet());
+    }
+
+    default List<Long> bookCopiesToBookCopiesId(Set<BookCopy> bookCopies) {
+        return bookCopies.stream().map(BookCopy::getId)
+                .collect(Collectors.toList());
+    }
 }

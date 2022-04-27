@@ -24,5 +24,6 @@ public interface BookCopyMapper {
 
     @Mapping(target = "title", source = "bookCopy.book.title")
     BookCopyListDto toListDTO(BookCopy bookCopy);
+
     List<BookCopyListDto> toListDto(List<BookCopy> bookCopies);
 }
