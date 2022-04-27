@@ -29,10 +29,13 @@ import static org.mockito.Mockito.when;
 class BookServiceImplTest {
     @Mock
     private BookRepository bookRepository;
+
     @Mock
     private BookCopyRepository bookCopyRepository;
+
     @Spy
     private BookMapper bookMapper = Mappers.getMapper(BookMapper.class);
+
     @InjectMocks
     private BookServiceImpl bookService;
 

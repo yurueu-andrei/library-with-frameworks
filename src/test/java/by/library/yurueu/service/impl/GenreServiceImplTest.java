@@ -25,8 +25,10 @@ import static org.mockito.Mockito.when;
 class GenreServiceImplTest {
     @Mock
     private GenreRepository genreRepository;
+
     @Spy
     private GenreMapper genreMapper = Mappers.getMapper(GenreMapper.class);
+
     @InjectMocks
     private GenreServiceImpl genreService;
 

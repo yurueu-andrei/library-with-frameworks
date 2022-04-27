@@ -31,8 +31,10 @@ import static org.mockito.Mockito.when;
 class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
+
     @Spy
     private UserMapper userMapper = Mappers.getMapper(UserMapper.class);
+
     @Mock
     private PasswordEncoder passwordEncoder;
 

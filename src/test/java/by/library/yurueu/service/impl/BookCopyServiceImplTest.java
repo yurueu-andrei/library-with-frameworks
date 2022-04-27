@@ -35,8 +35,10 @@ import static org.mockito.Mockito.when;
 class BookCopyServiceImplTest {
     @Mock
     private BookCopyRepository bookCopyRepository;
+
     @Spy
     private BookCopyMapper bookCopyMapper = Mappers.getMapper(BookCopyMapper.class);
+
     @InjectMocks
     private BookCopyServiceImpl bookCopyService;
 

@@ -31,8 +31,10 @@ import static org.mockito.Mockito.when;
 class OrderServiceImplTest {
     @Mock
     private OrderRepository orderRepository;
+
     @Spy
     private OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
+
     @InjectMocks
     private OrderServiceImpl orderService;
 

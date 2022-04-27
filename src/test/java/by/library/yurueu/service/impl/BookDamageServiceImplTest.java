@@ -29,8 +29,10 @@ import static org.mockito.Mockito.when;
 class BookDamageServiceImplTest {
     @Mock
     private BookDamageRepository bookDamageRepository;
+
     @Spy
     private BookDamageMapper bookDamageMapper = Mappers.getMapper(BookDamageMapper.class);
+
     @InjectMocks
     private BookDamageServiceImpl bookDamageService;
 

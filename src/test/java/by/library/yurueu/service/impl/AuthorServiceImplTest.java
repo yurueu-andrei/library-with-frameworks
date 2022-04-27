@@ -35,13 +35,17 @@ import static org.mockito.Mockito.when;
 class AuthorServiceImplTest {
     @Mock
     private AuthorRepository authorRepository;
+
     @Mock
     private BookRepository bookRepository;
+
     @Spy
     @InjectMocks
     private AuthorMapper authorMapper = Mappers.getMapper(AuthorMapper.class);
+
     @Spy
     private BookCopyMapper bookCopyMapper = Mappers.getMapper(BookCopyMapper.class);
+
     @InjectMocks
     private AuthorServiceImpl authorService;
 

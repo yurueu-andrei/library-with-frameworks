@@ -24,8 +24,10 @@ import static org.mockito.Mockito.when;
 class RoleServiceImplTest {
     @Mock
     private RoleRepository roleRepository;
+
     @Spy
     private RoleMapper roleMapper = Mappers.getMapper(RoleMapper.class);
+
     @InjectMocks
     private RoleServiceImpl roleService;
 
