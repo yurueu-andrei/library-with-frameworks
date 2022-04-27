@@ -3,12 +3,16 @@ package by.library.yurueu.service.impl;
 import by.library.yurueu.dto.RoleDto;
 import by.library.yurueu.entity.Role;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.mapper.RoleMapper;
 import by.library.yurueu.repository.RoleRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +20,12 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class RoleServiceImplTest {
     @Mock
     private RoleRepository roleRepository;
+    @Spy
+    private RoleMapper roleMapper = Mappers.getMapper(RoleMapper.class);
     @InjectMocks
     private RoleServiceImpl roleService;
 

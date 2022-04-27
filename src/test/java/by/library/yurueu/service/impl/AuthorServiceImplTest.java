@@ -8,13 +8,18 @@ import by.library.yurueu.entity.Author;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.mapper.AuthorMapper;
+import by.library.yurueu.mapper.BookCopyMapper;
 import by.library.yurueu.repository.AuthorRepository;
 import by.library.yurueu.repository.BookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,11 +31,17 @@ import java.util.Set;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class AuthorServiceImplTest {
     @Mock
     private AuthorRepository authorRepository;
     @Mock
     private BookRepository bookRepository;
+    @Spy
+    @InjectMocks
+    private AuthorMapper authorMapper = Mappers.getMapper(AuthorMapper.class);
+    @Spy
+    private BookCopyMapper bookCopyMapper = Mappers.getMapper(BookCopyMapper.class);
     @InjectMocks
     private AuthorServiceImpl authorService;
 

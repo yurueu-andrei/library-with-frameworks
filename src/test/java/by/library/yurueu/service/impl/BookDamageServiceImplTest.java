@@ -7,12 +7,16 @@ import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.entity.Order;
 import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.mapper.BookDamageMapper;
 import by.library.yurueu.repository.BookDamageRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +25,12 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class BookDamageServiceImplTest {
     @Mock
     private BookDamageRepository bookDamageRepository;
+    @Spy
+    private BookDamageMapper bookDamageMapper = Mappers.getMapper(BookDamageMapper.class);
     @InjectMocks
     private BookDamageServiceImpl bookDamageService;
 
