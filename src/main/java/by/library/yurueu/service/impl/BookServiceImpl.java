@@ -1,9 +1,9 @@
 package by.library.yurueu.service.impl;
 
-import by.library.yurueu.converter.BookConverter;
 import by.library.yurueu.dto.BookSaveDto;
 import by.library.yurueu.entity.Book;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.mapper.BookMapper;
 import by.library.yurueu.repository.BookCopyRepository;
 import by.library.yurueu.repository.BookDamageRepository;
 import by.library.yurueu.repository.BookRepository;
@@ -20,14 +20,15 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookCopyRepository bookCopyRepository;
     private final BookDamageRepository bookDamageRepository;
+    private final BookMapper bookMapper;
 
     @Transactional
     @Override
     public BookSaveDto add(BookSaveDto bookSaveDto) throws ServiceException {
         try {
-            Book book = BookConverter.fromSaveDTO(bookSaveDto);
+            Book book = bookMapper.fromSaveDTO(bookSaveDto);
             book.setStatus("ACTIVE");
-            return BookConverter.toSaveDTO(bookRepository.save(book));
+            return bookMapper.toSaveDTO(bookRepository.save(book));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }

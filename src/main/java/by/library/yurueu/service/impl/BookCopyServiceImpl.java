@@ -1,11 +1,11 @@
 package by.library.yurueu.service.impl;
 
-import by.library.yurueu.converter.BookCopyConverter;
 import by.library.yurueu.dto.BookCopyDto;
 import by.library.yurueu.dto.BookCopyListDto;
 import by.library.yurueu.dto.BookCopySaveAndUpdateDto;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.mapper.BookCopyMapper;
 import by.library.yurueu.repository.BookCopyRepository;
 import by.library.yurueu.repository.BookDamageRepository;
 import by.library.yurueu.service.BookCopyService;
@@ -21,10 +21,11 @@ import java.util.Optional;
 public class BookCopyServiceImpl implements BookCopyService {
     private final BookCopyRepository bookCopyRepository;
     private final BookDamageRepository bookDamageRepository;
+    private final BookCopyMapper bookCopyMapper;
 
     @Override
     public BookCopyDto findById(Long id) throws ServiceException {
-        return bookCopyRepository.findById(id).map(BookCopyConverter::toDTO)
+        return bookCopyRepository.findById(id).map(bookCopyMapper::toDTO)
                 .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
@@ -32,7 +33,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     @Override
     public List<BookCopyListDto> findAll() throws ServiceException {
         try {
-            return BookCopyConverter.toListDTO(bookCopyRepository.findAll());
+            return bookCopyMapper.toListDto(bookCopyRepository.findAll());
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
         }
@@ -42,9 +43,9 @@ public class BookCopyServiceImpl implements BookCopyService {
     @Override
     public BookCopySaveAndUpdateDto add(BookCopySaveAndUpdateDto bookCopySaveAndUpdateDto) throws ServiceException {
         try {
-            BookCopy bookCopy = BookCopyConverter.fromSaveDTO(bookCopySaveAndUpdateDto);
+            BookCopy bookCopy = bookCopyMapper.fromSaveOrUpdateDTO(bookCopySaveAndUpdateDto);
             bookCopy.setStatus("AVAILABLE");
-            return BookCopyConverter.toSaveDTO(bookCopyRepository.save(bookCopy));
+            return bookCopyMapper.toSaveDTO(bookCopyRepository.save(bookCopy));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
@@ -54,7 +55,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     @Override
     public boolean update(BookCopySaveAndUpdateDto bookCopyUpdateDto) throws ServiceException {
         try {
-            BookCopy bookCopy = BookCopyConverter.fromUpdateDTO(bookCopyUpdateDto);
+            BookCopy bookCopy = bookCopyMapper.fromSaveOrUpdateDTO(bookCopyUpdateDto);
             bookCopy.setStatus("AVAILABLE");
             bookCopyRepository.save(bookCopy);
             return true;

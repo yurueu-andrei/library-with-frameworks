@@ -1,10 +1,10 @@
 package by.library.yurueu.service.impl;
 
-import by.library.yurueu.converter.BookDamageConverter;
 import by.library.yurueu.dto.BookDamageDto;
 import by.library.yurueu.dto.BookDamageListDto;
 import by.library.yurueu.entity.BookDamage;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.mapper.BookDamageMapper;
 import by.library.yurueu.repository.BookDamageRepository;
 import by.library.yurueu.service.BookDamageService;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +18,11 @@ import java.util.Optional;
 @Service
 public class BookDamageServiceImpl implements BookDamageService {
     private final BookDamageRepository bookDamageRepository;
+    private final BookDamageMapper bookDamageMapper;
 
     @Override
     public BookDamageDto findById(Long id) throws ServiceException {
-        return bookDamageRepository.findById(id).map(BookDamageConverter::toDTO)
+        return bookDamageRepository.findById(id).map(bookDamageMapper::toDTO)
                 .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
@@ -29,7 +30,7 @@ public class BookDamageServiceImpl implements BookDamageService {
     @Override
     public List<BookDamageListDto> findAll() throws ServiceException {
         try {
-            return BookDamageConverter.toListDTO(bookDamageRepository.findAll());
+            return bookDamageMapper.toListDto(bookDamageRepository.findAll());
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
         }
@@ -39,9 +40,9 @@ public class BookDamageServiceImpl implements BookDamageService {
     @Override
     public BookDamageDto add(BookDamageDto bookDamageSaveDto) throws ServiceException {
         try {
-            BookDamage bookDamage = BookDamageConverter.fromSaveDTO(bookDamageSaveDto);
+            BookDamage bookDamage = bookDamageMapper.fromSaveDTO(bookDamageSaveDto);
             bookDamage.setStatus("ACTIVE");
-            return BookDamageConverter.toSaveDTO(bookDamageRepository.save(bookDamage));
+            return bookDamageMapper.toSaveDTO(bookDamageRepository.save(bookDamage));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }

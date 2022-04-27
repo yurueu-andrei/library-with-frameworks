@@ -1,12 +1,12 @@
 package by.library.yurueu.service.impl;
 
-import by.library.yurueu.converter.UserConverter;
 import by.library.yurueu.dto.UserDto;
 import by.library.yurueu.dto.UserListDto;
 import by.library.yurueu.dto.UserSaveDto;
 import by.library.yurueu.dto.UserUpdateDto;
 import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.ServiceException;
+import by.library.yurueu.mapper.UserMapper;
 import by.library.yurueu.repository.BookDamageRepository;
 import by.library.yurueu.repository.OrderRepository;
 import by.library.yurueu.repository.UserRepository;
@@ -26,10 +26,11 @@ public class UserServiceImpl implements UserService {
     private final OrderRepository orderRepository;
     private final BookDamageRepository bookDamageRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     @Override
     public UserDto findById(Long id) throws ServiceException {
-        return userRepository.findById(id).map(UserConverter::toDTO)
+        return userRepository.findById(id).map(userMapper::toDTO)
                 .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
@@ -37,7 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserListDto> findAll() throws ServiceException {
         try {
-            return UserConverter.toListDTO(userRepository.findAll());
+            return userMapper.toListDto(userRepository.findAll());
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
         }
@@ -47,10 +48,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserSaveDto add(UserSaveDto userSaveDto) throws ServiceException {
         try {
-            User user = UserConverter.fromSaveDTO(userSaveDto);
+            User user = userMapper.fromSaveDTO(userSaveDto);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setStatus("ACTIVE");
-            return UserConverter.toSaveDTO(userRepository.save(user));
+            return userMapper.toSaveDTO(userRepository.save(user));
         } catch (Exception ex) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
         }
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean update(UserUpdateDto userUpdateDto) throws ServiceException {
         try {
-            User user = UserConverter.fromUpdateDTO(userUpdateDto);
+            User user = userMapper.fromUpdateDTO(userUpdateDto);
             user.setStatus("ACTIVE");
             userRepository.save(user);
             return true;
