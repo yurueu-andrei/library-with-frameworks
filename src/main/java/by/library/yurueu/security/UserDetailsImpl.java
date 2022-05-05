@@ -1,11 +1,13 @@
 package by.library.yurueu.security;
 
+import by.library.yurueu.entity.Authority;
 import by.library.yurueu.entity.Role;
 import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,7 +20,9 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(role -> (GrantedAuthority) role::getRoleName)
+        Set<Authority> authorities = new HashSet<>();
+        roles.forEach(role -> authorities.addAll(role.getAuthorities()));
+        return authorities.stream().map(authority -> (GrantedAuthority) authority::getAuthorityName)
                 .collect(Collectors.toList());
     }
 
