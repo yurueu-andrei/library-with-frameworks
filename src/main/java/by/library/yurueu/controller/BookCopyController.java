@@ -37,7 +37,7 @@ public class BookCopyController {
         return bookCopyService.findAll();
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority({'BOOK_WRITE'})")
     @PostMapping
     public BookSaveDto add(
             @RequestBody BookSaveDto bookSaveDto
@@ -45,7 +45,7 @@ public class BookCopyController {
         return bookService.add(bookSaveDto);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority({'BOOK_COPY_WRITE'})")
     @PostMapping("/copies")
     public BookCopySaveAndUpdateDto add(
             @RequestBody BookCopySaveAndUpdateDto bookCopySaveAndUpdateDto
@@ -53,7 +53,7 @@ public class BookCopyController {
         return bookCopyService.add(bookCopySaveAndUpdateDto);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority({'BOOK_COPY_WRITE'})")
     @PutMapping
     public BookCopySaveAndUpdateDto update(
             @RequestBody BookCopySaveAndUpdateDto bookCopyUpdateDto
@@ -62,13 +62,13 @@ public class BookCopyController {
         return bookCopyUpdateDto;
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority({'BOOK_DELETE'})")
     @DeleteMapping("/{id}")
     public boolean deleteBook(@PathVariable Long id) throws ServiceException {
         return bookService.delete(id);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority({'BOOK_COPY_DELETE'})")
     @DeleteMapping("/copies/{id}")
     public boolean deleteCopy(@PathVariable Long id) throws ServiceException {
         return bookCopyService.delete(id);

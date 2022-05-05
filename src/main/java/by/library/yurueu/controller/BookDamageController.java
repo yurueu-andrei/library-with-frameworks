@@ -32,7 +32,7 @@ public class BookDamageController {
         return bookDamageService.findAll();
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority({'BOOK_DAMAGE_WRITE'})")
     @PostMapping
     public BookDamageDto add(
             @RequestBody BookDamageDto bookDamageSaveDto
@@ -40,7 +40,7 @@ public class BookDamageController {
         return bookDamageService.add(bookDamageSaveDto);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority({'BOOK_DAMAGE_DELETE'})")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return bookDamageService.delete(id);
