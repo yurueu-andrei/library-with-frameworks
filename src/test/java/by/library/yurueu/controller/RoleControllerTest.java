@@ -30,8 +30,8 @@ public class RoleControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    @WithMockUser(authorities = "admin")
-    public void findAllTest_shouldReturnRolesAndStatus200ForAdmin() throws Exception {
+    @WithMockUser(authorities = "ROLE_READ")
+    public void findAllTest_shouldReturnRolesAndStatus200ForUserWithRoleReadAuthority() throws Exception {
         //given
         RoleDto role1 = RoleDto.builder().id(1L).roleName("Hello").build();
         RoleDto role2 = RoleDto.builder().id(2L).roleName("GoodBye").build();
@@ -49,18 +49,6 @@ public class RoleControllerTest {
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].roleName").value("GoodBye"))
                 .andExpect(status().isOk())
-                .andReturn();
-
-        //then
-        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
-    }
-
-    @Test
-    @WithMockUser(authorities = "user")
-    public void findAllTest_shouldReturnStatus403ForUser() throws Exception {
-        //given & when
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/roles"))
-                .andExpect(status().isForbidden())
                 .andReturn();
 
         //then
