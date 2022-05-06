@@ -22,7 +22,9 @@ public class UserDetailsImpl implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<Authority> authorities = new HashSet<>();
         roles.forEach(role -> authorities.addAll(role.getAuthorities()));
-        return authorities.stream().map(authority -> (GrantedAuthority) authority::getAuthorityName)
+
+        return authorities.stream()
+                .map(authority -> (GrantedAuthority) authority::getAuthorityName)
                 .collect(Collectors.toList());
     }
 
