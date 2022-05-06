@@ -1,15 +1,10 @@
-package by.library.yurueu.controller;
+package by.library.yurueu.controller.impl;
 
+import by.library.yurueu.controller.BaseControllerTest;
 import by.library.yurueu.dto.GenreDto;
-import by.library.yurueu.service.GenreService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -20,15 +15,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class GenreControllerTest {
-    @MockBean
-    private GenreService genreService;
-
-    @Autowired
-    private MockMvc mockMvc;
-
+public class GenreControllerTest extends BaseControllerTest {
     @Test
     @WithMockUser(authorities = "admin")
     public void findByIdTest_shouldReturnGenreAndStatus200ForAdmin() throws Exception {
