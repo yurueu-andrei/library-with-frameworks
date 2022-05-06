@@ -1,21 +1,15 @@
-package by.library.yurueu.controller;
+package by.library.yurueu.controller.impl;
 
+import by.library.yurueu.controller.BaseControllerTest;
 import by.library.yurueu.dto.BookCopySaveAndUpdateDto;
 import by.library.yurueu.dto.BookSaveDto;
-import by.library.yurueu.service.BookCopyService;
-import by.library.yurueu.service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -27,17 +21,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class BookCopyControllerTest {
-    @MockBean
-    private BookCopyService bookCopyService;
-    @MockBean
-    private BookService bookService;
-
-    @Autowired
-    private MockMvc mockMvc;
-
+public class BookCopyControllerTest extends BaseControllerTest {
     @Test
     @WithMockUser(authorities = "BOOK_COPY_WRITE")
     public void addBookCopyTest_shouldReturnBookCopyAndStatus200ForUserWithBookCopyWriteAuthority() throws Exception {

@@ -1,20 +1,12 @@
-package by.library.yurueu.controller;
+package by.library.yurueu.controller.impl;
 
+import by.library.yurueu.controller.BaseControllerTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class GenreControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
+public class GenreControllerTest extends BaseControllerTest{
     @Test
     public void findByIdTest_shouldReturnStatus200ForUnauthorized() throws Exception {
         //given & when & then
