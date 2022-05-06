@@ -9,12 +9,46 @@ INSERT INTO roles (role_name)
 VALUES ('admin'),
        ('user');
 
+INSERT INTO authorities (authority_name)
+VALUES ('AUTHOR_WRITE'),
+       ('AUTHOR_DELETE'),
+       ('BOOK_WRITE'),
+       ('BOOK_DELETE'),
+       ('BOOK_COPY_WRITE'),
+       ('BOOK_COPY_DELETE'),
+       ('BOOK_DAMAGE_WRITE'),
+       ('BOOK_DAMAGE_DELETE'),
+       ('ORDER_READ'),
+       ('ORDER_WRITE'),
+       ('ORDER_DELETE'),
+       ('ROLE_READ'),
+       ('USER_READ'),
+       ('USER_WRITE'),
+       ('USER_DELETE');
+
 INSERT INTO user_role_links (user_id, role_id)
 VALUES (1, 1),
        (2, 2),
        (3, 2),
        (4, 2),
        (5, 2);
+
+INSERT INTO authority_role_links (role_id, authority_id)
+VALUES (1, 1),      (2, 10),
+       (1, 2),      (2, 11),
+       (1, 3),      (2, 14),
+       (1, 4),      (2, 15),
+       (1, 5),
+       (1, 6),
+       (1, 7),
+       (1, 8),
+       (1, 9),
+       (1, 10),
+       (1, 11),
+       (1, 12),
+       (1, 13),
+       (1, 14),
+       (1, 15);
 
 INSERT INTO orders (order_status, start_date, price, end_date, user_id)
 VALUES ('NEW', '1998-06-06', '243', '1998-06-06', '1'),

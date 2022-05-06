@@ -25,19 +25,19 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority({'ORDER_READ'})")
     @GetMapping("/{id}")
     public OrderDto findById(@PathVariable Long id) throws ServiceException {
         return orderService.findById(id);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority({'ORDER_READ'})")
     @GetMapping
     public List<OrderListDto> findAll() throws ServiceException {
         return orderService.findAll();
     }
 
-    @PreAuthorize("hasAnyRole('admin', 'user')")
+    @PreAuthorize("hasAuthority({'ORDER_WRITE'})")
     @PostMapping
     public OrderSaveDto add(
             @RequestBody OrderSaveDto orderSaveDto
@@ -45,7 +45,7 @@ public class OrderController {
         return orderService.add(orderSaveDto);
     }
 
-    @PreAuthorize("hasAnyRole('admin', 'user')")
+    @PreAuthorize("hasAuthority({'ORDER_WRITE'})")
     @PutMapping
     public OrderUpdateDto update(
             @RequestBody OrderUpdateDto orderUpdateDto
@@ -54,7 +54,7 @@ public class OrderController {
         return orderUpdateDto;
     }
 
-    @PreAuthorize("hasAnyRole('admin', 'user')")
+    @PreAuthorize("hasAuthority({'ORDER_DELETE'})")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return orderService.delete(id);

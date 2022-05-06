@@ -25,13 +25,13 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority({'USER_READ'})")
     @GetMapping("/{id}")
     public UserDto findById(@PathVariable Long id) throws ServiceException {
         return userService.findById(id);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority({'USER_READ'})")
     @GetMapping
     public List<UserListDto> findAll() throws ServiceException {
         return userService.findAll();
@@ -44,7 +44,7 @@ public class UserController {
         return userService.add(userSaveDto);
     }
 
-    @PreAuthorize("hasAnyRole('admin', 'user')")
+    @PreAuthorize("hasAuthority({'USER_WRITE'})")
     @PutMapping
     public UserUpdateDto update(
             @RequestBody UserUpdateDto userUpdateDto
@@ -53,7 +53,7 @@ public class UserController {
         return userUpdateDto;
     }
 
-    @PreAuthorize("hasAnyRole('admin', 'user')")
+    @PreAuthorize("hasAuthority({'USER_DELETE'})")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return userService.delete(id);
