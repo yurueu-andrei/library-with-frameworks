@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class UserControllerTest extends BaseControllerTest {
     @Test
-    @WithMockUser(authorities = "admin")
+    @WithMockUser(authorities = "USER_READ")
     public void findByIdTest_shouldReturnUserAndStatus200ForAdmin() throws Exception {
         //given
         Long id = 3L;
@@ -56,7 +56,7 @@ public class UserControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "admin")
+    @WithMockUser(authorities = "USER_READ")
     public void findAllTest_shouldReturnUsersAndStatus200ForAdmin() throws Exception {
         //given
         UserListDto user1 = UserListDto.builder().id(1L).email("email").address("Churlenisa").build();
@@ -84,42 +84,7 @@ public class UserControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "admin")
-    public void addTest_shouldReturnUserAndStatus200ForAdmin() throws Exception {
-        //given
-        List<Long> rolesId = new ArrayList<>(){{add(1L);}};
-
-        UserSaveDto userWithoutId = UserSaveDto.builder().firstName("Andrei").lastName("Yurueu").passportNumber("123").email("email")
-                .address("Churlenisa").birthDate(LocalDate.of(2003,4,1)).rolesId(rolesId).build();
-        UserSaveDto userWithId = UserSaveDto.builder().id(3L).firstName("Andrei").lastName("Yurueu").passportNumber("123").email("email")
-                .address("Churlenisa").birthDate(LocalDate.of(2003,4,1)).rolesId(rolesId).build();
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        //when
-        when(userService.add(userWithoutId)).thenReturn(userWithId);
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/users")
-                        .content(mapper.writeValueAsString(userWithoutId))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.firstName").value("Andrei"))
-                .andExpect(jsonPath("$.lastName").value("Yurueu"))
-                .andExpect(jsonPath("$.passportNumber").value("123"))
-                .andExpect(jsonPath("$.email").value("email"))
-                .andExpect(jsonPath("$.address").value("Churlenisa"))
-                .andExpect(jsonPath("$.birthDate").value("2003-04-01"))
-                .andExpect(jsonPath("$.rolesId").isArray())
-                .andExpect(status().isOk())
-                .andReturn();
-
-        //then
-        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
-    }
-
-    @Test
-    @WithMockUser(authorities = "admin")
+    @WithMockUser(authorities = "USER_WRITE")
     public void updateTest_shouldReturnUserAndStatus200ForAdmin() throws Exception {
         //given
         UserUpdateDto user = UserUpdateDto.builder().id(3L).firstName("Andrei").lastName("Yurueu").passportNumber("123").email("email")
@@ -149,7 +114,7 @@ public class UserControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "admin")
+    @WithMockUser(authorities = "USER_DELETE")
     public void deleteTest_shouldReturnTrueAndStatus200ForAdmin() throws Exception {
         //given
         Long id = 3L;
@@ -158,88 +123,6 @@ public class UserControllerTest extends BaseControllerTest {
         when(userService.delete(id)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/users/3"))
                 .andExpect(jsonPath("$").value(true))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        //then
-        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
-    }
-
-    @Test
-    @WithMockUser(authorities = "user")
-    public void findByIdTest_shouldReturnStatus403ForUser() throws Exception {
-        //given & when & then
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/3"))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
-    @WithMockUser(authorities = "user")
-    public void findAllTest_shouldReturnStatus403ForUser() throws Exception {
-        //given & when
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/users"))
-                .andExpect(status().isForbidden())
-                .andReturn();
-
-        //then
-        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
-    }
-
-    @Test
-    @WithMockUser(authorities = "user")
-    public void addTest_shouldReturnStatus200ForUser() throws Exception {
-        //given
-        List<Long> rolesId = new ArrayList<>(){{add(1L);}};
-
-        UserSaveDto userWithoutId = UserSaveDto.builder().firstName("Andrei").lastName("Yurueu").passportNumber("123").email("email")
-                .address("Churlenisa").birthDate(LocalDate.of(2003,4,1)).rolesId(rolesId).build();
-        UserSaveDto userWithId = UserSaveDto.builder().id(3L).firstName("Andrei").lastName("Yurueu").passportNumber("123").email("email")
-                .address("Churlenisa").birthDate(LocalDate.of(2003,4,1)).rolesId(rolesId).build();
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        //when
-        when(userService.add(userWithoutId)).thenReturn(userWithId);
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/users")
-                        .content(mapper.writeValueAsString(userWithoutId))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        //then
-        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
-    }
-
-    @Test
-    @WithMockUser(authorities = "user")
-    public void updateTest_shouldReturnStatus200ForUser() throws Exception {
-        //given
-        UserUpdateDto user = UserUpdateDto.builder().id(3L).firstName("Andrei").lastName("Yurueu").passportNumber("123").email("email")
-                .address("Churlenisa").birthDate(LocalDate.of(2003,4,1)).build();
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        //when
-        when(userService.update(user)).thenReturn(true);
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/users")
-                        .content(mapper.writeValueAsString(user))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        //then
-        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
-    }
-
-    @Test
-    @WithMockUser(authorities = "user")
-    public void deleteTest_shouldReturnStatus200ForUser() throws Exception {
-        //given & when
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/users/3"))
                 .andExpect(status().isOk())
                 .andReturn();
 

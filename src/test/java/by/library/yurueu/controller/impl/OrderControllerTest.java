@@ -27,8 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class OrderControllerTest extends BaseControllerTest {
     @Test
-    @WithMockUser(authorities = "admin")
-    public void findByIdTest_shouldReturnOrderAndStatus200ForAdmin() throws Exception {
+    @WithMockUser(authorities = "ORDER_READ")
+    public void findByIdTest_shouldReturnOrderAndStatus200ForUserWithOrderReadAuthority() throws Exception {
         //given
         Long id = 3L;
         List<BookCopyListDto> books = new ArrayList<>(){{add(BookCopyListDto.builder().id(id).build());}};
@@ -57,8 +57,8 @@ public class OrderControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "admin")
-    public void findAllTest_shouldReturnOrdersAndStatus200ForAdmin() throws Exception {
+    @WithMockUser(authorities = "ORDER_READ")
+    public void findAllTest_shouldReturnOrdersAndStatus200ForUserWithOrderReadAuthority() throws Exception {
         //given
         OrderListDto order1 = OrderListDto.builder().id(1L).status("ACTIVE").price(123)
                 .startDate(LocalDate.of(2003,4,1))
@@ -93,8 +93,8 @@ public class OrderControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "admin")
-    public void addTest_shouldReturnOrderAndStatus200ForAdmin() throws Exception {
+    @WithMockUser(authorities = "ORDER_WRITE")
+    public void addTest_shouldReturnOrderAndStatus200ForUserWithOrderWriteAuthority() throws Exception {
         //given
         List<Long> bookCopiesId = new ArrayList<>(){{add(1L);}};
         OrderSaveDto orderWithoutId = OrderSaveDto.builder().status("ACTIVE").price(123)
@@ -129,8 +129,8 @@ public class OrderControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "admin")
-    public void updateTest_shouldReturnOrderAndStatus200ForAdmin() throws Exception {
+    @WithMockUser(authorities = "ORDER_WRITE")
+    public void updateTest_shouldReturnOrderAndStatus200ForUserWithOrderWriteAuthority() throws Exception {
         //given
         OrderUpdateDto order = OrderUpdateDto.builder().id(3L).status("ACTIVE").price(123)
                 .startDate(LocalDate.of(2003,4,1))
@@ -158,8 +158,8 @@ public class OrderControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "admin")
-    public void deleteTest_shouldReturnTrueAndStatus200ForAdmin() throws Exception {
+    @WithMockUser(authorities = "ORDER_DELETE")
+    public void deleteTest_shouldReturnTrueAndStatus200ForUserWithOrderDeleteAuthority() throws Exception {
         //given
         Long id = 3L;
 
@@ -167,82 +167,6 @@ public class OrderControllerTest extends BaseControllerTest {
         when(orderService.delete(id)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/orders/3"))
                 .andExpect(jsonPath("$").value(true))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        //then
-        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
-    }
-
-    @Test
-    @WithMockUser(authorities = "user")
-    public void findByIdTest_shouldReturnStatus403ForUser() throws Exception {
-        //given & when & then
-        mockMvc.perform(MockMvcRequestBuilders.get("/orders/3"))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
-    @WithMockUser(authorities = "user")
-    public void findAllTest_shouldReturnStatus403ForUser() throws Exception {
-        //given & when
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/orders"))
-                .andExpect(status().isForbidden())
-                .andReturn();
-
-        //then
-        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
-    }
-
-    @Test
-    @WithMockUser(authorities = "user")
-    public void addTest_shouldReturnStatus200ForUser() throws Exception {
-        //given
-        List<Long> bookCopiesId = new ArrayList<>(){{add(1L);}};
-        OrderSaveDto orderWithoutId = OrderSaveDto.builder().status("ACTIVE").price(123)
-                .startDate(LocalDate.of(2003,4,1))
-                .endDate(LocalDate.of(2003,4,1))
-                .bookCopiesId(bookCopiesId).build();
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        //when & then
-        mockMvc.perform(MockMvcRequestBuilders.post("/orders")
-                        .content(mapper.writeValueAsString(orderWithoutId))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithMockUser(authorities = "user")
-    public void updateTest_shouldReturnStatus200ForUser() throws Exception {
-        //given
-        OrderUpdateDto order = OrderUpdateDto.builder().id(3L).status("ACTIVE").price(123)
-                .startDate(LocalDate.of(2003,4,1))
-                .endDate(LocalDate.of(2003,4,1)).build();
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        //when
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/orders")
-                        .content(mapper.writeValueAsString(order))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        //then
-        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
-    }
-
-    @Test
-    @WithMockUser(authorities = "user")
-    public void deleteTest_shouldReturnStatus200ForUser() throws Exception {
-        //given & when
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/orders/3"))
                 .andExpect(status().isOk())
                 .andReturn();
 

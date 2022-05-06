@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users
     PRIMARY KEY (id),
     CONSTRAINT login_unique UNIQUE (passport),
     CONSTRAINT email_unique UNIQUE (email)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS roles
 (
@@ -20,19 +20,39 @@ CREATE TABLE IF NOT EXISTS roles
     role_name VARCHAR(64) NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT role_name_unique UNIQUE (role_name)
-);
+    );
+
+CREATE TABLE IF NOT EXISTS authorities
+(
+    id        BIGINT      NOT NULL AUTO_INCREMENT,
+    authority_name VARCHAR(64) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT authority_name_unique UNIQUE (authority_name)
+    );
 
 CREATE TABLE IF NOT EXISTS user_role_links
 (
     user_id BIGINT NOT NULL,
     role_id BIGINT NOT NULL,
     CONSTRAINT user_role_link_user_fk
-        FOREIGN KEY (user_id)
-            REFERENCES users (id),
+    FOREIGN KEY (user_id)
+    REFERENCES users (id),
     CONSTRAINT user_role_link_role_fk
-        FOREIGN KEY (role_id)
-            REFERENCES roles (id)
-);
+    FOREIGN KEY (role_id)
+    REFERENCES roles (id)
+    );
+
+CREATE TABLE IF NOT EXISTS authority_role_links
+(
+    role_id BIGINT NOT NULL,
+    authority_id BIGINT NOT NULL,
+    CONSTRAINT authority_role_link_role_fk
+    FOREIGN KEY (role_id)
+    REFERENCES roles (id),
+    CONSTRAINT authority_role_link_authority_fk
+    FOREIGN KEY (authority_id)
+    REFERENCES authorities (id)
+    );
 
 CREATE TABLE IF NOT EXISTS orders
 (
