@@ -3,6 +3,7 @@ package by.library.yurueu.service.impl;
 import by.library.yurueu.dto.BookCopyDto;
 import by.library.yurueu.dto.BookCopyListDto;
 import by.library.yurueu.dto.BookCopySaveAndUpdateDto;
+import by.library.yurueu.entity.Book;
 import by.library.yurueu.entity.BookCopy;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.mapper.BookCopyMapper;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -26,7 +26,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     @Override
     public BookCopyDto findById(Long id) throws ServiceException {
         return bookCopyRepository.findById(id).map(bookCopyMapper::toDTO)
-                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
+                .orElseThrow(() -> new ServiceException(String.format("The bookCopy was not found. id = %d", id)));
     }
 
     @Transactional(readOnly = true)
@@ -35,7 +35,7 @@ public class BookCopyServiceImpl implements BookCopyService {
         try {
             return bookCopyMapper.toListDto(bookCopyRepository.findAll());
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
+            throw new ServiceException("The bookCopies were not found", ex);
         }
     }
 
@@ -47,35 +47,62 @@ public class BookCopyServiceImpl implements BookCopyService {
             bookCopy.setStatus("AVAILABLE");
             return bookCopyMapper.toSaveDTO(bookCopyRepository.save(bookCopy));
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
+            throw new ServiceException(String.format("The bookCopy was not saved. %s", bookCopySaveAndUpdateDto), ex);
         }
     }
 
     @Transactional
     @Override
     public boolean update(BookCopySaveAndUpdateDto bookCopyUpdateDto) throws ServiceException {
+        BookCopy bookCopy = bookCopyRepository.findById(bookCopyUpdateDto.getId())
+                .orElseThrow(()->
+                        new ServiceException(
+                                String.format(
+                                        "The bookCopy was not updated. The bookCopy was not found. id = %d",
+                                        bookCopyUpdateDto.getId())));
         try {
-            BookCopy bookCopy = bookCopyMapper.fromSaveOrUpdateDTO(bookCopyUpdateDto);
-            bookCopy.setStatus("AVAILABLE");
-            bookCopyRepository.save(bookCopy);
+            settingUpdatedFields(bookCopy, bookCopyUpdateDto);
+            bookCopyRepository.flush();
             return true;
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not updated"));
+            throw new ServiceException(String.format("The author was not updated. %s", bookCopyUpdateDto), ex);
+        }
+    }
+
+    private void settingUpdatedFields(BookCopy bookCopy, BookCopySaveAndUpdateDto bookCopySaveAndUpdateDto) {
+        if (bookCopySaveAndUpdateDto.getStatus() != null) {
+            bookCopy.setStatus(bookCopySaveAndUpdateDto.getStatus());
+        }
+        if (bookCopySaveAndUpdateDto.getRegistrationDate() != null) {
+            bookCopy.setRegistrationDate(bookCopySaveAndUpdateDto.getRegistrationDate());
+        }
+        if (bookCopySaveAndUpdateDto.getPricePerDay() != 0) {
+            bookCopy.setPricePerDay(bookCopySaveAndUpdateDto.getPricePerDay());
+        }
+        if (bookCopySaveAndUpdateDto.getImagePath() != null) {
+            bookCopy.setImagePath(bookCopySaveAndUpdateDto.getImagePath());
+        }
+        if (bookCopySaveAndUpdateDto.getBookId() != null) {
+            bookCopy.setBook(Book.builder().id(bookCopySaveAndUpdateDto.getBookId()).build());
         }
     }
 
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        Optional<BookCopy> bookCopyToDelete = bookCopyRepository.findById(id);
-        if (bookCopyToDelete.isPresent()) {
-            BookCopy bookCopy = bookCopyToDelete.get();
+        BookCopy bookCopy = bookCopyRepository.findById(id)
+                .orElseThrow(() ->
+                        new ServiceException(
+                                String.format(
+                                        "The bookCopy was not deleted. The bookCopy was not found. id = %d", id)));
+        try {
             deleteLinks(bookCopy);
             bookCopy.setStatus("DELETED");
-            bookCopyRepository.save(bookCopy);
+            bookCopyRepository.flush();
             return true;
+        } catch (Exception ex) {
+            throw new ServiceException(String.format("The bookCopy was not deleted. id = %d", id), ex);
         }
-        throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
     }
 
     private void deleteLinks(BookCopy bookCopy) {

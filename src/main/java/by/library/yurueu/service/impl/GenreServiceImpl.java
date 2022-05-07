@@ -20,7 +20,7 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public GenreDto findById(Long id) throws ServiceException {
         return genreRepository.findById(id).map(genreMapper::toListDTO)
-                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
+                .orElseThrow(() -> new ServiceException(String.format("The genre was not found. id = %d", id)));
     }
 
     @Transactional(readOnly = true)
@@ -29,7 +29,7 @@ public class GenreServiceImpl implements GenreService {
         try {
             return genreMapper.toListDto(genreRepository.findAll());
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
+            throw new ServiceException("The genres were not found", ex);
         }
     }
 }

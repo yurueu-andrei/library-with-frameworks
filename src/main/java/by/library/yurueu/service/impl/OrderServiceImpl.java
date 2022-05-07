@@ -5,6 +5,7 @@ import by.library.yurueu.dto.OrderListDto;
 import by.library.yurueu.dto.OrderSaveDto;
 import by.library.yurueu.dto.OrderUpdateDto;
 import by.library.yurueu.entity.Order;
+import by.library.yurueu.entity.User;
 import by.library.yurueu.exception.ServiceException;
 import by.library.yurueu.mapper.OrderMapper;
 import by.library.yurueu.repository.OrderRepository;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -25,7 +25,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto findById(Long id) throws ServiceException {
         return orderRepository.findById(id).map(orderMapper::toDTO)
-                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
+                .orElseThrow(() -> new ServiceException(String.format("The order was not found. id = %d", id)));
     }
 
     @Transactional(readOnly = true)
@@ -34,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             return orderMapper.toListDto(orderRepository.findAll());
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
+            throw new ServiceException("The orders were not found", ex);
         }
     }
 
@@ -46,32 +46,60 @@ public class OrderServiceImpl implements OrderService {
             order.setStatus("NEW");
             return orderMapper.toSaveDTO(orderRepository.save(order));
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
+            throw new ServiceException(String.format("The order was not saved. %s", orderSaveDto), ex);
         }
     }
 
     @Transactional
     @Override
     public boolean update(OrderUpdateDto orderUpdateDto) throws ServiceException {
+        Order order = orderRepository.findById(orderUpdateDto.getId())
+                .orElseThrow(()->
+                        new ServiceException(
+                                String.format(
+                                        "The order was not updated. The order was not found. id = %d",
+                                        orderUpdateDto.getId())));
         try {
-            Order order = orderMapper.fromUpdateDTO(orderUpdateDto);
-            orderRepository.save(order);
+            settingUpdatedFields(order, orderUpdateDto);
+            orderRepository.flush();
             return true;
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not updated"));
+            throw new ServiceException(String.format("The order was not updated. %s", orderUpdateDto), ex);
+        }
+    }
+
+    private void settingUpdatedFields(Order order, OrderUpdateDto orderUpdateDto) {
+        if (orderUpdateDto.getStatus() != null) {
+            order.setStatus(orderUpdateDto.getStatus());
+        }
+        if (orderUpdateDto.getStartDate() != null) {
+            order.setStartDate(orderUpdateDto.getStartDate());
+        }
+        if (orderUpdateDto.getEndDate() != null) {
+            order.setEndDate(orderUpdateDto.getEndDate());
+        }
+        if (orderUpdateDto.getPrice() != 0) {
+            order.setPrice(orderUpdateDto.getPrice());
+        }
+        if (orderUpdateDto.getUserId() != null) {
+            order.setUser(User.builder().id(orderUpdateDto.getUserId()).build());
         }
     }
 
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        Optional<Order> orderToDelete = orderRepository.findById(id);
-        if (orderToDelete.isPresent()) {
-            Order order = orderToDelete.get();
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() ->
+                        new ServiceException(
+                                String.format(
+                                        "The order was not deleted. The order was not found. id = %d", id)));
+        try {
             order.setStatus("DELETED");
-            orderRepository.save(order);
+            orderRepository.flush();
             return true;
+        } catch (Exception ex) {
+            throw new ServiceException(String.format("The order was not deleted. id = %d", id), ex);
         }
-        throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
     }
 }

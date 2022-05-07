@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @RequiredArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
@@ -30,22 +28,26 @@ public class BookServiceImpl implements BookService {
             book.setStatus("ACTIVE");
             return bookMapper.toSaveDTO(bookRepository.save(book));
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
+            throw new ServiceException(String.format("The book was not saved. %s", bookSaveDto), ex);
         }
     }
 
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        Optional<Book> bookToDelete = bookRepository.findById(id);
-        if (bookToDelete.isPresent()){
-            Book book = bookToDelete.get();
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() ->
+                        new ServiceException(
+                                String.format(
+                                        "The book was not deleted. The book was not found. id = %d", id)));
+        try {
             deleteLinks(book);
             book.setStatus("DELETED");
-            bookRepository.save(book);
+            bookRepository.flush();
             return true;
+        } catch (Exception ex) {
+            throw new ServiceException(String.format("The book was not deleted. id = %d", id), ex);
         }
-        throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
     }
 
     private void deleteLinks(Book book) {
