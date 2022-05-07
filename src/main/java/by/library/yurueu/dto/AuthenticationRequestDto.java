@@ -1,9 +1,9 @@
 package by.library.yurueu.dto;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class AuthenticationRequestDto {
-    private String username;
-    private String password;
+    String username;
+    String password;
 }

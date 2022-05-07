@@ -1,16 +1,14 @@
 package by.library.yurueu.dto;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
-@Getter
+@Jacksonized
 @Builder
-@EqualsAndHashCode
-@ToString
+@Value
 public class AuthorListDto {
-    private Long id;
-    private String firstName;
-    private String lastName;
+    Long id;
+    String firstName;
+    String lastName;
 }

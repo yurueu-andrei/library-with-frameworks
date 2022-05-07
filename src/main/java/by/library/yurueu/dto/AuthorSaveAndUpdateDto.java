@@ -1,22 +1,18 @@
 package by.library.yurueu.dto;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Jacksonized
 @Builder
-@EqualsAndHashCode
-@ToString
+@Value
 public class AuthorSaveAndUpdateDto {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private LocalDate birthDate;
-    private String imagePath;
+    Long id;
+    String firstName;
+    String lastName;
+    LocalDate birthDate;
+    String imagePath;
 }

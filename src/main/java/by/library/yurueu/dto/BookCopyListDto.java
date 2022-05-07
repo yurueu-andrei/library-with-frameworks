@@ -1,17 +1,15 @@
 package by.library.yurueu.dto;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
-@Getter
+@Jacksonized
 @Builder
-@EqualsAndHashCode
-@ToString
+@Value
 public class BookCopyListDto {
-    private Long id;
-    private String title;
-    private String imagePath;
-    private int pricePerDay;
+    Long id;
+    String title;
+    String imagePath;
+    int pricePerDay;
 }

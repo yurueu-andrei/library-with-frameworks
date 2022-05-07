@@ -1,27 +1,25 @@
 package by.library.yurueu.dto;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Jacksonized
 @Builder
-@Getter
-@EqualsAndHashCode
-@ToString
+@Value
 public class BookCopyDto {
-    private Long id;
-    private String title;
-    private int pagesNumber;
-    private String status;
-    private LocalDate registrationDate;
-    private int pricePerDay;
-    private String imagePath;
+    Long id;
+    String title;
+    int pagesNumber;
+    String status;
+    LocalDate registrationDate;
+    int pricePerDay;
+    String imagePath;
 
-    private List<BookDamageListDto> bookDamages;
-    private List<GenreDto> genres;
-    private List<AuthorListDto> authors;
+    List<BookDamageListDto> bookDamages;
+    List<GenreDto> genres;
+    List<AuthorListDto> authors;
 }

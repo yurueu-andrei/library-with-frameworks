@@ -1,23 +1,19 @@
 package by.library.yurueu.dto;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Jacksonized
 @Builder
-@EqualsAndHashCode
-@ToString
+@Value
 public class BookSaveDto {
-    private Long id;
-    private String title;
-    private int pagesNumber;
-    private String imagePath;
-    private List<Long> genresId;
-    private List<Long> authorsId;
+    Long id;
+    String title;
+    int pagesNumber;
+    String imagePath;
+    List<Long> genresId;
+    List<Long> authorsId;
 }

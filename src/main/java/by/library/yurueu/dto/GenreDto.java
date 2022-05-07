@@ -1,15 +1,13 @@
 package by.library.yurueu.dto;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
-@Getter
+@Jacksonized
 @Builder
-@EqualsAndHashCode
-@ToString
+@Value
 public class GenreDto {
-    private Long id;
-    private String genreName;
+    Long id;
+    String genreName;
 }

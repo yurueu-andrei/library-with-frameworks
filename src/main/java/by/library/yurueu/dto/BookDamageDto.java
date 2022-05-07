@@ -1,19 +1,17 @@
 package by.library.yurueu.dto;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
-@Getter
+@Jacksonized
 @Builder
-@EqualsAndHashCode
-@ToString
+@Value
 public class BookDamageDto {
-    private Long id;
-    private String imagePath;
-    private String damageDescription;
-    private Long userId;
-    private Long orderId;
-    private Long bookCopyId;
+    Long id;
+    String imagePath;
+    String damageDescription;
+    Long userId;
+    Long orderId;
+    Long bookCopyId;
 }
