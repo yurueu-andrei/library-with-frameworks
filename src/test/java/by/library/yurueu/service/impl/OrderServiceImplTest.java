@@ -109,7 +109,7 @@ class OrderServiceImplTest {
         Order order = Order.builder().id(4L).status("ACCEPTED").build();
 
         //when
-        when(orderRepository.save(order)).thenReturn(order);
+        when(orderRepository.findById(4L)).thenReturn(Optional.of(order));
         boolean actual = orderService.update(expected);
 
         //then

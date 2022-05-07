@@ -110,7 +110,7 @@ class AuthorServiceImplTest {
         Author author = Author.builder().id(4L).firstName("Alexander").build();
 
         //when
-        when(authorRepository.save(author)).thenReturn(author);
+        when(authorRepository.findById(4L)).thenReturn(Optional.of(author));
         boolean actual = authorService.update(expected);
 
         //then

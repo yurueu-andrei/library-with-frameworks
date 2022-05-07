@@ -96,7 +96,7 @@ class UserServiceImplTest {
         User user = User.builder().id(4L).firstName("Sergei").lastName("Smirnov").build();
 
         //when
-        when(userRepository.save(user)).thenReturn(user);
+        when(userRepository.findById(4L)).thenReturn(Optional.of(user));
         boolean actual = userService.update(expected);
 
         //then
