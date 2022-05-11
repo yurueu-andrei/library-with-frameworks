@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -23,7 +22,7 @@ public class BookDamageServiceImpl implements BookDamageService {
     @Override
     public BookDamageDto findById(Long id) throws ServiceException {
         return bookDamageRepository.findById(id).map(bookDamageMapper::toDTO)
-                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
+                .orElseThrow(() -> new ServiceException(String.format("The bookDamage was not found. id = %d", id)));
     }
 
     @Transactional(readOnly = true)
@@ -32,7 +31,7 @@ public class BookDamageServiceImpl implements BookDamageService {
         try {
             return bookDamageMapper.toListDto(bookDamageRepository.findAll());
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
+            throw new ServiceException("The bookDamages were not found", ex);
         }
     }
 
@@ -44,20 +43,24 @@ public class BookDamageServiceImpl implements BookDamageService {
             bookDamage.setStatus("ACTIVE");
             return bookDamageMapper.toSaveDTO(bookDamageRepository.save(bookDamage));
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
+            throw new ServiceException(String.format("The bookDamage was not saved. %s", bookDamageSaveDto), ex);
         }
     }
 
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        Optional<BookDamage> bookDamageToDelete = bookDamageRepository.findById(id);
-        if (bookDamageToDelete.isPresent()) {
-            BookDamage bookDamage = bookDamageToDelete.get();
+        BookDamage bookDamage = bookDamageRepository.findById(id)
+                .orElseThrow(() ->
+                        new ServiceException(
+                                String.format(
+                                        "The bookDamage was not deleted. The bookDamage was not found. id = %d", id)));
+        try {
             bookDamage.setStatus("DELETED");
-            bookDamageRepository.save(bookDamage);
+            bookDamageRepository.flush();
             return true;
+        } catch (Exception ex) {
+            throw new ServiceException(String.format("The bookDamage was not deleted. id = %d", id), ex);
         }
-        throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
     }
 }

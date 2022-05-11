@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,7 +23,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorDto findById(Long id) throws ServiceException {
         return authorRepository.findById(id).map(authorMapper::toDTO)
-                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
+                .orElseThrow(() -> new ServiceException(String.format("The author was not found. id = %d", id)));
     }
 
     @Transactional(readOnly = true)
@@ -33,7 +32,7 @@ public class AuthorServiceImpl implements AuthorService {
         try {
             return authorMapper.toListDto(authorRepository.findAll());
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
+            throw new ServiceException("The authors were not found", ex);
         }
     }
 
@@ -45,33 +44,57 @@ public class AuthorServiceImpl implements AuthorService {
             author.setStatus("ACTIVE");
             return authorMapper.toSaveDTO(authorRepository.save(author));
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
+            throw new ServiceException(String.format("The author was not saved. %s", authorSaveAndUpdateDto), ex);
         }
     }
 
     @Transactional
     @Override
-    public boolean update(AuthorSaveAndUpdateDto authorUpdateDto) throws ServiceException {
+    public boolean update(AuthorSaveAndUpdateDto authorSaveAndUpdateDto) throws ServiceException {
+        Author author = authorRepository.findById(authorSaveAndUpdateDto.getId())
+                .orElseThrow(() ->
+                        new ServiceException(
+                                String.format(
+                                        "The author was not updated. The author was not found. id = %d",
+                                        authorSaveAndUpdateDto.getId())));
         try {
-            Author author = authorMapper.fromSaveOrUpdateDTO(authorUpdateDto);
-            author.setStatus("ACTIVE");
-            authorRepository.save(author);
+            settingUpdatedFields(author, authorSaveAndUpdateDto);
+            authorRepository.flush();
             return true;
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not updated"));
+            throw new ServiceException(String.format("The author was not updated. %s", authorSaveAndUpdateDto), ex);
+        }
+    }
+
+    private void settingUpdatedFields(Author author, AuthorSaveAndUpdateDto authorSaveAndUpdateDto) {
+        if (authorSaveAndUpdateDto.getFirstName() != null) {
+            author.setFirstName(authorSaveAndUpdateDto.getFirstName());
+        }
+        if (authorSaveAndUpdateDto.getLastName() != null) {
+            author.setLastName(authorSaveAndUpdateDto.getLastName());
+        }
+        if (authorSaveAndUpdateDto.getBirthDate() != null) {
+            author.setBirthDate(authorSaveAndUpdateDto.getBirthDate());
+        }
+        if (authorSaveAndUpdateDto.getImagePath() != null) {
+            author.setImagePath(authorSaveAndUpdateDto.getImagePath());
         }
     }
 
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        Optional<Author> authorToDelete = authorRepository.findById(id);
-        if (authorToDelete.isPresent()) {
-            Author author = authorToDelete.get();
+        Author author = authorRepository.findById(id)
+                .orElseThrow(() ->
+                        new ServiceException(
+                                String.format(
+                                        "The author was not deleted. The author was not found. id = %d", id)));
+        try {
             author.setStatus("DELETED");
-            authorRepository.save(author);
+            authorRepository.flush();
             return true;
+        } catch (Exception ex) {
+            throw new ServiceException(String.format("The author was not deleted. id = %d", id), ex);
         }
-        throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
     }
 }

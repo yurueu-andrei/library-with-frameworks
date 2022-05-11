@@ -23,7 +23,7 @@ public class RoleServiceImpl implements RoleService {
         try {
             return roleMapper.toListDto(roleRepository.findAll());
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
+            throw new ServiceException("The roles were not found", ex);
         }
     }
 }

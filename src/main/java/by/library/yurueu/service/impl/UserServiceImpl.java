@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -31,7 +30,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findById(Long id) throws ServiceException {
         return userRepository.findById(id).map(userMapper::toDTO)
-                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
+                .orElseThrow(() -> new ServiceException(String.format("The user was not found. id = %d", id)));
     }
 
     @Transactional(readOnly = true)
@@ -40,7 +39,7 @@ public class UserServiceImpl implements UserService {
         try {
             return userMapper.toListDto(userRepository.findAll());
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName() + "s", "were not found"));
+            throw new ServiceException("The users were not found", ex);
         }
     }
 
@@ -53,35 +52,68 @@ public class UserServiceImpl implements UserService {
             user.setStatus("ACTIVE");
             return userMapper.toSaveDTO(userRepository.save(user));
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not added"));
+            throw new ServiceException(String.format("The user was not saved. %s", userSaveDto), ex);
         }
     }
 
     @Transactional
     @Override
     public boolean update(UserUpdateDto userUpdateDto) throws ServiceException {
+        User user = userRepository.findById(userUpdateDto.getId())
+                .orElseThrow(()->
+                        new ServiceException(
+                                String.format(
+                                        "The user was not updated. The user was not found. id = %d",
+                                        userUpdateDto.getId())));
         try {
-            User user = userMapper.fromUpdateDTO(userUpdateDto);
-            user.setStatus("ACTIVE");
-            userRepository.save(user);
+            settingUpdatedFields(user, userUpdateDto);
+            userRepository.flush();
             return true;
         } catch (Exception ex) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not updated"));
+            throw new ServiceException(String.format("The user was not updated. %s", userUpdateDto), ex);
+        }
+    }
+
+    private void settingUpdatedFields(User user, UserUpdateDto userUpdateDto) {
+        if (userUpdateDto.getFirstName() != null) {
+            user.setFirstName(userUpdateDto.getFirstName());
+        }
+        if (userUpdateDto.getLastName() != null) {
+            user.setLastName(userUpdateDto.getLastName());
+        }
+        if (userUpdateDto.getPassportNumber() != null) {
+            user.setPassportNumber(userUpdateDto.getPassportNumber());
+        }
+        if (userUpdateDto.getEmail() != null) {
+            user.setEmail(userUpdateDto.getEmail());
+        }
+        if (userUpdateDto.getPassword() != null) {
+            user.setPassword(userUpdateDto.getPassword());
+        }
+        if (userUpdateDto.getAddress() != null) {
+            user.setAddress(userUpdateDto.getAddress());
+        }
+        if (userUpdateDto.getBirthDate() != null) {
+            user.setBirthDate(userUpdateDto.getBirthDate());
         }
     }
 
     @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        Optional<User> userToDelete = userRepository.findById(id);
-        if (userToDelete.isPresent()) {
-            User user = userToDelete.get();
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ServiceException(
+                                String.format(
+                                        "The user was not deleted. The user was not found. id = %d", id)));
+        try {
             deleteLinks(user);
             user.setStatus("DELETED");
-            userRepository.save(user);
+            userRepository.flush();
             return true;
+        } catch (Exception ex) {
+            throw new ServiceException(String.format("The user was not deleted. id = %d", id), ex);
         }
-        throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not deleted"));
     }
 
     private void deleteLinks(User user) {

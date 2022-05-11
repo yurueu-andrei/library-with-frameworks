@@ -103,8 +103,7 @@ class BookCopyServiceImplTest {
         BookCopySaveAndUpdateDto expected = BookCopySaveAndUpdateDto.builder().id(4L).imagePath("image path").build();
         BookCopy bookCopy = BookCopy.builder().id(4L).imagePath("image path").build();
         //when
-        when(bookCopyRepository.save(bookCopy))
-                .thenReturn(bookCopy);
+        when(bookCopyRepository.findById(4L)).thenReturn(Optional.of(bookCopy));
         boolean actual = bookCopyService.update(expected);
 
         //then
