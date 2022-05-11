@@ -1,25 +1,21 @@
 package by.library.yurueu.dto;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Jacksonized
 @Builder
-@EqualsAndHashCode
-@ToString
+@Value
 public class UserUpdateDto {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private String passportNumber;
-    private String email;
-    private String password;
-    private String address;
-    private LocalDate birthDate;
+    Long id;
+    String firstName;
+    String lastName;
+    String passportNumber;
+    String email;
+    String password;
+    String address;
+    LocalDate birthDate;
 }

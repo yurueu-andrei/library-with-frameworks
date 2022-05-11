@@ -1,23 +1,19 @@
 package by.library.yurueu.dto;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Jacksonized
 @Builder
-@EqualsAndHashCode
-@ToString
+@Value
 public class BookCopySaveAndUpdateDto {
-    private Long id;
-    private String status;
-    private LocalDate registrationDate;
-    private int pricePerDay;
-    private String imagePath;
-    private Long bookId;
+    Long id;
+    String status;
+    LocalDate registrationDate;
+    int pricePerDay;
+    String imagePath;
+    Long bookId;
 }

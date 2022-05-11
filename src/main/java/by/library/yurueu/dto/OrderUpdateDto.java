@@ -1,21 +1,19 @@
 package by.library.yurueu.dto;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDate;
 
-@Getter
+@Jacksonized
 @Builder
-@EqualsAndHashCode
-@ToString
+@Value
 public class OrderUpdateDto {
-    private Long id;
-    private String status;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private int price;
-    private Long userId;
+    Long id;
+    String status;
+    LocalDate startDate;
+    LocalDate endDate;
+    int price;
+    Long userId;
 }
