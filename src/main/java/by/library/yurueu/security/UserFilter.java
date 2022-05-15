@@ -1,5 +1,6 @@
 package by.library.yurueu.security;
 
+import by.library.yurueu.security.util.CachedBodyHttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -17,8 +18,9 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class UserFilter extends OncePerRequestFilter {
-    private final JwtTokenUtil jwtTokenUtil;
     private static final String USER_ID_PATTERN = "(\"id\": )(\\d+)";
+
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Override
     protected void doFilterInternal(

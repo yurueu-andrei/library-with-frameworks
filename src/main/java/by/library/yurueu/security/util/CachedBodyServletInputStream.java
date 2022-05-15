@@ -1,4 +1,4 @@
-package by.library.yurueu.security;
+package by.library.yurueu.security.util;
 
 import lombok.SneakyThrows;
 
@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class CachedBodyServletInputStream extends ServletInputStream {
-
     private final InputStream cachedBodyInputStream;
 
     public CachedBodyServletInputStream(byte[] cachedBody) {

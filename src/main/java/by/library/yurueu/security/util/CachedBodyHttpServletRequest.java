@@ -1,4 +1,4 @@
-package by.library.yurueu.security;
+package by.library.yurueu.security.util;
 
 import org.springframework.util.StreamUtils;
 
@@ -21,12 +21,12 @@ public class CachedBodyHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     @Override
-    public ServletInputStream getInputStream() throws IOException {
+    public ServletInputStream getInputStream() {
         return new CachedBodyServletInputStream(this.cachedBody);
     }
 
     @Override
-    public BufferedReader getReader() throws IOException {
+    public BufferedReader getReader() {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(this.cachedBody);
         return new BufferedReader(new InputStreamReader(byteArrayInputStream));
     }
